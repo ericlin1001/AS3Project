@@ -1,0 +1,66 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<CENTER><SPAN CLASS="title">Chess Programming Part I: Getting Started</SPAN>
+<BR><SPAN CLASS="author">by Frant is Dominic Laramt</SPAN></CENTER>
+
+<P>This is the first article in a six-part series about programming computers to play chess, and by extension other similar strategy games of perfect information.
+<P>Chess has been described as the <I>Drosophila Melanogaster</I> of artificial intelligence, in the sense that the game has spawned a great deal of successful research (including a match victory against the current world champion and arguably the best player of all time, Gary Kasparov), much like many of the discoveries in genetics over the years have been made by scientists studying the tiny fruit fly.  This article series will describe some of the state-of-the-art techniques employed by the most successful programs in the world, including Deep Blue.
+<P>Note that by the time the series is completed (in October), I will have written a simple implementation of the game in Java, and the source code will be freely available for download on my web site.  So if you want to see more code samples, be patient; I'll give you plenty in due time!
+
+<H1>Games of Perfect Information</H1>
+<P>Chess is defined as a game of "perfect information", because both players are aware of the entire state of the game world at all times: just by looking at the board, you can see which pieces are alive and where they are located.  Checkers, Go, Go-Moku, Backgammon and Othello are other members of the category, but stud poker is not (you don't know what cards your opponent is holding in his hands).
+<P>Most of the techniques described in this series will apply more or less equally to all games of perfect information, although the details will vary from game to game.  Obviously, while a search algorithm is a search algorithm no matter what the domain, move generation and position evaluation will depend completely on the rules of the game being played!
+
+<H1>What We Need</H1>
+<P>In order to play chess, a computer needs a certain number of software components.  At the very least, these include:
+<UL>
+   <LI>Some way to represent a chess board in memory, so that it knows what the state of the game is.</LI>
+   <LI>Rules to determine how to generate legal moves, so that it can play without cheating (and verify that its human opponent is not trying to pull a fast one on it!)</LI>
+   <LI>A technique to choose the move to make amongst all legal possibilities, so that it can choose a move instead of being forced to pick one at random.</LI>
+   <LI>A way to compare moves and positions, so that it makes intelligent choices.</LI>
+   <LI>Some sort of user interface.</LI>
+</UL>
+
+<P>This series will cover all of the above, except the user interface, which is essentially a 2D game like any other.  The rest of this article describes the major issues related to each component and introduces some of the concepts to be explored in the series.
+
+<H1>Board Representations</H1>
+<P>In the early days of chess programming, memory was extremely limited (some programs ran in 8K or less) and the simplest, least expensive representations were the most effective.  A typical chessboard was implemented as an 8x8 array, with each square represented by a single byte: an empty square was allocated value 0, a black king could be represented by the number 1, etc.
+<P>When chess programmers started working on 64-bit workstations and mainframes, more elaborate board representations based on "bitboards" appeared.  Apparently invented in the Soviet Union in the late 1960's, the bit board is a 64-bit word containing information about one aspect of the game state, at a rate of 1 bit per square.  For example, a bitboard might contain "the set of squares occupied by black pawns", another "the set of squares to which a queen on e3 can move", and another, "the set of white pieces currently attacked by black knights". Bitboards are versatile and allow fast processing, because many operations that are repeated very often in the course of a chess game can be implemented as 1-cycle logic operations on bitboards.
+<P>Part II of this series covers board representations in detail.
+
+<H1>Move Generation</H1>
+<P>The rules of the game determine which moves (if any) the side to play is allowed to make.  In some games, it is easy to look at the board and determine the legal moves: for example, in tic-tac-toe, any empty square is a legal move.  For chess, however, things are more complicated: each piece has its own movement rules, pawns capture diagonally and move along a file, it is illegal to leave a king in check, and the "en passant" captures, pawn promotions and castling moves require very specific conditions to be legal.
+<P>In fact, it turns out that move generation is one of the most computationally expensive and complicated aspects of chess programming.  Fortunately, the rules of the game allow quite a bit of pre-processing, and I will describe a set of data structures which can speed up move generation significantly.
+<P>Part III of this series covers this topic.
+
+<H1>Search Techniques</H1>
+<P>To a computer, it is far from obvious which of many legal moves are "good" and which are "bad".  The best way to discriminate between the two is to look at their consequences (i.e., search series of moves, say 4 for each side and look at the results.)  And to make sure that we make as few mistakes as possible, we will assume that the opponent is just as good as we are.  This is the basic principle underlying the minimax search algorithm, which is at the root of all chess programs.
+<P>Unfortunately, minimax' complexity is O(b<SUP>n</SUP>), where b ("branching factor") is the number of legal moves available on average at any given time and n (the depth) is the number of "plies" you look ahead, where one ply is one move by one side.  This number grows impossibly fast, so a considerable amount of work has been done to develop algorithms that minimize the effort expended on search for a given depth.  Iterative-deepening Alphabeta, NegaScout and MTD(f) are among the most successful of these algorithms, and they will be described in Part IV, along with the data structures and heuristics which make strong play possible, such as transposition tables and the history/killer heuristic.
+<P>Another major source of headaches for chess programmers is the "horizon effect", first described by Hans Berliner.  Suppose that your program searches to a depth of 8-ply, and that it discovers to its horror that the opponent will capture its queen at ply 6.  Left to its own devices, the program will then proceed to throw its bishops to the wolves so that it will delay the queen capture to ply 10, which it can't see because its search ends at ply 8.  From the program's point of view, the queen is "saved", because the capture is no longer visible...  But it has lost a bishop, and the queen capture reappears during the next move's search.  It turns out that finding a position where a program can reason correctly about the relative strength of the forces in presence is not a trivial task at all, and that searching every line of play to the same depth is tantamount to suicide.  Numerous techniques have been developed to defeat the horizon effect; quiescence search and Deep Blue's singular extensions are among the topics covered in Part V on advanced search.
+
+<H1>Evaluation</H1>
+<P>Finally, the program must have some way of assessing whether a given position means that it is ahead or that it has lost the game.  This evaluation depends heavily upon the rules of the game: while "material balance" (i.e., the number and value of the pieces on the board) is the dominant factor in chess, because being ahead by as little as a single pawn can often guarantee a victory for a strong player, it is of no significance in Go-Moku and downright misleading in Othello, where you are often better off with fewer pieces on the board until the very last moment.
+<P>Developing a useful evaluation function is a difficult and sometimes frustrating task.  Part VI of this series covers the efforts made in that area by the developers of some of the most successful chess programs of all time, including Chess 4.5, Cray Blitz and Belle.
+
+<H1>Conclusion</H1>
+<P>Now that we know which pieces we will need to complete the puzzle, it is time to get started on that first corner.  Next month, I will describe the most popular techniques used to represent chess boards in current games.  See you there!
+
+<br> 
+<P><I>François Dominic Laramée, April 2000</I>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1014&forum_id=35&Topic_Title=Chess+Programming+Part+I%3A+Getting+Started  \n\nÕâ¸öÎÄ¼þ²»ÄÜÍ¨¹ý Teleport Pro È¡»Ø, ÒòÎª Ëü±»Á´½Óµ½ÀëËüµÄÆðÊ¼µØÖ·Ì«Ô¶µÄµØ·½. Èç¹ûÄãÔö´óÆðÊ¼µØÖ·ÔÚÆä·¶Î§ÄÚµÄÉî¶ÈÉèÖÃ, Õâ¸öÎÄ¼þ½«½øÐÐÁÐ¶ÓµÈ´ýÈ¡»Ø.  \n\nÄãÏë´Ó·þÎñÆ÷´ò¿ªËüÂð?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1014&forum_id=35&Topic_Title=Chess+Programming+Part+I%3A+Getting+Started'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1014&forum_id=35&Topic_Title=Chess+Programming+Part+I%3A+Getting+Started">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

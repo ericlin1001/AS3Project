@@ -1,0 +1,890 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<CENTER><SPAN CLASS="title">Neural Netware</SPAN>
+<BR><SPAN CLASS="author">by <A HREF="mailto:necron@xgames3d.com">Andre' LaMothe</A> - <A HREF="javascript:if(confirm('http://www.xgames3d.com/  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://www.xgames3d.com/'" tppabs="http://www.xgames3d.com/">Xtreme Games</A></SPAN></CENTER>
+
+<H1>And There Was Light...</H1>
+
+<P>The funny thing about high technology is that sometimes it's hundreds of years old! For example, Calculus was independently invented by both Newton and Leibniz over 300 years ago. What used to be magic, is now well known. And of course we all know that geometry was invented by Euclid a couple thousand years ago. The point is that many times it takes years for something to come into &quot;vogue&quot;. <I>Neural Nets</I> are a prime example. We all have heard about neural nets, and about what their promises are, but we don't really see too many real world applications such as we do for <I>ActiveX</I> or the <I>Bubblesort.</I> The reason for this is that the true nature of neural nets is extremely mathematical and understanding and proving the theorems that govern them takes Calculus, Probability Theory, and Combinatorial Analysis not to mention Physiology and Neurology.
+<P>The key to unlocking any technology is for a person or persons to create a Killer App for it. We all know how <I>DOOM</I> works by now, i.e. by using BSP trees. However, John Carmack didn't invent them, he read about them in a paper written in the 1960's. This paper described BSP technology. John took the next step an realized what BSP trees could be used for and <I>DOOM</I> was born. I suspect that Neural Nets may have the same revelation in the next few years. Computers are fast enough to simulate them, VLSI designers are building them right into the silicon, and there are hundreds of books that have been published about them. And since Neural Nets are more mathematical entities then anything else, they are not tied to any physical representation, we can create them with software or create actual physical models of them with silicon. The key is that neural nets are abstractions or models.
+<P>In many ways the computational limits of digital computers have been realized. Sure we will keep making them faster, smaller and cheaper, but digital computers will always process digital information since they are based on deterministic binary models of computation. Neural nets on the other hand are based on different models of computation. They are based on highly parallel, distributed, probabilistic models that don't necessarily model a solution to a problem as does a computer program, but model a network of cells that can find, ascertain, or correlate possible solutions to a problem in a more biological way by solving the problem a in little pieces and putting the result together. This article is a whirlwind tour of what neural nets are, and how they work in as much detail as can be covered in a few pages. I know that a few pages doesn't do the topic justice, but maybe we can talk the management into a small series??? 
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 1.0 - A Basic Biological Neuron.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image14.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image14.jpg" width="619" height="302">
+</BLOCKQUOTE>
+
+<H1>Biological Analogs</H1>
+<P>Neural Nets were inspired by our own brains. Literally, some brain in someone's head said, &quot;I wonder how I work?&quot; and then proceeded to create a simple model of itself. Weird huh? The model of the standard neurode is based on a simplified model of a human neuron invented over 50 years ago. Take a look at Figure 1.0. As you can see, there are 3 main parts to a neuron, they are:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<UL>
+    <LI><I>Dendrite(s)</I>........................Responsible for collecting incoming signals.
+    <LI><I>Soma</I>................................Responsible for the main processing and summation of signals.
+    <LI><I>Axon</I>.................................Responsible for transmitting signals to other dendrites.
+</UL>
+</FONT>
+</BLOCKQUOTE>
+
+<P>The average human brain has about 100,000,000,000 or 10<SUP>11</SUP> neurons and each neuron has up to 10,000 connections via the <I>dendrites</I>. The signals are passed via electro-chemical processes based on <I>NA</I> (sodium), <I>K</I> (potassium), and <I>CL</I> (chloride) ions. Signals are transferred by accumulation and potential differences caused by these ions, the chemistry is unimportant, but the signals can be thought of simple electrical impulses that travel from <I>axon </I>to<I> dendrite</I>. The connections from one dendrite to axon are called <I>synapses</I> and these are the basic signal transfer points.
+<P>So how does a neuron work? Well, that doesn't have a simple answer, but for our purposes the following explanation will suffice. The dendrites collect the signals received from other neurons, then the soma performs a summation of sorts and based on the result causes the axon to fire and transmit the signal. The firing is contingent upon a number of factors, but we can model it as an transfer function that takes the summed inputs, processes them, and then creates an output if the properties of the transfer function are met. In addition, the output is non-linear in real neurons, that is, signals aren't digital, they are analog. In fact, neurons are constantly receiving and sending signals and the real model of them is frequency dependent and must be analyzed in the <I>S-domain</I> (the frequency domain). The real transfer function of a simple biological neuron has, in fact, been derived and it fills a number of chalkboards up.
+<P>Now that we have some idea of what neurons are and what we are trying to model, let's digress for a moment and talk about what we can use neural nets for in video games.
+
+<H1>Applications to Games</H1>
+<P>Neural nets seem to be the answer that we all are looking for. If we could just give the characters in our games a little brains, imagine how cool a game would be! Well, this is possible in a sense. Neural nets model the structure of neurons in a crude way, but not the high level functionality of reason and deduction, at least in the classical sense of the words. It takes a bit of thought to come up with ways to apply neural net technology to game AI, but once you get the hang of it, then you can use it in conjunction with deterministic algorithms, fuzzy logic, and genetic algorithms to create very robust thinking models for your games. Without a doubt better than anything you can do with hundreds of <I>if-then</I> statements or scripted logic. Neural nets can be used for such things as:
+<P><I>Environmental Scanning and Classification</I> - A neural net can be feed with information that could be interpreted as vision or auditory information. This information can then be used to select an output response or teach the net. These responses can be learned in real-time and updated to optimize the response.
+<P><I>Memory</I> - A neural net can be used by game creatures as a form of memory. The neural net can learn through experience a set of responses, then when a new experience occurs, the net can respond with something that is the best guess at what should be done.
+<P><I>Behavioral Control</I> - The output of a neural net can be used to control the actions of a game creature. The inputs can be various variables in the game engine. The net can then control the behavior of the creature. 
+<P><I>Response Mapping</I> - Neural nets are really good at &quot;association&quot; which is the mapping of one space to another. Association comes in two flavors: <I>autoassociation</I> which is the mapping of an input with itself and <I>heterassociation</I> which is the mapping of an input with something else. Response mapping uses a neural net at the back end or output to create another layer of indirection in the control or behavior of an object. Basically, we might have a number of control variables, but we only have crisp responses for a number of certain combinations that we can teach the net with. However, using a neural net on the output, we can obtain other responses that are in the same ballpark as our well defined ones.
+<P>The above examples may seem a little fuzzy, and they are. The point is that neural nets are tools that we can use in whatever way we like. The key is to use them in cool ways that make our <I>AI</I> programming simpler and make game creatures respond more intelligently.
+
+<H1>Neural Nets 101</H1>
+<P>In this section we're going to cover the basic terminology and concepts used in neural net discussions. This isn't easy since neural nets are really the work of a number of different disciplines, and therefore, each discipline creates their own vocabulary. Alas, the vocabulary that we will learn is a good intersection of all the well know vocabularies and should suffice. In addition, neural network theory is replete with research that is redundant, meaning that many people re-invent the wheel. This has had the effect of creating a number of neural net architectures that have names. I will try to keep things as generic as possible, so that we don't get caught up in naming conventions. Later in the article we will cover some nets that are distinct enough that we will refer to them will their proper names. As you read don't be too alarmed if you don't make the &quot;connections&quot; with all of the concepts, just read them, we will cover most of them again in full context in the remainder of the article. Let's begin...
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 2.0 - A Single Neurode with n Inputs.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image15.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image15.jpg" width="553" height="339">
+</BLOCKQUOTE>
+
+<P>Now that we have seen the wetware version of a neuron, let's take a look at the basic artificial neuron to base our discussions on. Figure 2.0 is a graphic of a standard <I>&quot;neurode&quot;</I> or &quot;<I>artificial neuron&quot;</I>. As you can see, it has a number of inputs labeled <I>X<SUB>1</SUB> - X<SUB>n</SUB></I> and <I>B</I>. These inputs each have an associated weight <I>w<SUB>1</SUB> - w<SUB>n</SUB></I>, and <I>b</I> attached to them. In addition, there is a summing junction <I>Y</I> and a single output <I>y</I>. The output <I>y</I> of the neurode is based on a transfer or <I>&quot;activation&quot;</I> function which is a function of the net input to the neurode. The inputs come from the <I>X<SUB>i'</SUB>s</I> and from <I>B</I> which is a bias node. Think of <I>B</I> as a <I>&quot;past history&quot;,</I> <I>&quot;memory&quot;,</I> or <I>&quot;inclination&quot;.</I> The basic operation of the neurode is as follows: the inputs <I>X<SUB>i</SUB></I> are each multiplied by their associated weights and summed. The output of the summing is referred to as the i<I>nput activation</I> <I>Y<SUB>a</SUB></I>.  The activation is then fed to the activation function <I>f<SUB>a</SUB>(x)</I> and the final output is <I>y.</I> The equations for this is:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Eq. 1.0</I></FONT></SPAN>
+<FONT COLOR=RED>
+<P><I>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n<br>
+Y</I><SUB>a</SUB> = <I>B</I>*<I>b</I> + <font size="2" face="Symbol">q</font> <I>X</I><SUB>i</SUB> * <I>w</I><SUB>i</SUB>
+<br>
+<I>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i
+</I>=1<br>
+
+<P>AND
+
+<P><I>y</I> = <I>f<SUB>a</SUB>(Y<SUB>a</SUB>)</I>
+</FONT>
+</BLOCKQUOTE>
+
+<P>The various forms of <I>f<SUB>a</SUB>(x)</I> will be covered in a moment.
+<P>Before we move on, we need to talk about the inputs <I>X<SUB>i</SUB></I>, the weights <I>w<SUB>i</SUB></I>, and their respective domains. In most cases, inputs consist of the positive and negative integers in the set ( -<font face="Symbol">q</font> , +inputs are <font face="Symbol">q</font> ).  However, many neural nets use simpler <I>bivalent</I> values (meaning that they have only two values).  The reason for using such a simple input scheme is that ultimately all <I>binary</I> as image or <I>bipolar</I> and complex inputs are converted to pure binary or bipolar representations anyway. In addition, many times we are trying to solve computer problems such or voice recognition which lend themselves to bivalent representations. Nevertheless, this is not etched in stone. In any case, the values used in bivalent systems are primarily 0 and 1 in a binary system or -1 and 1 in a bipolar system. Both systems are similar except that bipolar representations turn out to be mathematically better than binary ones. The weights <I>w<SUB>i</SUB></I> on each input are typically in the range bias ( -<font face="Symbol">q</font> , +<font face="Symbol">q</font> ). and are referred to as <I>excitatory</I>, and <I>inhibitory</I> for positive and negative values respectively. The extra input <I>B</I> which is called the is always 1.0 and is scaled or multiplied by <I>b</I>, that is, <I>b</I> is it's weight in a sense. This is illustrated in Eq.1.0 by the leading term.
+<P>Continuing with our analysis, once the activation <I>Y<SUB>a</SUB></I> is found for a neurode then it is applied to the activation function and the output <I>y</I> can be computed. There are a number of activation functions and they have different uses. The basic activation functions <I>f<SUB>a</SUB>(x)</I> are:
+
+<BLOCKQUOTE>
+<CENTER>
+<table border="1" cellpadding="8" cellspacing="8">
+    <tr>
+        <td><I>Step</I></td>
+        <td><I>Linear </I></td>
+        <td><I>Exponential</I></td>
+    </tr>
+    <tr>
+        <td><IMG SRC="xneuralnet/Image4.gif" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image4.gif" align="left"
+        hspace="12" width="100" height="75"></td>
+        <td><IMG SRC="xneuralnet/Image3.gif" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image3.gif" align="left"
+        hspace="12" width="104" height="78"></td>
+        <td><IMG SRC="xneuralnet/Image5.gif" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image5.gif" align="left"
+        hspace="12" width="100" height="75"></td>
+    </tr>
+    <tr>
+        <td><I>F<SUB>s</SUB>(x)</I> =1, if <I>x</I>
+        <font size="2" face="Symbol">'</font><font face="Symbol">q</font></td>
+        <td><I>F<SUB>l</SUB>(x)</I> = <I>x</I>,
+        for all <I>x</I></td>
+        <td><I>F<SUB>e</SUB>(x)</I> =
+        1/(1+e<SUP>-</SUP><font face="Symbol"><SUP>s</SUP></font><SUP> <I>x</I></SUP>)</td>
+    </tr>
+</table>
+</CENTER>
+</BLOCKQUOTE>
+
+<P>The equations for each are fairly simple, but each are derived to model or fit various properties.
+<P>The <I>step</I> function is used in a number of neural nets and models a neuron firing when a critical input signal is reached. This is the purpose of the factor <font face="Symbol">q</font>, it models the critical input level or threshold that the neurode should fire at. The <I>linear</I> <I>activation</I> function is used when we want the output of the neurode to more closely follow the input activation. This kind of activation function would be used in modeling <I>linear systems</I> such as basic motion with constant velocity. Finally, the <I>exponential</I> <I>activation function is</I> used to create a <I>non-linear response</I> which is the only possible way to create neural nets that have non-linear responses and model non-linear processes. The <I>exponential activation function</I> is key in advanced neural nets since the composition of linear and step activation functions will <I>always</I> be linear or step, we will never be able to create a net that has non-linear response, therefore, we need the exponential activation function to address the non-linear problems that we want to solve with neural nets. However, we are not locked into using the exponential function. <I>Hyperbolic</I>, <I>logarithmic</I>, and <I>transcendental</I> functions can be used as well depending on the desired properties of the net. Finally, we can scale and shift all the functions if we need to.
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 3.0 - A 4 Input, 3 Neurode, SingleLayer Neural Net.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image16.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image16.jpg" width="642" height="379">
+<P><SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 4.0 - A 2 Layer Neural Network.</I></FONT></SPAN>
+<p ALIGN=CENTER><IMG SRC="xneuralnet/Image17.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image17.jpg" width="591" height="335">
+</BLOCKQUOTE>
+
+<P>As you can imagine, a single neurode isn't going to do alot for us, so we need to take a group of them and create a layer of neurodes, this is shown in Figure 3.0. The figure illustrates a single layer neural network. The neural net in Figure 3.0 has a number of inputs and a number of output nodes. By convention this is a single layer net since the input layer is not counted unless it is the only layer in the network. In this case, the input layer is also the output layer and hence there is one layer. Figure 4.0 shows a two layer neural net. Notice that the input layer is still not counted and the internal layer is referred to as <I>&quot;hidden&quot;.</I> The output layer is referred to as the <I>output</I> or <I>response</I> layer. Theoretically, there is no limit to the number of layers a neural net can have, however, it may be difficult to derive the relationship of the various layers and come up with tractable training methods. The best way to create multilayer neural nets is to make each network one or two layers and then connect them as components or functional blocks.
+<P>All right, now let's talk about <I>temporal</I> or time related topics. We all know that our brains are fairly slow compared to a digital computer. In fact, our brains have cycle times in the millisecond range whereas digital computers have cycle times in the nanosecond and soon sub-nanosecond times. This means that signals take time to travel from neuron to neuron. This is also modeled by artificial neurons in the sense that we perform the computations layer by layer and transmit the results sequentially. This helps to better model the time lag involved in the signal transmission in biological systems such as us.
+<P>We are almost done with the preliminaries, let's talk about some high level concepts and then finish up with a couple more terms. The question that you should be asking is, &quot;what the heck to neural nets do?&quot; This is a good question, and it's a hard one to answer definitively. The question is more, &quot;what do you want to try and make them do?&quot; They are basically mapping devices that help map one space to another space. In essence, they are a type of memory. And like any memory we can use some familiar terms to describe them. Neural nets have both <I>STM</I> (<I>Short Term Memory</I>) and <I>LTM</I> (<I>Long Term Memory</I>). STM is the ability for a neural net to remember something it just learned, whereas, LTM is the ability of a neural net to remember something it learned some time ago amongst its new learning. This leads us to the concepts of <I>plasticity</I> or in other words how a neural net deals with new information or training. Can a neural net learn more information and still recall previously stored information correctly? If so, does the neural net become unstable since it is holding so much information that the data starts to overlapping or has common intersections. This is referred to as <I>stability.</I> The bottom line is we want a neural net to have a good LTM, a good STM, be plastic (in most cases) and exhibit stability. Of course, some neural nets have no analog to memory they are more for functional mapping, so these concepts don't apply as is, but you get the idea. Now that we know about the aforementioned concepts relating to memory, let's finish up by talking some of the mathematical factors that help measure and understand these properties.
+<P>One of the main uses for neural nets are memories that can process input that is either incomplete or noisy and return a response. The response may be the input itself <I>(autoassociation) </I>or another output that is totally different from the input <I>(heteroassociation).</I> Also, the mapping may be from a <I>n</I>-dimensional space to a <I>m</I>-dimensional space and non-linear to boot. The bottom line is that we want to some how store information in the neural net so that inputs (perfect as well as noisy) can be processed in parallel. This means that a neural net is a kind of hyperdimensional memory unit since it can associate an input <I>n</I>-tuple with an output <I>m</I>-tupple where <I>m</I> can equal <I>n</I>, but doesn't have to.
+<P>What neural nets do in essence is partition an <I>n</I>-dimensional space into regions that uniquely map the input to the output or classify the input into distinct classes like a funnel of sorts. Now, as the number of input values (vectors) in the input data set increase which we will refer to as <I>S</I>, it logically follows that the neural net is going to have harder time separating the information. And as a neural net is filled with information, the input values that are to be recalled will overlap since the input space can no longer keep everything partitioned in a finite number of dimensions. This overlap results in <I>crosstalk,</I> meaning that some inputs are not as distinct as they could be. This may or may not be desired. Although this problem isn't a concern in all cases, it is a concern in associative memory neural nets, so to illustrate the concept let's assume that we are trying to associate <I>n</I>-tuple input vectors with some output set. The output set isn't as much of a concern to proper functioning as is the input set <I>S</I> is.
+<P>If a set of inputs <I>S</I> is straight binary then we are looking at sequences in the form 1101010...10110 let's say that our input bit vectors are only 3 bits each, therefore the entire input space consist of the vectors:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I><SUB><I>0</I></SUB> = (0,0,0), <I>v</I><SUB><I>1</I></SUB>
+= (0,0,1), <I>v</I><SUB><I>2</I></SUB> = (0,1,0), <I>v</I><SUB><I>3</I></SUB>
+= (0,1,1), <I>v</I><SUB><I>4</I></SUB> = (1,0,0), <I>v</I><SUB><I>5</I></SUB>
+= (1,0,1), <I>v</I><SUB><I>6</I></SUB> = (1,1,0), 
+<P><I>v</I><SUB><I>7</I> </SUB>= (1,1,1)
+</FONT>
+</BLOCKQUOTE>
+
+<P>To be more precise the <I>Basis</I> for this set of vectors is:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I> = (1,0,0) * <I>b</I><SUB><I>2</I></SUB>
++ (0,1,0) * <I>b</I><SUB><I>1</I></SUB> + (0,0,1) * <I>b</I><SUB><I>0</I></SUB>,
+where <I>b</I><SUB><I>i</I></SUB> can take on the values 0 or 1.
+</FONT>
+</BLOCKQUOTE>
+
+<P>For example if we let <I>b</I><SUB><I>2</I></SUB>=1, <I>b</I><SUB><I>1</I></SUB>=0, and <I>b</I><SUB><I>0</I></SUB>=1 then we get the vector:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I> = (1,0,0) * 1 + (0,1,0) * 0 + (0,0,1)
+* 1 = (1,0,0) + (0,0,0) + (0,0,1) = (1,0,1) which is <I>v</I><SUB><I>5</I></SUB>
+in our possible input set.
+</FONT>
+</BLOCKQUOTE>
+
+<P>A <I>basis</I> is a special vector summation that describes a set of vectors in a space. So <I>v</I> describes all the vector in our space. Now to make a long story short, the more <I>orthogonal</I> the vectors in the input set are the better they will distribute in a neural net and the better they can be recalled. Orthogonality refers to the independence of the vectors or in other words if two vector are orthogonal then their dot product is 0, their projection onto one another is 0, and they can't be written in terms of one another. In the set <I>v</I> there are a lot of orthogonal vectors, but they come in small groups, for example <I>v</I><SUB><I>0</I></SUB> is orthogonal to all the vectors, so we can always include it. But if we include <I>v</I><SUB>1</SUB> in our set <I>S</I> then the only other vectors that will fit and maintain orthogonality are <I>v</I><SUB><I>2</I></SUB> and <I>v</I><SUB><I>4</I></SUB> or the set:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I><SUB><I>0</I></SUB> = (0,0,0), <I>v</I><SUB><I>1</I></SUB>
+= (0,0,1), <I>v</I><SUB><I>2</I></SUB>= (0,1,0), <I>v</I><SUB><I>4</I></SUB>
+= (1,0,0)
+</FONT>
+</BLOCKQUOTE>
+
+<P>Why? Because <I>v</I><SUB>i</SUB> <font face="Symbol">.</font> <I>v</I><SUB>j</SUB> for all <I>i,j</I> from 0..3 is equal to 0. In other words, the dot product of all the pairs of vectors in 0, so they must all be orthogonal. Therefore, this set will do very well in a neural net as input vectors. However, the set:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I><SUB><I>6</I></SUB> = (1,1,0), <I>v</I><SUB><I>7</I></SUB>
+= (1,1,1)
+</FONT>
+</BLOCKQUOTE>
+
+<P>will potentially do poorly as inputs since <I>v</I><SUB>6</SUB><font face="Symbol">.</font><I>v</I><SUB>7</SUB> is non-zero or in a binary system it is 1. The next question is, &quot;can we measure this orthogonality?&quot; The answer is yes. In the binary vector system there is a measure called hamming distance. It is used to measure the n-dimensional distance between binary bit vectors. It is simply, the number of bits that are different between two vectors. For example the vectors:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I><SUB>0</SUB> = (0,0,0), <I>v</I><SUB>1</SUB>
+= (0,0,1)
+</FONT>
+</BLOCKQUOTE>
+
+<P>have a hamming distance of 1 while the vectors,
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>v</I><SUB>2</SUB> = (0,1,0), <I>v</I><SUB>4</SUB>
+= (1,0,0)
+</FONT>
+</BLOCKQUOTE>
+
+<P>have a hamming distance of 2. 
+<P>We can use hamming distance as the measure of orthogonality in binary bit vector systems. And this can help us determine if our input vectors are going to have a lot of overlap. Determining orthogonality with general vector inputs is harder, but the concept is the same. That's all the time we have for concepts and terminology, so let's jump right in and see some actual neural nets that do something and hopefully by the end of the article you will be able to use them in your game's AI. We are going to cover neural nets used to perform logic functions, classify inputs, and associate inputs with outputs.
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 5.0 - The McCulloch-Pitts Neurode.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image18.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image18.jpg" width="427" height="217">
+</BLOCKQUOTE>
+
+<H1>Pure Logic Mr. Spock</H1>
+<P>The first artificial neural networks were created in 1943 by <I>McCulloch</I> and <I>Pitts</I>. The neural networks were composed of a number of neurodes and were typically used to compute simple logic functions such as <I>AND</I>, <I>OR</I>, <I>XOR,</I> and combinations of them. Figure 5.0 is a representation of a basic McCulloch-Pitts neurode with 2 inputs. If you are an electrical engineer then you will immediately see a close resemblance between McCulloch-Pitts neurodes and transistors or <I>MOSFETs</I>. In any case, McCulloch-Pitts neurodes do <I>not</I> have biases and have the simple activation function <I>f</I><SUB>mp</SUB><I>(x)</I> equal to:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Eq. 5.0</I></FONT></SPAN>
+<FONT COLOR=RED>
+<P><I>f</I><SUB>mp</SUB><I>(x) = </I>1, if <I>x</I><font face="Symbol">'</font><font face="Symbol">q</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,
+if <I>x</I> &lt; <font face="Symbol">q</font>
+</FONT>
+</BLOCKQUOTE>
+
+<P>The <I>MP</I> (McCulloch-Pitts) neurode functions by summing the product of the inputs <I>X</I><SUB>i</SUB> and weights <I>w</I><SUB>i</SUB> and applying the result <I>Y</I><SUB>a</SUB> to the activation function <I>f</I><SUB>mp</SUB><I>(x).</I> The early research of McCulloch-Pitts focused on creating complex logical circuitry with the neurode models. In addition, one of the rules of the neurode model is that is takes one time step for a signal to travel from neurode to neurode. This helps model the biological nature of neurons more closely. Let's take a look at some examples of MP neural nets that implement basic logic functions. The logical <I>AND</I> function has the following truth table:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Table 1.0 - Truth Table for Logical AND.</I></FONT></SPAN>
+<P><table border="1" cellpadding="2">
+    <tr>
+        <td><I>X1</I></td>
+        <td><I>X2</I></td>
+        <td><I>Output</I></td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+</table>
+
+<P><SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 6.0 - Basic Logic Functions Implemented with McCulloch-Pitts Nets.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image19.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image19.jpg" width="609" height="493">
+</BLOCKQUOTE>
+
+<P>We can model this with a two input MP neural net with weights <I>w</I><SUB>1</SUB>=1, <I>w</I><SUB>2</SUB>=1, and <font face="Symbol">q</font> = 2. This neural net is shown in Figure 6.0a. As you can see, all input combinations work correctly. For example, if we try inputs <I>X</I><SUB>1</SUB>=0, <I>Y</I><SUB>1</SUB>=1, then the activation will be:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB> + <I>X</I><SUB>2</SUB>*<I>w</I><SUB>2</SUB>
+= (1)*(1) + (0)*(1) = 1.0
+</FONT>
+</BLOCKQUOTE>
+
+<P>If we apply 1.0 to the activation function <I>f</I><SUB>mp</SUB><I>(x)</I> then the result is 0 which is correct. As another example, if we try inputs <I>X</I><SUB>1</SUB>=1, <I>X</I><SUB>2</SUB>=1, then the activation will be:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB> + <I>X</I><SUB>2</SUB>*<I>w</I><SUB>2</SUB>
+= (1)*(1) + (1)*(1) = 2.0
+</FONT>
+</BLOCKQUOTE>
+
+<P>If we input 2.0 to the activation function <I>f</I><SUB>mp</SUB><I>(x)</I>, then the result is 1.0 which is correct. The other cases will work also. The function of the <I>OR</I> is similar, but the threshold <font face="Symbol">q</font> of is changed to 1.0 instead 2.0 as it is in the <I>AND</I>. You can try running through the truth table yourself to see the results. 
+<P>The <I>XOR</I> network is a little different because it really has 2 layers in a sense because the results of the pre-processing are further processed in the output neuron. This is a good example of why a neural net needs more than one layer to solve certain problems. The <I>XOR</I> is a common problem in neural nets that is used to test a neural net's performance. In any case, <I>XOR</I> is not linearly separable in a single layer, it must be broken down into smaller problems and then the results added together. Let's take a look at <I>XOR</I> as the final example of MP neural networks. The truth table for <I>XOR</I> is as follows:
+
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Table 2.0 - Truth Table for Logical XOR.</I></FONT></SPAN>
+
+<P><table border="1" cellpadding="2">
+    <tr>
+        <td><I>X1 </I></td>
+        <td><I>X2</I></td>
+        <td><I>Output</I></td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+    </tr>
+</table>
+
+<P><SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 7.0 - Using the XOR Function to Illustrate Linear Separability.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image20.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image20.jpg" width="619" height="470">
+</BLOCKQUOTE>
+
+<P><I>XOR</I> is only true when the inputs are different, this is a problem since both inputs map to the same output. <I>XOR</I> is not linearly separable, this is shown in Figure 7.0. As you can see, there is no way to separate the proper responses with a straight line. The point is that we can separate the proper responses with 2 lines and this is just what 2 layers do. The first layer pre-processes or solves part of the problem and the remaining layer finishes up. Referring to Figure 6.0c, we see that the weights are <I>w</I><SUB>1</SUB>=1, <I>w</I><SUB>2</SUB>=-1, <I>w</I><SUB>3</SUB>=1, <I>w</I><SUB>4</SUB>=-1, <I>w</I><SUB>5</SUB>=1, <I>w</I><SUB>6</SUB>=1. The network works as follows: layer one computes if <I>X</I><SUB>1</SUB> and <I>X</I><SUB>2</SUB> are opposites in parallel, the results of either case (0,1) or (1,0) are feed to layer two which sums these up and fires if either is true. In essence we have created the logic function:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<I>z = ((X1 AND NOT X2) OR (NOT X1 AND X2))</I>
+</FONT>
+</BLOCKQUOTE>
+
+<P>If you would like to experiment with the basic
+McCulloch Pitts neurode Listing 1.0 is a complete 2 input, single
+neurode simulator that you can experiment with.
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Listing 1.0 - A McCulloch-Pitts Logic Neurode Simulator</I></font></SPAN>
+<PRE><DIV CLASS="code">
+	// MCULLOCCH PITTS SIMULATOR
+	/////////////////////////////////////////////////////
+
+	// INCLUDES
+	/////////////////////////////////////////////////////
+
+	#include &lt;conio.h&gt;
+	#include &lt;stdlib.h&gt;
+	#include &lt;malloc.h&gt;
+	#include &lt;memory.h&gt;
+	#include &lt;string.h&gt;
+	#include &lt;stdarg.h&gt;
+	#include &lt;stdio.h&gt;
+	#include &lt;math.h&gt;
+	#include &lt;io.h&gt;
+	#include &lt;fcntl.h&gt;
+
+	// MAIN
+	/////////////////////////////////////////////////////
+
+	void main(void)
+	{
+	   float threshold, // this is the theta term used to threshold the summation 
+	   w1,w2, // these hold the weights
+	   x1,x2, // inputs to the neurode 
+	   y_in, // summed input activation
+	   y_out; // final output of neurode
+
+	   printf(&quot;\nMcCulloch-Pitts Single Neurode Simulator.\n&quot;);
+	   printf(&quot;\nPlease Enter Threshold?&quot;);
+	   scanf(&quot;%f&quot;,&amp;threshold);
+
+	   printf(&quot;\nEnter value for weight w1?&quot;);
+	   scanf(&quot;%f&quot;,&amp;w1);
+
+	   printf(&quot;\nEnter value for weight w2?&quot;);
+	   scanf(&quot;%f&quot;,&amp;w2);
+
+	   printf(&quot;\n\nBegining Simulation:&quot;);
+
+	   // enter main event loop
+
+	   while(1)
+	   {
+	      printf(&quot;\n\nSimulation Parms: threshold=%f, W=(%f,%f)\n&quot;,threshold,w1,w2);
+
+	      // request inputs from user
+	      printf(&quot;\nEnter input for X1?&quot;);
+	      scanf(&quot;%f&quot;,&amp;x1);
+
+	      printf(&quot;\nEnter input for X2?&quot;);
+	      scanf(&quot;%f&quot;,&amp;x2);
+
+	      // compute activation
+	      y_in = x1*w1 + x2*w2;
+
+	      // input result to activation function (simple binary step)
+	      if(y_in &gt;= threshold)
+	         y_out = (float)1.0;
+	      else
+	         y_out = (float)0.0;
+
+	      // print out result
+	      printf(&quot;\nNeurode Output is %f\n&quot;,y_out);
+
+	      // try again
+	      printf(&quot;\nDo you wish to continue Y or N?&quot;);
+	      char ans[8];
+	      scanf(&quot;%s&quot;,ans);
+
+	      if(toupper(ans[0])!='Y')
+	         break;
+	   } // end while
+
+	   printf(&quot;\n\nSimulation Complete.\n&quot;);
+	} // end main
+</DIV></PRE>
+</BLOCKQUOTE>
+
+<P>That finishes up our discussion of the basic building block invented by McCulloch and Pitts now let's move on to more contemporary neural nets such as those used to classify input vectors.
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 8.0 - The Basic Neural Net Model Used for Discussion.</I></font></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image21.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image21.jpg" width="330" height="211">
+</BLOCKQUOTE>
+
+<H1>Classification and "Image" Recognition</H1>
+<P>At this point we are ready to start looking at real neural nets that have some girth to them! To segue into the following discussions on <I>Hebbian</I>, and <I>Hopfield</I> neural nets, we are going to analyze a generic neural net structure that will illustrate a number of concepts such as linear separability, bipolar representations, and the analog that neural nets have with memories. Let's begin with taking a look at Figure 8.0 which is the basic neural net model we are going to use. As you can see, it is a single node net with 3 inputs including the bias, and a single output. We are going to see if we can use this network to solve the logical <I>AND</I> function that we solved so easily with McCulloch-Pitts neurodes.
+<P>Let's start by first using bipolar representations, so all 0's are replaced with -1's and 1's are left alone. The truth table for logical <I>AND</I> using bipolar inputs and outputs is shown below:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Table 3.0 - Truth Table for Logical AND in Bipolar Format.</I></FONT></SPAN>
+<P><table border="1" cellpadding="2">
+    <tr>
+        <td><I>X1</I></td>
+        <td><I>X2</I></td>
+        <td><I>Output</I></td>
+    </tr>
+    <tr>
+        <td>-1</td>
+        <td>-1</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td>-1</td>
+        <td>1</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>-1</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+</table>
+</BLOCKQUOTE>
+
+<P>And here is the activation function <I>f</I><SUB>c</SUB><I>(x)</I>
+that we will use:
+
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Eq. 6.0</I></FONT></SPAN>
+<FONT COLOR=RED>
+<P><I>f</I><SUB>c</SUB><I>(x)</I> <I>=</I> 1, if <I>x</I>
+<font face="Symbol">'</font> <font face="Symbol">q</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1,
+if <I>x</I> &lt; <font face="Symbol">q</font>
+</FONT>
+</BLOCKQUOTE>
+
+<P>Notice that the function is step with bipolar outputs. Before we continue, let me place a seed in your mind; the bias and threshold end up doing the same thing, they give us another degree of freedom in our neurons that make the neurons respond in ways that can't be achieved without them. You will see this shortly.
+<P>The single neurode net in Figure 8.0 is going to perform a classification for us. It is going to tell us if our input is in one class or another. For example, is this image a tree or <I><I>not</I></I> a tree. Or in our case is this input (which just happens to be the logic for an <I>AND</I>) in the +1 or -1 class? This is the basis of most neural nets and the reason I was belaboring linear separability. We need to come up with a linear partitioning of space that maps our inputs and outputs so that there is a solid delineation of space that separates them. Thus, we need to come up with the correct weights and a bias that will do this for us. But how do we do this? Do we just use trial and error or is there a methodology? The answer is that there are a number of training methods to teach a neural net. These training methods work on various mathematical premises and can be proven, but for now, we're just going to pull some values out of the hat that work. These exercises will lead us into the learning algorithms and more complex nets that follow.
+<P>All right, we are trying to finds weights <I>w</I><SUB>i</SUB> and bias <I>b</I> that give use the correct result when the various inputs are feed to our network with the given activation function <I>f</I><SUB>c</SUB><I>(x).</I> Let's write down the activation summation of our neurode and see if we can infer any relationship between the weights and the inputs that might help us. Given the inputs <I>X</I><SUB>1</SUB> and <I>X</I><SUB>2</SUB> with weights <I>w</I><SUB>1</SUB> and <I>w</I><SUB>2</SUB> along with <I>B</I>=1 and bias <I>b</I>, we have the following formula:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Eq. 7.0</I></FONT></SPAN>
+<FONT COLOR=RED>
+<P><I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB> + <I>X</I><SUB>2</SUB>*<I>w</I><SUB>2</SUB>
++ <I>B</I>*<I>b</I>=<font face="Symbol">q</font>
+</FONT>
+</BLOCKQUOTE>
+
+<P>Since <I>B</I> is always equal to 1.0 the equation simplifies to:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB> + <I>X</I><SUB>2</SUB>*<I>w</I><SUB>2</SUB>
++ <I>b</I>=<font face="Symbol">q</font>
+
+<P>.
+
+<P>.
+
+<P><I>X</I><SUB>2</SUB> = -<I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB>/<I>w</I><SUB>2</SUB>
++ (<font face="Symbol">q</font> -<I>b</I>)/<I>w</I><SUB>2
+</SUB>(solving in terms of <I>X</I><SUB>2</SUB>)
+</FONT>
+
+<P><SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 9.0 - Mathematical Decision Boundaries Generated by Weights, Bias, and <font face="Symbol">q</font></I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image22.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image22.jpg" width="581" height="373">
+</BLOCKQUOTE>
+
+<P>What is this entity? It's a line! And if the left hand side is greater than or equal to <font face="Symbol">q</font>, that is, (<I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB> + <I>X</I><SUB>2</SUB>*<I>w</I><SUB>2</SUB> + <I>b</I>) then the neurode will fire and output 1, otherwise the neurode will output -1. So the line is a decision boundary. Figure 9.0a illustrates this. Referring to the figure, you can see that the slope of the line is <I>-w</I><SUB><I>1</I></SUB><I>/w</I><SUB><I>2</I></SUB> and the <I>X</I><SUB><I>2</I></SUB> intercept is (<font face="Symbol">q</font> -<I>b</I>)/<I>w</I><SUB>2</SUB>. Now can you see why we can get rid of <font face="Symbol">q</font>? It is part of a constant and we can always scale b to take up any loss, so we will assume that <font face="Symbol">q</font> = 0, and the resulting equation is:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>X</I><SUB>2</SUB> = -<I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB><I>/w</I><SUB>2</SUB>
+- <I>b/w</I><sub2</SUB>
+</FONT>
+</BLOCKQUOTE>
+
+<P>What we want to find are weights <I>w</I><SUB><I>1</I></SUB> and <I>w</I><SUB>2</SUB> and bias <I>b</I> so that it separates our outputs or classifies them into singular partitions without overlap. This is the key to linear separability. Figure 9.0b shows a number of decision boundaries that will suffice, so we can pick any of them. Let's pick the simplest values which would be:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>w</I><SUB>1</SUB> = <I>w</I><SUB>2</SUB> = 1
+
+<P><I>b</I> = -1
+</FONT>
+</BLOCKQUOTE>
+
+<P>With these values our decision boundary becomes:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>X</I><SUB>2</SUB> = -<I>X</I><SUB>1</SUB>*<I>w</I><SUB>1</SUB><I>/w</I><SUB>2</SUB>
+- <I>b/w</I><SUB>2</SUB> -&gt; <I>X</I><SUB>2</SUB> = -1*<I>X</I><SUB>1</SUB>
++ 1
+</FONT>
+</BLOCKQUOTE>
+
+<P>The slope is -1 and the <I>X</I><SUB>2</SUB> intercept is 1. If we plug the input vectors for the logical <I>AND</I> into this equation and use the <I>f</I><SUB>c</SUB><I>(x)</I> activation function then we will get the correct outputs. For example if, <I>X</I><SUB>2</SUB> + <I>X</I><SUB>1</SUB>-1 &gt;0 then fire the neurode, else output -1. Let's try it with our <I>AND</I> inputs and see what we come up with:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Table 4.0 - Truth Table for Bipolar AND with decision boundary.</I></FONT></SPAN>
+
+<P><table border="1" cellpadding="2">
+    <tr>
+        <td><I>Input </I></td>
+        <td><I>X1</I></td>
+        <td><I>X2</I></td>
+        <td><I>Output (X2+X1-1)</I></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>-1</td>
+        <td>-1</td>
+        <td>(-1) +( -1) -1 = 3 &lt; 0 don't fire,
+        output -1</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>-1</td>
+        <td>1</td>
+        <td>(-1) + (1) -1 = -1&lt; 0 don't fire,
+        output -1</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>1</td>
+        <td>-1</td>
+        <td>(1) + (-1) -1 = -2 &lt; 0 don't fire,
+        output -1</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>1</td>
+        <td>1</td>
+        <td>(1) + (1)-1 = 1 &gt; 0 fire, output 1</td>
+    </tr>
+</table>
+</BLOCKQUOTE>
+
+<P>As you can see, the neural network with the proper weights and bias solves the problem perfectly. Moreover, there are a whole family of weights that will do just as well (sliding the decision boundary in a direction perpendicular to itself). However, there is an important point here. Without the bias or threshold, only lines through the origin would be possible since the <I>X</I><SUB>2</SUB> intercept would have to be 0. This is very important and the basis for using a bias or threshold, so this example has proven to be an important one since it has flushed this fact out. So, are we closer to seeing how to algorithmically find weights? Yes, we now have a geometrical analogy and this is the beginning of finding an algorithm.
+<H1>The Ebb of Hebbian</H1>
+<P>Now we are ready to see the first learning algorithm and its application to a neural net. One of the simplest learning algorithms was invented by <I>Donald Hebb</I> and it is based on using the input vectors to modify the weights in a way so that the weight create the best possible linear separation of the inputs and outputs. Alas, the algorithm works just OK. Actually, for inputs that are orthogonal it is perfect, but for non-orthogonal inputs, the algorithm falls apart. Even though, the algorithm doesn't result in correct weight for all inputs, it is the basis of most learning algorithms, so we will start here.
+<P>Before we see the algorithm, remember that it is for a single neurode, single layer neural net. You can of course, place a number of neurodes in the layer, but they will all work in parallel and can be taught in parallel. Are you starting to see the massive parallization that neural nets exhibit? Instead of using a single weight vector, a multi-neurode net uses a weight matrix. Anyway, the algorithm is simple, it goes something like this:
+
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>Given:</I>
+
+<UL>
+	<LI>Inputs vectors are in bipolar form <I>I</I> = (-1,1,0,...-1,1) and contain k elements.
+	<LI>There are <I>n</I> input vectors and we will refer to the set as <I>I</I> and the <I>j</I>th element as <I>I</I><SUB>j</SUB><I>.</I>
+	<LI>Outputs will be referred to as <I>y</I><SUB>j</SUB> and there are k of them, one for each input <I>I</I><SUB>j</SUB>
+	<LI>The weights <I>w</I><SUB>1</SUB><I>-w</I><SUB>k</SUB> are contained in a single vector <I>w</I> = (<I>w</I><SUB>1</SUB>, <I>w</I><SUB>2</SUB>, ... <I>w</I><SUB>k</SUB>).
+</UL>
+</FONT>
+</BLOCKQUOTE>
+
+<P><I>Step 1.</I> Initialize all your weights to 0, and let them be contained in a vector <I>w</I> that has <I>n</I> entries. Also initialize the bias b to 0.
+
+<P><I>Step 2.</I> For <I>j</I> = 1 to <I>n</I> do
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>b</I> = <I>b</I> + <I>y</I><SUB><I>j</I></SUB>
+(where y is the desired output)
+
+<P><I>w</I> = <I>w</I> + <I>I</I><SUB><I>j</I></SUB>
+* <I>y</I><SUB><I>j</I></SUB> (remember this is a vector
+operation)
+</FONT>
+</BLOCKQUOTE>
+
+<P>end do
+<P>The algorithm is nothing more than an <I>&quot;accumulator&quot;</I> of sorts. Shifting, the decision boundary based on the changes in the input and output. The only problem is that it sometimes can't move the boundary fast enough (or at all) and <I>&quot;learning&quot;</I> doesn't take place.
+<P>So how do we use <I>Hebbian</I> learning? The answer is, the same as the previous network except that now we have an algorithmic method teach the net with, thus we refer to the net as a <I>Hebb </I>or <I>Hebbian Net</I>. As an example, let's take our trusty logical <I>AND</I> function and see if the algorithm can find the proper weights and bias to solve the problem. The following summation is equivalent to running the algorithm:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>w</I> = [<I>I</I><SUB>1</SUB>*<I>y</I><SUB>1</SUB>]
++ [<I>I</I><SUB>2</SUB>*<I>y</I><SUB>2</SUB>] + [<I>I</I><SUB>3</SUB>*<I>y</I><SUB>3</SUB>]
++ [<I>I</I><SUB>4</SUB>*<I>y</I><SUB>4</SUB>] = [(-1, -1)*(-1)] +
+[(-1, 1)*(-1)] + [( 1, -1)*(-1)] + [(1, 1)*(1)] = (2,2) 
+
+<P><I>b</I> = <I>y</I><SUB>1</SUB> + <I>y</I><SUB>2</SUB>
++ <I>y</I><SUB>3</SUB> + <I>y</I><SUB>4</SUB> = (-1) + (-1) +
+(-1) + (1) = -2
+</FONT>
+</BLOCKQUOTE>
+
+<P>Therefore, <I>w</I><SUB>1</SUB>=2, <I>w</I><SUB>2</SUB>=2, and <I>b</I>=-2. These are simply scaled versions of the values <I>w</I><SUB>1</SUB>=1, <I>w</I><SUB>2</SUB>=1, <I>b</I>=-1 that we derived geometrically in the previous section. Killer huh! With this simple learning algorithm we can train a neural net (consisting of a single neurode) to respond to a set of inputs and either classify the input as true or false, 1 or -1. Now if we were to array these neurodes together to create a network of neurodes then instead of simple classifying the inputs as on or off, we can associate patterns with the inputs. This is one of the foundations for the next network neural net structure; the <I>Hopfield</I> net. One more thing, the activation function used for a Hebb Net is a step with a threshold of 0.0 and bipolar outputs 1 and -1.
+<P>To get a feel for Hebbian learning and how to implement an actual Hebb Net, Listing 2.0 contains a complete Hebbian Neural Net Simulator. You can create networks with up to 16 inputs and 16 neurodes (outputs). The program is self explanatory, but there are a couple of interesting properties: you can select 1 of 3 activation functions, and you can input any kind of data you wish. Normally, we would stick to the Step activation function and inputs/outputs would be binary or bipolar. However, in the light of discovery, maybe you will find something interesting with these added degrees of freedom. However, I suggest that you begin with the step function and all bipolar inputs and outputs.
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Listing 2.0 - A Hebb Net Simulator (in neuralnet.zip).</I></FONT></SPAN>
+</BLOCKQUOTE>
+
+<H1>Playing the Hopfield</H1>
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Figure 10.0 - A 4 Node Hopfield Autoassociative Neural Net.</I></FONT></SPAN>
+<P ALIGN=CENTER><IMG SRC="xneuralnet/Image23.jpg" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/Image23.jpg" width="532" height="376">
+</BLOCKQUOTE>
+
+<P>John Hopfield is a physicist that likes to play with neural nets (which is good for us). He came up with a simple (in structure at least), but effective neural network called the <I>Hopfield Net.</I> It is used for autoassociation, you input a vector <I>x</I> and you get <I>x</I> back (hopefully). A Hopfield net is shown in Figure 10.0. It is a single layer network with a number of neurodes equal to the number of inputs <I>X</I><SUB>i</SUB>. The network is fully connected meaning that every neurode is connected to every other neurode and the inputs are also the outputs. This should strike you as weird since there is <I>feedback</I>. Feedback is one of the key features of the Hopfield net and this feedback is the basis for the convergence to the correct result. 
+<P>The Hopfield network is an <I>iterative autoassociative memory.</I> This means that is may take one or more cycles to return the correct result (if at all). Let me clarify; the Hopfield network takes an input and then feeds it back, the resulting output may or may not be the desired input. This feedback cycle may occur a number of times before the input vector is returned. Hence, a Hopfield network functional sequence is: first we determine the weights based on our input vectors that we want to autoassociate, then we input a vector and see what comes out of the activations. If the result is the same as our original input then we are done, if not, then we take the result vector and feed it back through the network. Now let's take a look at the weight matrix and learning algorithm used for Hopfield nets.
+<P>The learning algorithm for Hopfield nets is based on the Hebbian rule and is simply a summation of products. However, since the Hopfield network has a number of input neurons the weights are no longer a single array or vector, but a collection of vectors which are most compactly contained in a single matrix. Thus the weight matrix <I>W</I> for a Hopfield net is created based on this equation:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>Given:</I>
+<UL>
+	<LI>Inputs vectors are in bipolar form <I>I</I> = (-1,1,,...-1,1) and contain <I>k</I> elements.
+	<LI>There are <I>n</I> input vectors and we will refer to the set as <I>I</I> and the <I>j</I>th element as <I>I</I><SUB>j</SUB>.
+	<LI>Outputs will be referred to as <I>y</I><SUB>j</SUB> and there are <I>k</I> of them, one for each input <I>I</I><SUB>j</SUB>.
+	<LI>The weight matrix <I>W</I> is square and has dimension <I>k</I>x<I>k</I> since there are <I>k</I> inputs.
+</UL>
+
+<P><SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Eq. 8.0</I></FONT></SPAN>
+
+<P><I>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k</I>
+<br>
+<I>W</I> <SUB>(kxk)</SUB> = <font face="Symbol">q</font> <I>I</I><SUB>i</SUB><SUP>t</SUP> x <I>I</I><SUB>i</SUB>
+<br>
+<I>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i</I>
+= 1<br>
+</FONT>
+</BLOCKQUOTE>
+
+<P>note: each outer product will have dimension <I>k</I>
+x <I>k</I>, since we are multiplying a column vector and a row
+vector.
+
+<P>and, <I>W</I><SUB>ii</SUB> = 0, for all<I> i</I>.
+<P>Notice that there are no bias terms and the main diagonal of <I>W</I> must be all zero's. The weight matrix is simply the sum of matrices generated by multiplying the transpose <I>I</I><SUB>i</SUB><SUP>t</SUP> x <I>I</I><SUB>i </SUB>for all <I>i</I> from 1 to <I>n</I>. This is almost identical to the Hebbian algorithm for a single neurode except that instead of multiplying the input by the output, the input is multiplied by itself, which is equivalent to the output in the case of autoassociation. Finally, the activation function <I>f</I><SUB>h</SUB><I>(x) </I>is shown below:
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Eq. 9.0</I></FONT></SPAN>
+<FONT COLOR=RED>
+<P><I>f</I><SUB>h</SUB><I>(x)</I> <I>= </I>1, if <I>x</I>
+<font face="Symbol">'</font> 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0,
+if <I>x</I> &lt; 0
+</FONT>
+</BLOCKQUOTE>
+
+<P><I>f</I><SUB>h</SUB><I>(x) </I>it is a step function with a binary output. This means that the inputs must be binary, but we already said that inputs are bipolar? Well, they are, and they aren't. When the weight matrix is generated we convert all input vectors to bipolar, but for normal operation we use the binary version of the inputs and the output of the Hopfield net will also be binary. This convention is not necessary, but makes the network discussion a little simpler. Anyway, let's move on to an example. Say we want to create a four node Hopfield net and we want it to recall these vectors: 
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>I</I><SUB>1</SUB>=(0,0,1,0), <I>I</I><SUB>2</SUB>=(1,0,0,0),
+<I>I</I><SUB>3</SUB>=(0,1,0,1) Note: they are all orthogonal.
+</FONT>
+</BLOCKQUOTE>
+
+<P>Converting to bipolar *, we have:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>I</I><SUB>1</SUB><SUP>*</SUP> = (-1,-1,1,-1)
+, <I>I</I><SUB>2</SUB><SUP>*</SUP> = (1,-1,-1,-1) , <I>I</I><SUB>3</SUB><SUP>*</SUP>
+= (-1,1,-1,1)
+</FONT>
+</BLOCKQUOTE>
+
+<P>Now we need to compute <I>W</I><SUB>1</SUB>, <I>W</I><SUB>2</SUB>, <I>W</I><SUB>3</SUB>, where <I>W</I><SUB>i</SUB> is the product of the transpose of each input with itself.
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>W</I><SUB>1</SUB>= [ <I>I</I><SUB>1</SUB><SUP>*t</SUP> x <I>I</I><SUB>1</SUB><SUP>*</SUP> ] = (-1,-1,1,-1)<SUP>t</SUP> x (-1,-1,1,-1) = 
+
+<table border="0" cellpadding="7" cellspacing="0" width="96">
+    <tr>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+</table>
+
+<P><I>W</I><SUB>2</SUB> = [ <I>I</I><SUB>2</SUB><SUP>*t</SUP> x <I>I</I><SUB>2</SUB><SUP>*</SUP> ] = (1,-1,-1,-1)<SUP>t</SUP> x (1,-1,-1,-1) = 
+
+<table border="0" cellpadding="7" cellspacing="0" width="96">
+    <tr>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+</table>
+
+<P><I>W</I><SUB>3</SUB> =<I> </I>[ <I>I</I><SUB>3</SUB><SUP>*t</SUP> x <I>I</I><SUB>3</SUB><SUP>*</SUP> ] = (-1,1,-1,1)<SUP>t</SUP> x (-1,1,-1,1) = 
+
+<table border="0" cellpadding="7" cellspacing="0" width="96">
+    <tr>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">1</td>
+    </tr>
+</table>
+</FONT>
+</BLOCKQUOTE>
+
+<P>Then we add <I>W</I><SUB>1</SUB> + <I>W</I><SUB>2</SUB>
++ <I>W</I><SUB>3</SUB> resulting in:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>W</I><SUB>(1+2+3)</SUB> = 
+
+<table border="0" cellpadding="7" cellspacing="0" width="96">
+    <tr>
+        <td valign="top" width="25%">3</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+    </tr>
+</table>
+</FONT>
+</BLOCKQUOTE>
+
+<P>Zeroing out the main diagonal gives us the final weight matrix:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>W</I> =
+
+<table border="0" cellpadding="7" cellspacing="0" width="96">
+    <tr>
+        <td valign="top" width="25%">0</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">0</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">0</td>
+        <td valign="top" width="25%">-1</td>
+    </tr>
+    <tr>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">3</td>
+        <td valign="top" width="25%">-1</td>
+        <td valign="top" width="25%">0</td>
+    </tr>
+</table>
+</FONT>
+</BLOCKQUOTE>
+
+<P>That's it, now we are ready to rock. Let's input our original vectors and see the results. To do this we simply have to matrix multiple the input by the matrix and then process each output value with our activation function <I>f</I><SUB>h</SUB><I>(x).</I> Here are the results:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>I</I><SUB>1</SUB><I> x W</I> = (-1,-1,0,-1)
+and <I>f</I><SUB>h</SUB><I>(</I>(-1,-1,0,-1)<I>)</I> = (0,0,1,0)
+
+<P><I>I</I><SUB>2</SUB><I> x W</I> = (0,-1,-1,-1)
+and <I>f</I><SUB>h</SUB><I>(</I>(0,-1,-1,-1)<I>) = </I>(1,0,0,0)
+
+<P><I>I</I><SUB>3</SUB><I> x W</I> = (-2,3,-2,3)
+and <I>f</I><SUB>h</SUB><I>(</I>(-2,3,-2,3)<I>) = </I>(0,1,0,1)
+</FONT>
+</BLOCKQUOTE>
+
+<P>The inputs were perfectly recalled, and they should be since they were all orthogonal. As a final example, let's assume that our input (vision, auditory etc.) is a little noisy and the input has a single error in it. Let's take <I>I</I><SUB>3</SUB> = (0,1,0,1) and add some noise to <I>I</I><SUB>3</SUB> resulting in <I>I</I><SUB>3</SUB><SUP>noise</SUP> = (0,1,1,1). Now let's see what happens if we input this noisy vector to the Hopfield net:
+
+<BLOCKQUOTE>
+<FONT COLOR=RED>
+<P><I>I</I><SUB>3</SUB><SUP>noise</SUP> x <I>W</I>
+= (-3, 2, -2, 2) and <I>f</I><SUB>h</SUB><I>(</I>(-3,2,-2, 2)<I>)
+= </I>(0,1,0,1)
+</FONT>
+</BLOCKQUOTE>
+
+<P>Amazingly enough, the original vector is recalled. This is very cool. So we might have a memory that is filled with bit patterns that look like trees, (oaks, weeping willow, spruce, redwood etc.) then if we input another tree that is similar to say a weeping willow, but hasn't been entered into the net, our net will (hopefully) output a weeping willow indicating that this is what it &quot;thinks&quot; it looks like. This is one of the strengths of associative memories, we don't have to teach it every possible input, but just enough to give it a good idea. Then inputs that are <I>&quot;close&quot;</I> will usually converge to an actual trained input. This is the basis for image, and voice recognition systems. Don't ask me where the heck the &quot;tree&quot; analogy came from. Anyway, to complete our study of neural nets, I have included a final Hopfield autoassociative simulator that allows you to create nets with up to 16 neurodes. It is similar to the Hebb Net, but you must use a step activation function and your inputs exemplars must be in bipolar while training and binary while associating (running). Listing 3.0 contains the code for the simulator.
+
+<BLOCKQUOTE>
+<SPAN CLASS="maintext-2"><FONT COLOR="#000088"><I>Listing 3.0 - A Hopfiled Autoassociative Memory Simulator (in neuralnet.zip).</I></FONT></SPAN>
+</BLOCKQUOTE>
+
+<H1>Brain Dead...</H1>
+<P>Well that's all we have time for. I was hoping to get to the <I>Perceptron</I> network, but oh well. I hope that you have an idea of what neural nets are and how to create some working computer programs to model them. We covered basic terminology and concepts, some mathematical foundations, and finished up with some of the more prevalent neural net structures. However, there is still so much more to learn about neural nets. We need to cover <I>Perceptrons</I>, <I>Fuzzy Associative Memories</I> or <I>FAMs</I>, <I>Bidirectional Associative Memories</I> or <I>BAMs</I>, <I>Kohonen Maps</I>, <I>Adalines</I>, <I>Madalines</I>, <I>Backpropagation networks</I>, <I>Adaptive Resonance Theory networks</I>, <I>&quot;Brain State in a Box&quot;,</I> and a lot more. Well that's it, my neural net wants to play N64!
+
+<P ALIGN=CENTER><B>Download: <A HREF="download/neuralnet.zip" tppabs="http://www.gamedev.net/reference/articles/xneuralnet/neuralnet.zip">neuralnet.zip (Source & EXE)</B></A>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=771&forum_id=35&Topic_Title=Neural+Netware  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=771&forum_id=35&Topic_Title=Neural+Netware'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=771&forum_id=35&Topic_Title=Neural+Netware">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

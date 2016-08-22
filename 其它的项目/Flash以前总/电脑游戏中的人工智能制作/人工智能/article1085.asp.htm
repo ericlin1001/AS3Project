@@ -1,0 +1,2838 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<CENTER><SPAN CLASS="title">Recognizing Strategic Dispositions thread</SPAN>
+<BR><SPAN CLASS="author">compiled by <A HREF="mailto:ferretman@gameai.com">Steve Woodcock</A></SPAN></CENTER>
+
+<CENTER><TABLE><TR><TD>
+<PRE><DIV STYLE="font-family: Courier New">
+Hello Everybody:                                            7/15/95
+
+   Here's the second summarization of the excellent "Recognizing
+Strategic Dispositions" thread, a followup containing posts made since
+my original summarization posted on 6/12/95.  As before, if I missed
+any posts I apologize; let me know and I'll fix it in future summarizations
+(if there's any demand for such).
+
+   The posts are presented essentially as is, with some *minor* editing
+on my part for formatting.  
+
+    Here are the e-mail addresses for those contributors whom I have.
+Again, my profound apologies if I missed anybody; PLEASE let me know
+and I'll correct this forthwith:
+
+      Uri Bruck             (bruck@actcom.co.il)
+      Marc Carrier          (mcarrier@bnr.ca)
+      Richard Cooley        (pixel@gnu.ai.mit.edu, pixel@usa1.com)
+      Owen Coughlan         (biggles@gmgate.vircom.com)
+      Dennis W. Disney      (disney@mcnc.org)
+      Graham Healey         (grahamh@oslonett.no)
+      Neil Kirby            (nak@archie.cb.att.com)
+      Alexander Marc        (903022@student.canberra.edu.au)
+      Andrae Muys           (a.muys@mailbox.uq.oz.au, ccamuys@dingo.cc.uq.oz.au)
+      .oO FactorY Oo.       (cs583953@lux.latrobe.edu.au)
+      Christopher Spencer   (clspence@iac.net)
+      Viktor Szathmary      (szviktor@inf.bme.hu)       
+      Daniele Terdina       (sistest@ictp.trieste.it)
+      Robert A. Uhl         (ruhl@phoebe.cair.du.edu)
+      Will Uther            (will@cs.su.oz.au)
+      Steven Woodcock       (swoodcoc@cris.com, woodcock@escmail.orl.mmc.com)
+
+
+    Hopefully this will spark a renewal of the original thread and prove to
+be informative to all concerned.  I know that *I* have found this to be
+this most illustrative and informative thread I've ever seen on the Net;
+this is truly where this medium shines.
+
+    Enjoy!
+
+
+Steven
+
+
+      Andrae Muys (ccamuys@dingo.cc.uq.oz.au) started off this 
+thread on May 9, 1995....
+==============================================================================
+I am currently trying to write a game that will provide a computer 
+opponent in a computer wargame.  I intend eventually to incorporate 
+relitivly complex game mechanics such as can be found in commercial table 
+top rules systems.  However the current project is nowhere near as 
+extensive with *extremely* basic rules and mechanics.  However as each 
+unit may still move once each turn, and a number of distances the 
+branching factor puts the CHESS/GO thread to shame.  In fact a lower 
+bound calculated from rules far simpler than I intend to use ended with a 
+branching factor of 2.6^8.  A simple PLY search is therefore out of the 
+question.  Brainstorming suggested that by abstracting the battlefield 
+into three frontal sections and maybe a reserve leaves a basic set of 
+rules with a branching factor of approx 16(much more manageable).  
+However to implement this the AI needs to be able to recognise what 
+constitues a flank/centre/rear/front etc...  From practical wargaming 
+experience this is something that is normally arrived at by intuition.  
+Surely it is a problem which has been faced before and I was wondering if 
+there was any theory/code/code examples which I might use to build 
+such an engine.
+In the meantime I intend to start on the AI assuming that a way can be 
+found to recognise such stratigic dispositions.
+
+Thanks in Advance.
+
+Andrae Muys.
+
+==============================================================================
+
+Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+: I am currently trying to write a game that will provide a computer 
+: opponent in a computer wargame.  I intend eventually to incorporate 
+: relitivly complex game mechanics such as can be found in commercial table 
+: top rules systems.  However the current project is nowhere near as 
+: extensive with *extremely* basic rules and mechanics.  However as each 
+: unit may still move once each turn, and a number of distances the 
+: branching factor puts the CHESS/GO thread to shame.  In fact a lower 
+: bound calculated from rules far simpler than I intend to use ended with a 
+: branching factor of 2.6^8.  A simple PLY search is therefore out of the 
+: question.  Brainstorming suggested that by abstracting the battlefield 
+: into three frontal sections and maybe a reserve leaves a basic set of 
+: rules with a branching factor of approx 16(much more manageable).  
+: However to implement this the AI needs to be able to recognise what 
+: constitues a flank/centre/rear/front etc...  From practical wargaming 
+: experience this is something that is normally arrived at by intuition.  
+: Surely it is a problem which has been faced before and I was wondering if 
+: there was any theory/code/code examples which I might use to build 
+: such an engine.
+: In the meantime I intend to start on the AI assuming that a way can be 
+: found to recognise such stratigic dispositions.
+
+: Thanks in Advance.
+: Andrae Muys.
+Andrae:
+
+
+   Glad to see I'm not the only one wrestling with this problem!  ;)
+
+   Your approach to break things down into 'front', 'flank', and 
+'rear' makes sense and seems like a reasonable simplification of the problem.
+A first-order definition of each might be:
+
+     front -- Where the mass of the enemy units are known to be.  The
+              direction I want to attack.
+
+     flank -- Any area in which there are fewer (1/3 ?) as many enemy
+              units as the area designed as 'front'.  (Note this is
+              purely arbitrary, based as much on prior experience as
+              anything else.)  Perhaps also selected based on natural
+              defensive terrain (i.e., oceans or mountains).
+
+     rear  -- Any area in which no (known) enemy units are operating,
+              or an area completely surrounded and controlled by me.
+
+     
+    These definitions work by identifying the front, then extrapolating
+from that.  As enemy units move around, become detected, attack, etc.,
+the 'size' of the front will likely grown and shrink, forcing similar changes
+to the flanks (especially) and perhaps to the rear areas as well.
+
+    One problem I can think of off the top of my head is how to handle
+multiple front situations; there's at least some possibility of overlapping
+definitions, meaning that some precedence order must be established.
+Special exceptions will also have to be made for overflying enemy aircraft
+and incursions by enemy units of various types.  (Example: If the enemy
+drops some paratroopers into your 'rear' area, does it automatically become
+a 'front'?)
+
+    In extreme situations of mass attack, I could see virtually the entire
+play area being designated as a 'front' (imagine the Eastern Front in
+WWII), which of course makes your branching problem worse.  On the other
+hand, attempts to continually minimize the size of the front will cut down
+on the branching options, but might result in poor strategic and tactical
+choices (i.e., the entire German army focuses on capturing Malta, rather than
+overrunning Malta on its way to North Africa).
+
+    More brainstorming as I come up with ideas..............
+
+Steven
+
+==============================================================================
+
+In article <3onpj8$lbc@theopolis.orl.mmc.com>,
+woodcock@escmail.orl.mmc.com (Steve Woodcock) wrote:
+
+> Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+> : I am currently trying to write a game that will provide a computer 
+> : opponent in a computer wargame.  I intend eventually to incorporate 
+> : relitivly complex game mechanics such as can be found in commercial table 
+> : top rules systems.  However the current project is nowhere near as 
+> : extensive with *extremely* basic rules and mechanics.  However as each 
+> : unit may still move once each turn, and a number of distances the 
+> : branching factor puts the CHESS/GO thread to shame.  In fact a lower 
+> : bound calculated from rules far simpler than I intend to use ended with a 
+> : branching factor of 2.6^8.  A simple PLY search is therefore out of the 
+> : question.  Brainstorming suggested that by abstracting the battlefield 
+> : into three frontal sections and maybe a reserve leaves a basic set of 
+> : rules with a branching factor of approx 16(much more manageable).  
+> : However to implement this the AI needs to be able to recognise what 
+> : constitues a flank/centre/rear/front etc...  From practical wargaming 
+> : experience this is something that is normally arrived at by intuition.  
+> : Surely it is a problem which has been faced before and I was wondering if 
+> : there was any theory/code/code examples which I might use to build 
+> : such an engine.
+> : In the meantime I intend to start on the AI assuming that a way can be 
+> : found to recognise such stratigic dispositions.
+> 
+> : Thanks in Advance.
+> : Andrae Muys.
+> 
+> Andrae:
+> 
+> 
+>    Glad to see I'm not the only one wrestling with this problem!  ;)
+
+Seems like there's a couple of us....
+
+>    Your approach to break things down into 'front', 'flank', and 
+> 'rear' makes sense and seems like a reasonable simplification of the problem.
+> A first-order definition of each might be:
+
+A friend here (richard@cs.su.oz.au) I was discussing it with actually came
+up with a different solution.  (based on two tanks on a board moving
+pieces about - the game Bolo
+http://www.cs.su.oz.au/~will/bolo/brains.html)
+
+you define your 'center', their 'center' and the board 'center'.  Anything
+closer to your center than theirs is yours and can be taken.  If they take
+it back then it takes you less time to re-take than it takes them - if
+they bother to take it they lose more time than you.
+
+  The idea is to 
+     i) move your center towards the center of the board, then
+    ii) move your center towards their center, always keeping it between
+    their center and the center of the board.  This should push them off the
+    board.
+
+  the defintion of 'center' is tricky.  It's more a 'focus' than a
+center.  At the moment we have a couple we're looking at:
+
+   - The modal position of all your pieces.  (mean would be horrible if
+you get split in two somehow)
+   - The average position of your tank
+
+There is also one other interesting piece of info we've come across.  It
+involves finding neighbours.
+
+Most people would say that the 'Y' in the following diagram is not between
+the 'X's:
+
+X          X
+
+
+  Y
+
+Whereas, they would say that the Y is between these two X's:
+
+X          X
+   Y
+
+The definition we found for 'between' or 'blocking' and hence allows you
+get neighbour (nothing is between) is as follows.
+  i) draw a circle between the two items such that the items sit on either
+end of a diameter of the circle.
+  ii) If there is anything inside that circle it is between the two items
+otherwise it's not.
+
+We thought of defining front as that section 'between' the two centers. 
+This doesn't really handle multiple fronts, but then the game only really
+has two moving pieces which makes multiple fronts difficult anyway.
+
+Looking forward to comments,
+
+\x/ill      :-}
+
+     William Uther                   will@cs.su.oz.au
+
+==============================================================================
+
+Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+: I am currently trying to write a game that will provide a computer 
+: opponent in a computer wargame.  I intend eventually to incorporate 
+: relitivly complex game mechanics such as can be found in commercial table 
+: top rules systems.  However the current project is nowhere near as 
+: extensive with *extremely* basic rules and mechanics.  
+<<<SNIP>>>
+
+I thought it might be appropriate if I quickly outlined the game 
+mechanics I intend on using for an *extremely* basic game.
+I have decided to create a napolionic era game.  The reason's for this are..
+a) Personal knowledge, and posession of a number of rule systems for the 
+era which may be adapted for computer play.
+b) The rigid formations and formal tactics of the era should make the 
+pattern recognsion easier.
+c) The principles of combined arms are easy to grasp and formalise 
+heruisticly in this era.
+d) Only a small number of troop types have to be provided to provide a 
+reasonable game.
+
+The rules which I intend on implementing to date consist of three troop 
+INF: slow, strong, short range; 
+CAV: fast, strong, zero range;
+ART: slow, weak, long range;
+and three extra terrain types(other than clear)
+WOODS: defence from melee and ranged attacks, slows movement;
+ROUGH(HILLS): defence from melee, slows movement, aids attack;
+ROAD: no defence, faster movement;
+
+Of course the principles of pattern recognition and stratigic disposions 
+apply to any game in any era, and also to more abstract forms of the 
+wargame such as CHESS, GO, and CHECKERS.  I am using these rules because 
+I beleive they provide the basic elements of wargames, and are necessary 
+and sufficient for the application of traditional military stratagy and 
+tactics.  Therefore if I can produce a computer player which successfully 
+plays a sound stratigic game and which has a 'grasp' of tactics, it 
+should be able to be applied to any napolionic rule system with little 
+modification, and to other eras without too much difficulty.
+
+Andrae.
+
+==============================================================================
+
+Steve Woodcock (woodcock@escmail.orl.mmc.com) wrote:
+: Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+: : I am currently trying to write a game that will provide a computer 
+: : opponent in a computer wargame.
+
+:    Your approach to break things down into 'front', 'flank', and 
+: 'rear' makes sense and seems like a reasonable simplification of the problem.
+: A first-order definition of each might be:
+
+:      front -- Where the mass of the enemy units are known to be.  The
+:               direction I want to attack.
+
+:      flank -- Any area in which there are fewer (1/3 ?) as many enemy
+:               units as the area designed as 'front'.  (Note this is
+:               purely arbitrary, based as much on prior experience as
+:               anything else.)  Perhaps also selected based on natural
+:               defensive terrain (i.e., oceans or mountains).
+
+:      rear  -- Any area in which no (known) enemy units are operating,
+:               or an area completely surrounded and controlled by me.
+
+:      
+:     These definitions work by identifying the front, then extrapolating
+: from that.  As enemy units move around, become detected, attack, etc.,
+: the 'size' of the front will likely grown and shrink, forcing similar changes
+: to the flanks (especially) and perhaps to the rear areas as well.
+
+Identifing the front first and then defining the rest w.r.t it would seem 
+to simplify the problem further.  I hadn't thought of that, it looks like 
+a good idea.  However one question to contimplate.  Where are the fronts 
+in the following position. {X - YOURS, Y - THEIRS}
+
+            YY      Now by any standards X is in a bad way.  It has been
+             Y      completely outflanked and his left flank is already
+     XXX     YY     overrun.  Intuitivly his front is now perpendicular
+XX XXX  XX   XY  Y  to Y's.  I think we may need a concept such as
+   X        X Y     contact point, which in this case is Y's centre, and 
+                Y   X's left flank.  Naturally in most battles there would
+            YYY     be multiple contact points.  Personally I would draw the
+            Y       fronts as follows.
+        |           
+        |           What do you think?
+--------C|
+        |
+        |
+
+
+:     One problem I can think of off the top of my head is how to handle
+: multiple front situations; there's at least some possibility of overlapping
+: definitions, meaning that some precedence order must be established.
+: Special exceptions will also have to be made for overflying enemy aircraft
+: and incursions by enemy units of various types.  (Example: If the enemy
+: drops some paratroopers into your 'rear' area, does it automatically become
+: a 'front'?)
+
+This is why I am using a very basic set of game mechanics, and using a 
+different era(see other post).  This way the only way troops can reach 
+your rear is to march there.  Also there are very few battles in this era 
+with multiple fronts.  Although allowance must be made for bent and 
+twisted fronts.  The hinge being a very critical point in an extended line.
+
+:     In extreme situations of mass attack, I could see virtually the entire
+: play area being designated as a 'front' (imagine the Eastern Front in
+: WWII), which of course makes your branching problem worse.  On the other
+: hand, attempts to continually minimize the size of the front will cut down
+: on the branching options, but might result in poor strategic and tactical
+: choices (i.e., the entire German army focuses on capturing Malta, rather than
+: overrunning Malta on its way to North Africa).
+
+In the rules I have in mind, most cases you will only have mass attacks 
+or at least dense fronts.  One problem you do have if you try to model a 
+high echelon game such as the eastern front(WWII) what happened next.  
+The  russian front fragmented and from one dense front you ended up with 
+hundreds of small localised fronts, the resulting loss of cohesion being 
+one of the greatest advantages of blitzcrieg.  Because cohesion is so 
+much more important at a grand stratigic level(not that it isn't in 
+stratagies at a operational/tactical level) I feel that a search for a 
+front maybe counter productive.  My gut feeling is that it would be 
+better to consider area controled by your forces, controlled by their 
+forces, and contested.  With an emphisis on your forces maintaining 
+unbroken contact between spheres of influence.  So the insertion of 
+forces 'behind the lines' would only alter the balance of control in the 
+local area.  A domino effect would be possible where forces stratigicly 
+inserted would weaken a units control of an area weakening a unit relying 
+on it for its 'cohesive link' weaking its control of another area and so 
+on.  However this is what happens in real life so if any thing it 
+suggests that it may be a good approach.
+
+:     More brainstorming as I come up with ideas..............
+
+ditto.
+
+: Steven
+
+Andrae
+
+==============================================================================
+
+On 11 May 1995, Andrae Muys wrote:
+> one of the greatest advantages of blitzcrieg.  Because cohesion is so 
+> much more important at a grand stratigic level(not that it isn't in 
+> stratagies at a operational/tactical level) I feel that a search for a 
+> front maybe counter productive.  My gut feeling is that it would be 
+> better to consider area controled by your forces, controlled by their 
+> forces, and contested.  With an emphisis on your forces maintaining 
+> unbroken contact between spheres of influence.  So the insertion of 
+> forces 'behind the lines' would only alter the balance of control in the 
+> local area.  A domino effect would be possible where forces stratigicly 
+> inserted would weaken a units control of an area weakening a unit relying 
+> on it for its 'cohesive link' weaking its control of another area and so 
+> on.  However this is what happens in real life so if any thing it 
+> suggests that it may be a good approach.
+
+In real life, I would imagine one of the main targets in any campaign to 
+be supply lines. For example, The Dambusters is a movie about some 
+special bombers with special bombs desiged to destroy dams, with the aim 
+of crippling Germany's iron/steel industry. General Custer was in trouble 
+because he was surrounded and cut off from supplies and reinforcements 
+(yes, my knowledge is very sketchy).
+
+Another approach to defining a front is that it is where you want it to 
+be! Perhaps call your front where you are trying to hold back/push back 
+enemy forces. Incursions don't necessarily happen on a front - you may 
+quick-march or drop forces into enemy territory next to a vital supply 
+line, or sneak in sabateurs to destroy strategic bridges ("A Bridge Too 
+Far").
+
+I heard someone claim once that war is about economic ruin rather than 
+outright carnage. Is there any way your AI can calculate the move that 
+will cause most damage to industry and support, rather than shoot the 
+most enemy? Of course, these strategies apply to wars, not battles...
+
+Just a thought...
+-Alex
+
+==============================================================================
+
+Satrapa / Alexander Marc (ISE) (u903022@student.canberra.edu.au) wrote:
+: On 11 May 1995, Andrae Muys wrote:
+<<<SNIP>>>
+: > front maybe counter productive.  My gut feeling is that it would be 
+: > better to consider area controled by your forces, controlled by their 
+: > forces, and contested.  With an emphisis on your forces maintaining 
+: > unbroken contact between spheres of influence.  So the insertion of 
+<<<SNIP: Insersion of forces in rear/domino effect>>>
+
+: In real life, I would imagine one of the main targets in any campaign to 
+: be supply lines. For example, The Dambusters is a movie about some 
+: special bombers with special bombs desiged to destroy dams, with the aim 
+: of crippling Germany's iron/steel industry. General Custer was in trouble 
+: because he was surrounded and cut off from supplies and reinforcements 
+: (yes, my knowledge is very sketchy).
+
+Yes you are right one of the major considerations at a Stratigic level is 
+supply, how do I attack yours, how do I protect mine.  One point 
+concerning General Custer however, his problem wasn't so much that his 
+supply lines were cut, more that he was surrounded with no avenue of 
+retreat.  This is a position which is so inheriently poor that any AI 
+should automatically avoid it without any requirement for a 'special case'.
+
+: Another approach to defining a front is that it is where you want it to 
+: be! Perhaps call your front where you are trying to hold back/push back 
+: enemy forces. Incursions don't necessarily happen on a front - you may 
+: quick-march or drop forces into enemy territory next to a vital supply 
+: line, or sneak in sabateurs to destroy strategic bridges ("A Bridge Too 
+: Far").
+
+With the game mechanics we have been considering of late the AI won't 
+have to be concerned with most of these problems.  I personally can't see 
+how defining a front 'where you want it to be' is useful although this is 
+probably more me not thinking it though properly than a problem with the 
+idea.  What do you mean by it, and is it in anyway related to the concept 
+of critical point/contact point currently being discussed?
+
+: I heard someone claim once that war is about economic ruin rather than 
+: outright carnage. Is there any way your AI can calculate the move that 
+: will cause most damage to industry and support, rather than shoot the 
+: most enemy? Of course, these strategies apply to wars, not battles...
+
+Personally I prefer Sun Tzu's philosophy.  Basically it holds that to win 
+without fighting is best, and the aim of war is to capture territory 
+without damaging it.
+
+BTW: does anyone know if there is a e-text version of The Art of War 
+anywhere?
+
+Andrae.
+
+==============================================================================
+
+Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+: With the game mechanics we have been considering of late the AI won't 
+: have to be concerned with most of these problems.  I personally can't see 
+: how defining a front 'where you want it to be' is useful although this is 
+: probably more me not thinking it though properly than a problem with the 
+: idea.  What do you mean by it, and is it in anyway related to the concept 
+: of critical point/contact point currently being discussed?
+
+
+   That's right; at the moment we're sort of focusing on a roughly
+Napoleonic-era level of combat for the sake of simplicity.  Paratroopers
+will be added in AI v. 2.0.    ;)
+
+
+: : I heard someone claim once that war is about economic ruin rather than 
+: : outright carnage. Is there any way your AI can calculate the move that 
+: : will cause most damage to industry and support, rather than shoot the 
+: : most enemy? Of course, these strategies apply to wars, not battles...
+: Personally I prefer Sun Tzu's philosophy.  Basically it holds that to win 
+: without fighting is best, and the aim of war is to capture territory 
+: without damaging it.
+
+   If we hold to the concept of specifying various objectives (as discussed
+way back at the start of this thread), then I would think moves designed
+to inflict economic damage would flow naturally out of that.  Oil wells,
+ports, rail lines, etc. would all be natural objectives, and as the AI
+considers its moves and attempts to seize objectives they would naturally
+be overrrun.  
+
+
+: BTW: does anyone know if there is a e-text version of The Art of War 
+: anywhere?
+
+   Good question...I'd like to know myself.
+
+Steven
+
+==============================================================================
+
+ccamuys@dingo.cc.uq.oz.au (Andrae Muys) writes:
+>Personally I prefer Sun Tzu's philosophy.  Basically it holds that to win 
+>without fighting is best, and the aim of war is to capture territory 
+>without damaging it.
+>BTW: does anyone know if there is a e-text version of The Art of War 
+>anywhere?
+>
+>Andrae.
+
+http://timpwrmac.clh.icnet.uk/Docs/suntzu/szcontents.html
+  for the Art of War (not the 1960's translation, an older one) , and
+
+http://fermi.clas.virginia.edu/~gl8f/paradoxes.html
+  for George Silver's Paradoxes of defence, which is probably
+in a similarr vein, but I have not got around to reading it yet.
+
+  Anybody who does any type of strategic or tactical stuff should
+read at least the Art of War, very good stuff indeed.
+
+==============================================================================
+
+William Uther (will@cs.su.oz.au) wrote:
+
+<<<SNIP>>>
+
+: There is also one other interesting piece of info we've come across.  It
+:
+
+: most people would say that the 'Y' in the following diagram is not between
+: the 'X's:
+
+: X          X
+
+
+:   Y
+
+However Y is definately infulencing the connection between the X's.  The 
+right X should be able to support the left, however it is possible that 
+the reverse is impossible.  Of course terrain could modify this.
+
+: Whereas, they would say the the Y is between these two X's:
+
+: X          X
+:    Y
+
+Here I would consider Y to have interdicted the link, or the X's are 
+still neighbours but they have outflanked/maybe even overrun, Y.
+
+: The definition we found for 'between' or 'blocking' and hence allows you
+: get neighbour (nothing is between) is as follows.
+:   i) draw a circle between the two items such that the items sit on either
+: end of a diameter of the circle.
+:   ii) If there is anything inside that circle it is between the two items
+: otherwise it's not.
+
+An alternitive(I havn't played bolo so I don't know if it's appropriate) 
+would be to draw a circle radius Y's maximum EFFECTIVE range (you decide 
+what that is) and if it cuts a line drawn between the two X's the link is 
+cut.
+
+: We thought of defining front as that section 'between' the two centers. 
+: This doesn't really handle multiple fronts, but then the game only really
+: has two moving pieces which makes multiple fronts difficult anyway.
+
+Andrae.
+==============================================================================
+
+Will Uther (will@cs.su.oz.au) wrote:
+: In article <3onpj8$lbc@theopolis.orl.mmc.com>,
+
+: A friend here (richard@cs.su.oz.au) I was discussing it with actually came
+: up with a different solution.  (based on two tanks on a board moving
+: pieces about - the game Bolo
+: http://www.cs.su.oz.au/~will/bolo/brains.html)
+
+: you define your 'center', their 'center' and the board 'center'.  Anything
+: closer to your center than theirs is yours and can be taken.  If they take
+: it back then it takes you less time to re-take than it takes them - if
+: they bother to take it they lose more time than you.
+
+:   The idea is to 
+:  i) move your center towards the center of the board
+: then ii) move your center towards their center, always keeping it between
+: their center and the center of the board.  This should push them off the
+: board.
+
+:   the defintion of 'center' is tricky.  It's more a 'focus' than a
+: center.  At the moment we have a couple we're looking at:
+
+:    - The modal position of all your pieces.  (mean would be horrible if
+: you get split in two somehow)
+:    - The average position of your tank
+
+: There is also one other interesting piece of info we've come across.  It
+: involves finding neighbours.
+
+: most people would say that the 'Y' in the following diagram is not between
+: the 'X's:
+
+: X          X
+
+
+:   Y
+
+: Whereas, they would say the the Y is between these two X's:
+
+: X          X
+:    Y
+
+: The definition we found for 'between' or 'blocking' and hence allows you
+: get neighbour (nothing is between) is as follows.
+:   i) draw a circle between the two items such that the items sit on either
+: end of a diameter of the circle.
+:   ii) If there is anything inside that circle it is between the two items
+: otherwise it's not.
+
+: We thought of defining front as that section 'between' the two centers. 
+: This doesn't really handle multiple fronts, but then the game only really
+: has two moving pieces which makes multiple fronts difficult anyway.
+
+: Looking forward to comments,
+
+: \x/ill      :-}
+
+
+   Hmmm...this does have some merit to it.  I like the idea of the 'center'
+being arrived at via this circle-method; it has an elegance to it that also
+is somewhat intuitive.
+
+   The only potential problem I can see with this approach is that it will
+tend towards great massive brute force engagements by migrating the bulk
+of both forces towards a common 'center'.  This is fine in the case of
+two combatants (i.e., two Bolo tanks) but not so good for two armies.
+
+   I think we could solve the multiple front problem if we generalized the 
+problem to find SEVERAL 'localized centers', thus allowing for multiple axes 
+of advance along a somewhat more fluid 'front'.  In the case of two armies, 
+you might get something like this:
+
+
+           x                     x                      x 
+
+             y1               y2    y3                    y4
+
+           x                     x                      x 
+
+    In this case, each of the x-x pairs make INDEPENDENT determinations
+of what lies 'between' them.  Then, based on the relative combat strengths
+and other factors, you could issue separate orders for each section of
+the battlefield.  This effectively sets up a variety of 'mini-centers'
+(using our terminology from above) and more realistically (IMHO) emulates
+realworld operations (i.e., lots of mini-objectives, the possibility for
+overlapping objectives, etc.).
+
+     Opinions?  Comments?
+
+
+Steven
+
+==============================================================================
+
+>"Satrapa / Alexander Marc (ISE)" <u903022@student.canberra.edu.au> wrote:
+>
+> On Wed, 10 May 1995, Will Uther wrote:
+> [bigsnip]
+> > you define your 'center', their 'center' and the board 'center'.  Anything
+> > closer to your center than theirs is yours and can be taken.  If they take
+> [snip]
+> >   The idea is to 
+> >  i) move your center towards the center of the board
+> > then ii) move your center towards their center, always keeping it between
+> > their center and the center of the board.  This should push them off the
+> > board.
+> 
+> One problem - any enemy who knows this strategy may use it against you 
+> (and therefore both sides end up fighting over the center while the edge 
+> of the board is unused), or may act like water and flow - so you get 
+> through to their centre, but find that the edges of the board have 
+> suddenly caved in on you. So their center is your center, but their 
+> distribution is wider than yours... while you're attacking them over 
+> here, they're stealing your bases/terrain over there.
+
+In the type of combat I was thinking of, you each have only one active
+piece that moves around the board moving the other 'static' pieces.  If
+Player A surrounds Player B, but Player B has supplies 'inside', then
+player B has the
+advantage.  e.g.
+
+  1                  2
+
+
+          3    4
+
+          Supplies
+
+          5    6
+
+
+   7                 8
+
+
+  Assume that 1,2,7 and 8 are owned by A and effectively 'surround' B who
+owns 3, 4, 5 and 6 (and some supplies that mean he never has to leave his
+fort).  B can attack 1.  when A moves there to defend, B can break off and
+attack 8.  A has a long way to go to get to 8 (A has to go right around
+whereas B can go through the centre) and so will probably lose that
+piece.  Being more spead-out than the opposition can be a big problem.
+
+  I agree that this is probably not the type of combat you were thinking
+about.  For an example of this type of combat look at the mac game Bolo.
+
+\x/ill      :-}
+
+P.S. as a side note, Sun Tzu (sp?) in his 'Art of War' recommends against
+sieges which is effectively the situation you have above.
+
+William Uther                   will@cs.su.oz.au
+
+==============================================================================
+
+Steve Woodcock <woodcock@escmail.orl.mmc.com> wrote:
+>
+>   Hmmm...this does have some merit to it.  I like the idea of the 'center'
+>being arrived at via this circle-method; it has an elegance to it that also
+>is somewhat intuitive.
+>
+>   The only potential problem I can see with this approach is that it will
+>tend towards great massive brute force engagements by migrating the bulk
+>of both forces towards a common 'center'.  This is fine in the case of
+>two combatants (i.e., two Bolo tanks) but not so good for two armies.
+
+  Actually, Bolo can be played by as many as 16 players, with as many
+as 16 different sides. But most people play against bots only when
+they cannot get any human competition, and so play against only one.
+
+>   I think we could solve the multiple front problem if we generalized the 
+>problem to find SEVERAL 'localized centers', thus allowing for multiple axes 
+>of advance along a somewhat more fluid 'front'.  In the case of two armies, 
+>you might get something like this:
+>
+>
+>           x                     x                      x 
+>
+>             y1               y2    y3                    y4
+>
+>           x                     x                      x 
+>
+>    In this case, each of the x-x pairs make INDEPENDENT determinations
+>of what lies 'between' them.  Then, based on the relative combat strengths
+>and other factors, you could issue separate orders for each section of
+>the battlefield.  This effectively sets up a variety of 'mini-centers'
+>(using our terminology from above) and more realistically (IMHO) emulates
+>realworld operations (i.e., lots of mini-objectives, the possibility for
+>overlapping objectives, etc.).
+
+  Hmmm...
+
+  I assume that this assumes a single master strategist giving orders
+to the units. I would think that the master should group neighboring
+units as one, in order to save time when calculating the following:
+calculate a center between every piece and every other. When his is
+all done, choose the minimum amount of centers which take care of the
+maximum amount of enemies. This should allow certain interesting
+effects over varying terrain, if said terrain is taken into account as
+it should be.
+
+  Otherwise, it sounds pretty good. If I ever get my set of Bolo
+brains working, I'll turn 'em loose and see what happens.
+
+Robert Uhl
+
+==============================================================================
+
+   First off, let me just say that I think this is a *great* thread, easily
+one of the more interesting I've seen in this newsgroup.  *This* is the kind
+of brainstorming the Net was made for....
+
+
+
+Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+
+: Identifing the front first and then defining the rest w.r.t it would seem 
+: to simplify the problem further.  I hadn't thought of that, it looks like 
+: a good idea.  However one question to contimplate.  Where are the fronts 
+: in the following position. {X - YOURS, Y - THEIRS}
+
+:             YY      Now by any standards X is in a bad way.  It has been
+:              Y      completely outflanked and his left flank is already
+:      XXX     YY     overrun.  Intuitivly his front is now perpendicular
+: XX XXX  XX   XY  Y  to Y's.  I think we may need a concept such as
+:    X        X Y     contact point, which in this case is Y's centre, and 
+:                 Y   X's left flank.  Naturally in most battles there would
+:             YYY     be multiple contact points.  Personally I would draw the
+:             Y       fronts as follows.
+:         |           
+:         |           What do you think?
+: --------C|
+:         |
+:         |
+
+
+
+    I would agree with your assessment of the situation and your breakdown
+of the forces into a front.  Obviously in this case, X either a.) needs
+to rapidly execute a turn of his front or b.) is in the midst of a brilliant
+plan that wil prove to be Y's undoing.  (The challenge, of course, is to
+get a computer AI to execute 'b' more often than 'a'.)
+
+    If we define a contact point, then does that give us a natural focus
+towards which to direct our forces and our strategic 'thinking'?  They would
+seem to.
+
+: :     One problem I can think of off the top of my head is how to handle
+: : multiple front situations; there's at least some possibility of overlapping
+: : definitions, meaning that some precedence order must be established.
+: : Special exceptions will also have to be made for overflying enemy aircraft
+: : and incursions by enemy units of various types.  (Example: If the enemy
+: : drops some paratroopers into your 'rear' area, does it automatically become
+: : a 'front'?)
+: This is why I am using a very basic set of game mechanics, and using a 
+: different era(see other post).  This way the only way troops can reach 
+: your rear is to march there.  Also there are very few battles in this era 
+: with multiple fronts.  Although allowance must be made for bent and 
+: twisted fronts.  The hinge being a very critical point in an extended line.
+
+
+   Okay; let's go with that simplification for now. It'll certainly make this
+easier to think about, and we can always make the AI smarter in Rev 2.0!  ;)
+
+
+: In the rules I have in mind, most cases you will only have mass attacks 
+: or at least dense fronts.  One problem you do have if you try to model a 
+: high echelon game such as the eastern front(WWII) what happened next.  
+: The  russian front fragmented and from one dense front you ended up with 
+: hundreds of small localised fronts, the resulting loss of cohesion being 
+: one of the greatest advantages of blitzcrieg.  Because cohesion is so 
+: much more important at a grand stratigic level(not that it isn't in 
+: stratagies at a operational/tactical level) I feel that a search for a 
+: front maybe counter productive.  My gut feeling is that it would be 
+: better to consider area controled by your forces, controlled by their 
+: forces, and contested.  With an emphisis on your forces maintaining 
+: unbroken contact between spheres of influence.  So the insertion of 
+: forces 'behind the lines' would only alter the balance of control in the 
+: local area.  A domino effect would be possible where forces stratigicly 
+: inserted would weaken a units control of an area weakening a unit relying 
+: on it for its 'cohesive link' weaking its control of another area and so 
+: on.  However this is what happens in real life so if any thing it 
+: suggests that it may be a good approach.
+
+   Okay then, fronts are out.  Spheres of influence are in.  They do seem
+to better reflect the 'domino effect', as you suggest.
+
+   If we use your previous suggestion for identifying centers, combined with
+the above-mentioned contact points, then this may lead us towards a more
+natural way of handling the above situation.  Based on what we've discussed
+so far, I would envision an AI's logic train going something like this:
+
+        Pass #1:  Identify natural 'groups' of X-Y forces using the
+        'circle method' discussed earlier, perhaps taking into account
+        the possibilities of influence and interdiction as a previous
+        poster suggested. 
+
+        Pass #2:  Having identified these natural groupings, identify
+        contact points amongst the forces within each group.  These
+        will serve as natural foci for our planning process.
+
+        Pass #3:  Having identified natural groupings and focus points,
+        we now begin thinking about steps needed to link up our groups,
+        minimize the size of enemy-held areas, elimination of enemy units,
+        etc.  
+
+        
+   One thing we do want to avoid, of course, is TOO much reliance on
+maintaining unbroken contact between spheres of influence.  As you know,
+in the Napoleanic era cavalry forces on the same side were often miles
+apart and in some cases didn't even know of each other's existence!  In this
+case the AI would need to know to treat the two forces independently and
+NOT make linking them a high priority.
+
+
+Steven
+
+==============================================================================
+
+Steve Woodcock (woodcock@escmail.orl.mmc.com) wrote:
+: Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+
+: :             YY      Now by any standards X is in a bad way.  It has been
+: :              Y      completely outflanked and his left flank is already
+: :      XXX     YY     overrun.  Intuitivly his front is now perpendicular
+: : XX XXX  XX   XY  Y  to Y's.  I think we may need a concept such as
+: :    X        X Y     contact point, which in this case is Y's centre, and 
+: :                 Y   X's left flank.  Naturally in most battles there would
+: :             YYY     be multiple contact points.  Personally I would draw the
+: :             Y       fronts as follows.
+: :         |           
+: :         |           What do you think?
+: : --------C|
+: :         |
+: :         |
+
+:     I would agree with your assessment of the situation and your breakdown
+: of the forces into a front.  Obviously in this case, X either a.) needs
+: to rapidly execute a turn of his front or b.) is in the midst of a brilliant
+: plan that wil prove to be Y's undoing.  (The challenge, of course, is to
+: get a computer AI to execute 'b' more often than 'a'.)
+
+Of course the ultimate AI wouldn't find itself in such a dangerous 
+position.  A bit like the untimate General wouldn't.  But if it does it 
+must extricate itself well.  Just one more 'special' situation to test 
+the AI's abiltiy.
+
+:     If we define a contact point, then does that give us a natural focus
+: towards which to direct our forces and our strategic 'thinking'?  They would
+: seem to.
+
+Well this thread is useful.  The idea of contact points should radically 
+prune any decision tree.(And sooner or later the AI will have to make a 
+choice)  Of course at the stratigic/grand stratigic levels we may need a 
+modified definition of contact point but at the level I am interested in 
+Contact points appear to be a good way to look at things.  In fact now 
+that I think about it, contact points are how **I** allocate **MY** 
+consideration.  This approach however leads us to consider how to 
+recognise potential contact points and how to evaluate the relitive 
+benifits of creating/avoiding specific contact points.  e.g. in the 
+example above X should avoid contact with Y until he has rotated his 
+front.(it looks like we may still need to consider fronts as well).
+
+: : This is why I am using a very basic set of game mechanics, and using a 
+: : different era(see other post).  This way the only way troops can reach 
+: : your rear is to march there.  Also there are very few battles in this era 
+: : with multiple fronts.  Although allowance must be made for bent and 
+: : twisted fronts.  The hinge being a very critical point in an extended line.
+: Okay; let's go with that simplification for now. It'll certainly make this
+: easier to think about, and we can always make the AI smarter in Rev 2.0!  ;)
+
+My thoughts exactly.
+
+<<<<SNIP>>>>
+: : front maybe counter productive.  My gut feeling is that it would be 
+: : better to consider area controled by your forces, controlled by their 
+: : forces, and contested.  With an emphisis on your forces maintaining 
+: : unbroken contact between spheres of influence.  So the insertion of 
+: : forces 'behind the lines' would only alter the balance of control in the 
+: : local area.  A domino effect would be possible where forces stratigicly 
+: : inserted would weaken a units control of an area weakening a unit relying 
+: : on it for its 'cohesive link' weaking its control of another area and so 
+: : on.  However this is what happens in real life so if any thing it 
+: : suggests that it may be a good approach.
+
+:    Okay then, fronts are out.  Spheres of influence are in.  They do seem
+: to better reflect the 'domino effect', as you suggest.
+
+However as discussed above at a lower level fronts again become 
+important.  IMHO this is because tactical considerations require physical 
+cohesion, while stratigic(level) utilise logical cohesion.  As you later 
+note cavalry detatchments regularlly operated independently of other 
+units.  However (excluding irregulars) many/most operated in conjunction 
+with armies, their presence in a particular area, important to enemy 
+forces, deliberate and planned.  Even though operating independently.
+
+:    If we use your previous suggestion for identifying centers, combined with
+: the above-mentioned contact points, then this may lead us towards a more
+: natural way of handling the above situation.  Based on what we've discussed
+: so far, I would envision an AI's logic train going something like this:
+
+:         Pass #1:  Identify natural 'groups' of X-Y forces using the
+:         'circle method' discussed earlier, perhaps taking into account
+:         the possibilities of influence and interdiction as a previous
+:         poster suggested. 
+
+:         Pass #2:  Having identified these natural groupings, identify
+:         contact points amongst the forces within each group.  These
+:         will serve as natural foci for our planning process.
+
+:         Pass #3:  Having identified natural groupings and focus points,
+:         we now begin thinking about steps needed to link up our groups,
+:         minimize the size of enemy-held areas, elimination of enemy units,
+:         etc.  
+This sounds like it should work reasonably well, however I have a feeling 
+there may be problems with the way it handles many sparse stratigic 
+situations.  I'll think about it and we can discuss it futher when I have 
+clearified my concerns.
+
+:    One thing we do want to avoid, of course, is TOO much reliance on
+: maintaining unbroken contact between spheres of influence.  As you know,
+: in the Napoleanic era cavalry forces on the same side were often miles
+: apart and in some cases didn't even know of each other's existence!  In this
+: case the AI would need to know to treat the two forces independently and
+: NOT make linking them a high priority.
+
+One more thing about cavalry is that the other arms(INF/ART) can't 
+operate this way as it requires a level of speed.
+
+One thing I am considering is cross posting some questions regarding real 
+life treatment of these concerns to rec.games.miniatures after they finish 
+their reorganisation.
+
+Andrae.
+
+==============================================================================
+
+Steve Woodcock <woodcock@escmail.orl.mmc.com> wrote:
+>
+>Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+>
+>: Identifing the front first and then defining the rest w.r.t it would seem 
+>: to simplify the problem further.  I hadn't thought of that, it looks like 
+>: a good idea.  However one question to contimplate.  Where are the fronts 
+>: in the following position. {X - YOURS, Y - THEIRS}
+>
+>:             YY      Now by any standards X is in a bad way.  It has been
+>:              Y      completely outflanked and his left flank is already
+>:      XXX     YY     overrun.  Intuitivly his front is now perpendicular
+>: XX XXX  XX   XY  Y  to Y's.  I think we may need a concept such as
+>:    X        X Y     contact point, which in this case is Y's centre, and 
+>:                 Y   X's left flank.  Naturally in most battles there would
+>:             YYY     be multiple contact points.  Personally I would draw the
+>:             Y       fronts as follows.
+>:         |           
+>:         |           What do you think?
+>: --------C|
+>:         |
+>:         |
+>
+>
+>
+>    I would agree with your assessment of the situation and your breakdown
+>of the forces into a front.  Obviously in this case, X either a.) needs
+>to rapidly execute a turn of his front or b.) is in the midst of a brilliant
+>plan that wil prove to be Y's undoing.  (The challenge, of course, is to
+>get a computer AI to execute 'b' more often than 'a'.)
+
+  Heh. Actually, if X is driving through Y, in order to create two
+fronts along which Y must fight, thereby forcing Y to regroup, then
+'b' has been executed.
+
+>    If we define a contact point, then does that give us a natural focus
+>towards which to direct our forces and our strategic 'thinking'?  They would
+>seem to.
+
+  Yes. The AI should attempt to create as many contatc points as
+possible. Why? These points mean that he is actually fighting the
+enemy and hopefully killing the same. That is why two parallel lines
+are a good formation. With a good lookahead, though, the T formation
+is also good, because it will enable many points of contact _over
+time_, and hurt Y's ability to create them. Part of the battle is
+controlling contact. In fact, if the AI can do this controlling, then
+it is my belief that it will have an extremely good chance at winning.
+
+>   Okay then, fronts are out.  Spheres of influence are in.  They do seem
+>to better reflect the 'domino effect', as you suggest.
+
+  The sphere of influence idea seems to work well with the points of
+contact idea. Perhaps each unit has a sphere wherein it can contact
+within a certain number fo moves (say 3), and its job is to contact
+the fewest enemies at once but the most over time. IOW, it doesn't
+want to be outnumbered but it wants to see action.
+
+  And two units have a greater sphere of influence, say 8 moves, than
+just one. This would help reflect the greater power of two. Controlled
+territory would be defined as that surrounded by my own units and
+without enemy units, once again utilizing the SoIs. Contested would,
+of course, be that which neither side controls. Perhaps a 'strength'
+value would be attached to areas, indicating the number of units
+controlling it, time for more to get there &c. Thiswould provide an
+incentive for the AI to encircle enemy territory.
+
+Robert Uhl
+
+==============================================================================
+
+Robert A. Uhl (ruhl@phoebe.cair.du.edu) wrote:
+
+:   Heh. Actually, if X is driving through Y, in order to create two
+: fronts along which Y must fight, thereby forcing Y to regroup, then
+: 'b' has been executed.
+
+
+    Good point.  Yet another example of how a human can spot an opportunity
+in the face of the most daunting situations....
+
+
+: >    If we define a contact point, then does that give us a natural focus
+: >towards which to direct our forces and our strategic 'thinking'?  They would
+: >seem to.
+
+:   Yes. The AI should attempt to create as many contatc points as
+: possible. Why? These points mean that he is actually fighting the
+: enemy and hopefully killing the same. That is why two parallel lines
+: are a good formation. With a good lookahead, though, the T formation
+: is also good, because it will enable many points of contact _over
+: time_, and hurt Y's ability to create them. Part of the battle is
+: controlling contact. In fact, if the AI can do this controlling, then
+: it is my belief that it will have an extremely good chance at winning.
+
+
+   I'm not sure I agree that I would want the AI to maximize its number
+of contacts with the enemy; I would agree that it should seek to control
+them.
+
+   Maximization in itself will only lead to toe-to-toe WWI slugfests, and
+basically leads to the AI playing a war of attrition.  That's perhaps one
+of the defining characteristics of most AIs today--if they don't cheat
+somehow, then they tend to fight wars of attrition.
+
+
+:   The sphere of influence idea seems to work well with the points of
+: contact idea. Perhaps each unit has a sphere wherein it can contact
+: within a certain number fo moves (say 3), and its job is to contact
+: the fewest enemies at once but the most over time. IOW, it doesn't
+: want to be outnumbered but it wants to see action.
+
+
+    Yes indeed.  That's sort of where we were headed, I believe.
+I do like the idea of factoring time into the equation somehow; the AI
+ought to be willing to have NO enemy contact for two turns if it's busy
+moving forces around for MAJOR enemy contract (say, the Normandy invasion)
+on the third turn.  That does make sense intuitively.  Perhaps we can tie
+time-weighted values to multi-turn engagement decisions?
+
+:   And two units have a greater sphere of influence, say 8 moves, than
+: just one. This would help reflect the greater power of two. Controlled
+: territory would be defined as that surrounded by my own units and
+: without enemy units, once again utilizing the SoIs. Contested would,
+: of course, be that which neither side controls. Perhaps a 'strength'
+: value would be attached to areas, indicating the number of units
+: controlling it, time for more to get there &c. Thiswould provide an
+: incentive for the AI to encircle enemy territory.
+
+   Agreed.  This is very similar to the idea of using a 'fire distribution'
+map that was presented by Daniele, actually, just a different method of
+solving the same problem.  We'll want to do SOMETHING like this in order
+to properly consider the limiting effects of enemy weaponry and the
+local terrain.
+
+Steven
+==============================================================================
+
+On 15 May 1995, Andrae Muys wrote:
+
+> Steve Woodcock (woodcock@escmail.orl.mmc.com) wrote:
+> : Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+> 
+> : :             YY      Now by any standards X is in a bad way.  It has been
+> : :              Y      completely outflanked and his left flank is already
+> : :      XXX     YY     overrun.  Intuitivly his front is now perpendicular
+> : : XX XXX  XX   XY  Y  to Y's.  I think we may need a concept such as
+> : :    X        X Y     contact point, which in this case is Y's centre, and 
+> : :                 Y   X's left flank.  Naturally in most battles there would
+> : :             YYY     be multiple contact points.  Personally I would draw the
+> : :             Y       fronts as follows.
+[snip]
+> benifits of creating/avoiding specific contact points.  e.g. in the 
+> example above X should avoid contact with Y until he has rotated his 
+> front.(it looks like we may still need to consider fronts as well).
+
+Two options I can see here - either X moves its forces into Y's "front" 
+to create as much damage as possible (in a concentrated strike or 
+"blitzkreig" style attack) or X moves its "front" back, forcing Y to make 
+the next move (allowing X the advantage in defence).
+
+Is X aggressive or defensive? Y's forces are rather spread out, so X can 
+"spear" through the front and attack from both sides (like an inverse of 
+the "pincer" movement).
+
+Just a thought...
+-Alex
+==============================================================================
+
+I appologise for the excessive quoting but without the diagram any reply 
+is awkward.
+
+Satrapa / Alexander Marc (ISE) (u903022@student.canberra.edu.au) wrote:
+: On 15 May 1995, Andrae Muys wrote:
+
+: > Steve Woodcock (woodcock@escmail.orl.mmc.com) wrote:
+: > : Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+: > 
+: > : :             YY      Now by any standards X is in a bad way.  It has been
+: > : :              Y      completely outflanked and his left flank is already
+: > : :      XXX     YY     overrun.  Intuitivly his front is now perpendicular
+: > : : XX XXX  XX   XY  Y  to Y's.  I think we may need a concept such as
+: > : :    X        X Y     contact point, which in this case is Y's centre, and 
+: > : :                 Y   X's left flank.  Naturally in most battles there would
+: > : :             YYY     be multiple contact points.  Personally I would draw the
+: > : :             Y       fronts as follows.
+: [snip]
+: > benifits of creating/avoiding specific contact points.  e.g. in the 
+: > example above X should avoid contact with Y until he has rotated his 
+: > front.(it looks like we may still need to consider fronts as well).
+
+: Two options I can see here - either X moves its forces into Y's "front" 
+: to create as much damage as possible (in a concentrated strike or 
+: "blitzkreig" style attack) or X moves its "front" back, forcing Y to make 
+: the next move (allowing X the advantage in defence).
+
+IMO The first of your options is probably going to lead to disaster.  X 
+is not only outflanked but overrun.  From this postion any attack he 
+makes is going to be piecemeal, and forces commited to an attack 
+piecemeal are destroyed piecemeal to very little effect.  IMHO the second 
+option is the only option avaliable to X, the question for X is how far 
+back to regroup, and what to do next.  Some of his options as I see them 
+involve, pulling all units at the contact point back, all units not at 
+the contact point foward, form an offensive formation and try to break 
+Y's, by now dissordered, centre. Or maybe send forces to delay Y's flank, 
+utilise defence in depth at the contact point to buy time, and either 
+prepare an attack, prepare a defence, or use the manuvour to start a 
+rearguard action.
+
+: Is X aggressive or defensive? Y's forces are rather spread out, so X can 
+: "spear" through the front and attack from both sides (like an inverse of 
+: the "pincer" movement).
+Personally I would quite enjoy gaming Y against an X attacking from this 
+postion.
+
+Andrae.
+==============================================================================
+
+Andrae Muys (ccamuys@dingo.cc.uq.oz.au) wrote:
+
+: Of course the ultimate AI wouldn't find itself in such a dangerous 
+: position.  A bit like the untimate General wouldn't.  But if it does it 
+: must extricate itself well.  Just one more 'special' situation to test 
+: the AI's abiltiy.
+
+
+    War appears to be full of special cases, eh?
+
+    ;)
+
+: :     If we define a contact point, then does that give us a natural focus
+: : towards which to direct our forces and our strategic 'thinking'?  They would
+: : seem to.
+
+: Well this thread is useful.  The idea of contact points should radically 
+: prune any decision tree.(And sooner or later the AI will have to make a 
+: choice)  Of course at the stratigic/grand stratigic levels we may need a 
+: modified definition of contact point but at the level I am interested in 
+: Contact points appear to be a good way to look at things.  In fact now 
+: that I think about it, contact points are how **I** allocate **MY** 
+: consideration.  This approach however leads us to consider how to 
+: recognise potential contact points and how to evaluate the relitive 
+: benifits of creating/avoiding specific contact points.  e.g. in the 
+: example above X should avoid contact with Y until he has rotated his 
+: front.(it looks like we may still need to consider fronts as well).
+
+
+   Yes, I'd come to that conclusion as well.  By identifying contact
+points and making them the focus of (at least some) activity, we've 
+pruned our number of decisions fairly radically.
+
+   One concern I have with relying on them exclusively, however, is
+that this makes the AI very reactive without some additional logic to
+force it to 'seek' the enemy.  Two obvious ways to handle this would be
+a.) random movement of forces until contact with the enemy has been
+achieved and b.) deliberate movement of forces to attain certain objectives
+(which are, in effect, 'artificial' contact points, if you will).
+
+   It would be simple enough (I'm still talking Napoleonic-level for
+simplicity's sake) to provide the AI with whatever its objectives are
+for a given scenario; that's easy.  The hard part is how to make it
+approach those objectives in some fashion that makes sense rather than
+to blindly throw its units down a road leading towards said objective
+(perhaps the main failure of the AIs in Perfect General and Empire Deluxe,
+to name two examples).
+
+   As I recall, Napoleonic-era tacticians were trained to recognize
+'classic' battle formations (one such example being the 'T' you presented
+earlier) and react accordingly.  Pattern recognition is easy enough
+to do on a computer via a variety of methods, ranging from simple table
+lookup to full-blown neural nets.
+   
+: :    If we use your previous suggestion for identifying centers, combined with
+: : the above-mentioned contact points, then this may lead us towards a more
+: : natural way of handling the above situation.  Based on what we've discussed
+: : so far, I would envision an AI's logic train going something like this:
+
+: :         Pass #1:  Identify natural 'groups' of X-Y forces using the
+: :         'circle method' discussed earlier, perhaps taking into account
+: :         the possibilities of influence and interdiction as a previous
+: :         poster suggested. 
+
+: :         Pass #2:  Having identified these natural groupings, identify
+: :         contact points amongst the forces within each group.  These
+: :         will serve as natural foci for our planning process.
+
+: :         Pass #3:  Having identified natural groupings and focus points,
+: :         we now begin thinking about steps needed to link up our groups,
+: :         minimize the size of enemy-held areas, elimination of enemy units,
+: :         etc.  
+: This sounds like it should work reasonably well, however I have a feeling 
+: there may be problems with the way it handles many sparse stratigic 
+: situations.  I'll think about it and we can discuss it futher when I have 
+: clearified my concerns.
+
+
+   Agreed, it may.  However, based on the above idea of using pattern
+recognition to manuever our units in something resembling a smart fashion,
+we can now elaborate on Pass #3:
+
+      Pass #3:  Having identified natural groupings and focus points,
+      run a pattern-matching algorithm to identify most likely tactical
+      situations and reasonable responses.  Randomly pick from the best
+      2 or 3 to avoid predicatability.  For each turn a course of
+      action is in place, make some evaluation of its effectiveness
+      and/or success (i.e., has the pattern changed signficantly enough
+      to warrant a new course of action?  have we attained the objective
+      in question?  have we lost contact with the enemy?).
+
+
+   In the case of a sparse strategic situation, the AI defaults towards
+trying to attain known and logical objectives (i.e., moving towards Paris).
+Once contact is made, the situation naturally becomes less sparse, and
+the AI begins to make moves based on sound engagement philosophies.
+
+   The AI will end up being a bit 'bookish', if you will, but certainly
+ought to surprise you once in a while.
+
+: However as discussed above at a lower level fronts again become 
+: important.  IMHO this is because tactical considerations require physical 
+: cohesion, while stratigic(level) utilise logical cohesion.  
+<snip>
+
+   I'll buy that.   That's a good definition, particularly for this
+problem (Napoleonic-era combat), and better than many I've seen.
+
+: [regarding comment that we post this to rec.games.miniatures]
+
+   Actually, I've already seen one thread on comp.ai recommeding THIS
+thread as 'worthwhile'.   ;)
+
+
+
+Steven
+
+==============================================================================
+
+In article <3oro0c$egf@dingo.cc.uq.oz.au>, ccamuys@dingo.cc.uq.oz.au
+(Andrae Muys) wrote:
+
+> :     One problem I can think of off the top of my head is how to handle
+> : multiple front situations; there's at least some possibility of overlapping
+> : definitions, meaning that some precedence order must be established.
+> : Special exceptions will also have to be made for overflying enemy aircraft
+> : and incursions by enemy units of various types.  (Example: If the enemy
+> : drops some paratroopers into your 'rear' area, does it automatically become
+> : a 'front'?)
+.
+> This is why I am using a very basic set of game mechanics, and using a 
+> different era(see other post).  This way the only way troops can reach 
+> your rear is to march there.  Also there are very few battles in this era 
+> with multiple fronts.  Although allowance must be made for bent and 
+> twisted fronts.  The hinge being a very critical point in an extended line.
+
+I don't know if it can help, however, when I was thinking about how to
+build a program for a computer opponent for Squad Leader (an Avalon Hill's
+boardgame) I didn't consider directly recognizing the troops patterns. I
+would build intermediate maps describing entities like density of fire,
+distances in unit movement points (rether than linear distance),
+probability of passing the zone without damage, etc. and base the
+reasoning on this intermediate maps. It turns out that looking (as an
+example) at the fire distribution makes it clearer if some allineated
+troops makes a real front or not. Many sub tactical problems could be
+solved by looking for the shortest path in some of these maps: from what
+side should I attack that hill? find the longest path from your units to
+the hill in the percentage of survival map, where the path lenght is the
+product of the percentage of the zones passed!
+Sure it is not so simple, because the enviroment is highly dinamic and
+there are a lot of interdependancies, but it is a good starting point.
+
+Please answer by e-mail
+
+    Daniele Terdina
+    sistest@ictp.trieste.it
+==============================================================================
+
+   Daniele had so many good points that I did in fact respond to her by
+e-mail, but thought everybody here (hopefully) would be interested 
+as well.....
+
+
+Daniele Terdina (sistest@ictp.trieste.it) wrote:
+: I don't know if it can help, however, when I was thinking about how to
+: build a program for a computer opponent for Squad Leader (an Avalon Hill's
+: boardgame) I didn't consider directly recognizing the troops patterns. I
+: would build intermediate maps describing entities like density of fire,
+: distances in unit movement points (rether than linear distance),
+: probability of passing the zone without damage, etc. and base the
+: reasoning on this intermediate maps. It turns out that looking (as an
+: example) at the fire distribution makes it clearer if some allineated
+: troops makes a real front or not. Many sub tactical problems could be
+: solved by looking for the shortest path in some of these maps: from what
+: side should I attack that hill? find the longest path from your units to
+: the hill in the percentage of survival map, where the path lenght is the
+: product of the percentage of the zones passed!
+: Sure it is not so simple, because the enviroment is highly dinamic and
+: there are a lot of interdependancies, but it is a good starting point.
+
+: Please answer by e-mail
+
+:     Daniele Terdina
+:     sistest@ictp.trieste.it
+
+
+Hello Daniele:
+ 
+ 
+   *Very* interesting approach...I don't believe I've seen it presented
+here before.
+ 
+   It wouldn't be too hard to generate a density map such as you 
+described and use it in conjunction with a route-finding algorithm to
+manage unit movement.  That certainly has the added advantage of having
+units attempt to 'avoid' enemy fire (very much a realistic behavior!)
+as well as still focusing on objectives.  And your point concerning
+whether a front is REALLY a front based on fire distribution is a good
+one; we'd been assuming almost toe-to-toe contact, I think, in the above
+thread, but the inclusion of any type of ranged weapon muddies that up.
+ 
+   Question:  How would we build a fire distribution map if a given 
+unit has several different types of weaponry?  An example of that might
+be a machine-gun crew from Squad Leader; the individuals in the squad
+all have fairly short-range sidearms and such, but they're all supporting
+the longer-range MG.  I guess the worse-case situation is the one you
+have to assume, even though you have no idea that they'll shoot at you
+(it's that "fog of war" thing again).
+ 
+   This could very well be an interesting solution to the sub-tactical,
+ordering-units-to-shoot-at-something part of the problem.
+ 
+ 
+ 
+Steven
+
+==============================================================================
+==============================================================================
+   At least one article from myself is apparently missing here.  It may have 
+been an e-mail from myself to Daniele, or somebody else may have posted it 
+but I missed snagging it.  If somebody should happen to have it I'd 
+appreciate a copy. 
+==============================================================================
+==============================================================================
+
+woodcock@escmail.orl.mmc.com (Steve Woodcock) wrote:
+>   We'd want to add some kind of thresholding function, though, to prevent
+>the AI making some REALLY poor moves.  If we only use the above approach,
+>then I could see a situation in which NO move is a particularly good one
+>(i.e., I'm in a building with all 4 streets covered by heavy enemy MG fire),
+>but of course the AI would pick the 'best' one and proceed to get mowed down
+>crossing the street.  We'd want to build in some type of calculation that
+>would take into account that not moving at all is smarter than trying to
+>obtain whatever the objective is.  That's easily enough done, I should
+>think, using a standard costing function.
+
+   These really poor moves should be avoided by the use of a planner. The idea
+is very rough because I hadn't time to try things out. In the first
+scenario (all buildings) the russian has to conquest some buildings
+initially occupied by germans. The planner would make reasonings of the
+following sort:
+
+   - to seize a building I'd better start from another building in front of
+   it. If I haven't any, this is a sub-goal.
+   - if an attack can't be attempted because it is too risky (the threshold
+   you mention) locate the key enemy defensive position (the units that cause
+   the most of the fire density in the area) and make 'concentrate fire on key
+   unit' a sub-goal/
+   - and so on
+
+   The net of sub-goals is a graph with weighted arcs. The weight is
+proportional the difficulty of achieving the goals, i.e. of reaching the
+node , and inversely proportional to its usefulness, which is given by the
+importance of the other goals accessible from that node. So again the
+starting point to decide which goals should actually be activated is a
+shortest path problem on the planning graph. I like much this idea,
+however, it's easier to say than to implement.
+
+       Daniele Terdina               e-mail: sistest@ictp.trieste.it
+==============================================================================
+==============================================================================
+   Again, at least one post is missing here.  If anybody knows what should go 
+in here please send it along.
+==============================================================================
+==============================================================================
+
+woodcock@escmail.orl.mmc.com (Steve Woodcock) wrote:
+
+> Robert A. Uhl (ruhl@phoebe.cair.du.edu) wrote:
+> :   Yes. The AI should attempt to create as many contatc points as
+> : possible. Why? These points mean that he is actually fighting the
+> : enemy and hopefully killing the same. That is why two parallel lines
+> : are a good formation. With a good lookahead, though, the T formation
+> : is also good, because it will enable many points of contact _over
+> : time_, and hurt Y's ability to create them. Part of the battle is
+> : controlling contact. In fact, if the AI can do this controlling, then
+> : it is my belief that it will have an extremely good chance at winning.
+> 
+>    I'm not sure I agree that I would want the AI to maximize its number
+> of contacts with the enemy; I would agree that it should seek to control
+> them.
+> 
+>    Maximization in itself will only lead to toe-to-toe WWI slugfests, and
+> basically leads to the AI playing a war of attrition.  That's perhaps one
+> of the defining characteristics of most AIs today--if they don't cheat
+> somehow, then they tend to fight wars of attrition.
+
+Very good point.
+
+> :   The sphere of influence idea seems to work well with the points of
+> : contact idea. Perhaps each unit has a sphere wherein it can contact
+> : within a certain number fo moves (say 3), and its job is to contact
+> : the fewest enemies at once but the most over time. IOW, it doesn't
+> : want to be outnumbered but it wants to see action.
+
+This is where the determination of neighbours came in before.  Assume the
+following:
+
+    1
+
+  2   3
+
+    A
+
+  A is attacking and could normally reach 1, 2 or 3.  However most humans
+would rule out attacking 1 because 2 and 3 are 'in the way' - 1 is not a
+neighbour of A.
+  This is assuming normal distances are used.  If you penalise paths for
+travelling close to an enemy then the shortest path A -> 1 may be around
+the outside of 2 or 3 - making it 'out of range' anyway.  You have to
+search for shortest paths in this case though.
+
+\x/ill      :-}
+
+     William Uther                   will@cs.su.oz.au
+
+==============================================================================
+
+In article <will-1905950901180001@willsmac.cs.su.oz.au>,
+Will Uther <will@cs.su.oz.au> wrote:
+>In article <3pd6nc$lf7@theopolis.orl.mmc.com>,
+>woodcock@escmail.orl.mmc.com (Steve Woodcock) wrote:
+>
+>> Robert A. Uhl (ruhl@phoebe.cair.du.edu) wrote:
+>> 
+>>    Maximization in itself will only lead to toe-to-toe WWI slugfests, and
+>> basically leads to the AI playing a war of attrition.  That's perhaps one
+>> of the defining characteristics of most AIs today--if they don't cheat
+>> somehow, then they tend to fight wars of attrition.
+>
+>Very good point.
+
+  Well, to minimize the possibility of a WWI-type war, something needs
+to be done to keep the AI from planning one (gee, that was
+brilliant:-). There are two possibilities: allow it to do so, but give
+ti the long-range planning skills necessary to make it realize that
+such a war is undesirable, or keep it from planning such a war. I will
+focus on preventing this.
+
+  First of all, the unit must attempt to maximize contact with weak
+units _over time_. It must seek to minimize contact with any units,
+esp. strong ones, at once. To do so, it can be given either planning
+skills, or merely given a function which will do so. Once again, I
+will concentrate on the simpler way and faster. Planning takes CPU
+time, something which most 'puters lack. Planning would take the form
+of a path finder which would decide the path for a unit which would
+bring it in contact with units individually.
+
+  The function must first seek to find nearby units. The first
+criteria for 'nearness' would simply be physical nearness. This would
+choose, say 10 or 20 units. These would be sorted by strength, then by
+friendly units in the rough direction of the enemy. The idea is that a
+unit doesn't know where its allies are headed, but if they are near an
+enemy, the odds are that it is a melee situation. After sorting these
+the second time, the AI would choose the 'nearest' unit. In close
+quarters, it would most likely choose the physically nearest one. But
+from a distance, it would tend towards otehr criteria, such as unit
+strength, friendlies in the area, &c.
+
+  The one problem is that such an AI might be too chaotic at first,
+sending units out willy-nilly. These first units would be likely to go
+one way, then the other. But soon, I believe that some order would
+arise. Units would have a tendency to conglomerate in an area and
+fight as one. This is just my own thought, though. It is quite
+possible that it would be entirely too chotic.
+
+  Also, it must be made possible for them to retreat. With this, your
+units willbe akin to men; they don't like to be hit on too much.
+Perhaps they would be craven or berserk. That would be neat.
+
+>> :   The sphere of influence idea seems to work well with the points of
+>> : contact idea. Perhaps each unit has a sphere wherein it can contact
+>> : within a certain number fo moves (say 3), and its job is to contact
+>> : the fewest enemies at once but the most over time. IOW, it doesn't
+>> : want to be outnumbered but it wants to see action.
+>
+>This is where the determination of neighbours came in before.  Assume the
+>following:
+>
+>    1
+>
+>  2   3
+>
+>    A
+>
+>  A is attacking and could normally reach 1, 2 or 3.  However most humans
+>would rule out attacking 1 because 2 and 3 are 'in the way' - 1 is not a
+>neighbour of A.
+>  This is assuming normal distances are used.  If you penalise paths for
+>travelling close to an enemy then the shortest path A -> 1 may be around
+>the outside of 2 or 3 - making it 'out of range' anyway.  You have to
+>search for shortest paths in this case though.
+
+  Hmm. I would suggest that the AI measure the distances. For the sake
+of argument A->1 = 3, A->2 = 2, A->3 = 2.
+
+  The AI takes its 5 closest neigbours, that is 1, 2, 3, null and
+null. Of the the closest is 2 (since it is numerically before 3, which
+is the same distance away). In real life, this would be adjusted with
+another function, perhaps measuring the relative strength of the unit
+in question. It opts to attack 2. After attacking two, it opts to
+attack 1. After one, it takes on 3. Of course, it may be too weak by
+then and therefor leaves the field or waits for reinforcements.
+
+  Simplistic, and probably not the best method. In fatc, I know that
+it is rather bad, but it works, and that is what counts for the
+moment. Perhaps it would only be good for individual movement. In
+fact, I think thta it would mimic a single man rather well. The man
+takes on the closest, weakest enemy.
+
+Robert Uhl
+
+==============================================================================
+
+Robert A. Uhl (ruhl@phoebe.cair.du.edu) wrote:
+
+:   The function must first seek to find nearby units. The first
+: criteria for 'nearness' would simply be physical nearness. This would
+: choose, say 10 or 20 units. These would be sorted by strength, then by
+: friendly units in the rough direction of the enemy. The idea is that a
+: unit doesn't know where its allies are headed, but if they are near an
+: enemy, the odds are that it is a melee situation. After sorting these
+: the second time, the AI would choose the 'nearest' unit. In close
+: quarters, it would most likely choose the physically nearest one. But
+: from a distance, it would tend towards otehr criteria, such as unit
+: strength, friendlies in the area, &c.
+
+    Okay.  Earlier in the thread a mechanism for 'grouping' enemy and
+allied units was proposed that involved drawing circles based variously
+on movement capabilities and/or firepower.  
+
+:   The one problem is that such an AI might be too chaotic at first,
+: sending units out willy-nilly. These first units would be likely to go
+: one way, then the other. But soon, I believe that some order would
+: arise. Units would have a tendency to conglomerate in an area and
+: fight as one. This is just my own thought, though. It is quite
+: possible that it would be entirely too chotic.
+
+    I wonder if some variant of this isn't what many games already do?
+Most of them do tend to exhibit a nasty tendency to trickle units unit
+a battle.  
+
+: >
+: >    1
+: >
+: >  2   3
+: >
+: >    A
+: >
+
+:   Hmm. I would suggest that the AI measure the distances. For the sake
+: of argument A->1 = 3, A->2 = 2, A->3 = 2.
+
+:   The AI takes its 5 closest neigbours, that is 1, 2, 3, null and
+: null. Of the the closest is 2 (since it is numerically before 3, which
+: is the same distance away). In real life, this would be adjusted with
+: another function, perhaps measuring the relative strength of the unit
+: in question. It opts to attack 2. After attacking two, it opts to
+: attack 1. After one, it takes on 3. Of course, it may be too weak by
+: then and therefor leaves the field or waits for reinforcements.
+
+:   Simplistic, and probably not the best method. In fatc, I know that
+: it is rather bad, but it works, and that is what counts for the
+: moment. Perhaps it would only be good for individual movement. In
+: fact, I think thta it would mimic a single man rather well. The man
+: takes on the closest, weakest enemy.
+
+   As you say, this solution is fast but sub-optimal.  There's no provision
+or mechanism for combining the firepower of several allied units against
+a single enemy unit.  That's a situation that occurs in both the strategic
+arena and the tactical.
+
+   On a related subject, I wonder how one would best determine how many
+units to allocate to the attack against a given enemy unit?  I can think
+of two approaches:      
+
+     a.) The AI operates on a battle-to-battle basis, always strives to 
+     achieve a certain ratio (3:1) or certain probability of kill (say, 90%) 
+     and allocates units (depending on their proximity to the battle) to 
+     achieve this;
+     b.) The AI works on a more 'big picture' basis, attempting to maximize
+     OVERALL probability of kill across several battles (i.e., willing to
+     take a 20% chance of success in one battle for three others at 90%).
+
+   Intellectually, option 'b' is more appealing, and more reflective of
+how most gamers actually play.  You balance your needs and are sometimes
+willing to sacrifice one unit to save several others.
+
+There's no need, nor is terribly desirable, for the AI to attempt to make
+this tradeoff across the entire battlefield.  I think we could tie this in 
+with the influence mapping suggested earlier to easily identify sub-areas 
+of the battlefield that the AI could make the tradeoffs in, perhaps by
+using some type of edge detection across the values of the hexes?
+
+
+Steven
+==============================================================================
+
+I have been paying close attention to this thread and the Influence Mapping 
+one and their are two observation I have made:
+
+1) First, the influence mapping algorithm proposed (not the priority queue 
+but the previous one) seemed very effective but is computationally intensive. 
+However, I expect it would not have to be computed on every game turn and that
+instead, modifications could be made to an already computed influence map to
+obtain a sufficiently good approximation. (eg. When your troops move, you increase 
+your influence in one hex and decrease it in the other, but your influence in the 
+area, ie. adjacent hexes, remains approximately unchanged.) Only when units are 
+destroyed or after a number of game turns would you have to go through the big 
+expense of applying the influence mapping algorithm to get an accurate map.
+
+2) The search for a fronts is extremelly important in planning your strategy but 
+only looking for the front only gives you half the picture. Let me expand: 
+
+When I play war games, my first priority is to defend at fronts so my troops are 
+not overunned. Maintaining sufficient power fire to DEFEND at the front is my 
+number one priority (excluding exceptions here and there). Forget about an 
+offensive for the moment. That comes later.
+
+My second priority is finding, creating and assaulting "targets of opportunity". 
+These are enemy units or objectives which are not well defended and usually 
+isolated. Unfortunately, the influence mapping algorithm would show the hexes 
+where these targets of opportunity are as under my control if they were 
+surrounded by my troops. This enemy unit may be far from the front but is 
+an unit that every one would attack immediately (excluding exceptions here 
+and there.)
+
+My last objective, once the destruction of all targets of opportunities has been 
+addressed, is to ATTACK on the fronts where I have superiority.
+
+My beef about all this is that the current discussion does not include and 
+detect these targets of opportunity. I think what need to be done is to compute 
+two influence maps: 
+
+a) One map computed the standard way which defines fronts and zones of control.
+b) One map computed the standard way except that the influence of opposing forces 
+does not affect the value of a hexes occupied by a friendly unit. Hence, a hex 
+occupied by a friendly is always positive, a hex occupied by a foe is always negative.
+
+Map b) would show target of opportunity since one or a few hexes would have negative 
+values while being surrounded by large positive values (Large derivatives would 
+identify these areas) and the map a) would show that you have a large influence 
+on that enemy occupied hex and hence, could destroy it easily. 
+
+Map b) would also identify which of your units are about to be destroyed because 
+they are greatly out numbered (the opposite situation) and some strategic decision 
+would have to be made about sacrificing , regrouping or reinforcing the unit. 
+
+Map b) would also indicate where on the front, identified with map a), you should 
+strike since it would identify where the enemy is the weakest and you the strongest. 
+ie. map a) identifies fronts as hexes where the influence value is zero but the 
+derivative is large. Map b) values at the front hexes will indicate which side 
+is on the defensive or offensive along each portion of the front. This is crucial 
+to 1) DEFEND along the front, and 2) start an offensive where the enemy is the 
+weakest on the front.
+
+Marc Carrier
+==============================================================================
+==============================================================================
+   I apparently missed a few articles here as well.  Judging from the next
+post I have, there appear to have been several responses (at least 3) to
+Marc Carrier's comment above.  Again, if anybody has the originals I'd
+love to get a copy to incorporate here.
+==============================================================================
+==============================================================================
+
+Marc Carrier (mcarrier@bnr.ca) wrote:
+
+: In article <3q44ru$52r@hasle.oslonett.no>, grahamh@oslonett.no (Graham Healey) writes:
+: |> In article <3ptn8e$o9g@bmtlh10.bnr.ca>, Marc Carrier <mcarrier@bnr.ca> wrote:
+: |> >
+: (SNIP...)
+: |> >My second priority is finding, creating and assaulting "targets of opportunity". 
+These are enemy units or objectives which are not well defended and usually isolated. 
+Unfortunately, the influence mapping algorithm would show the hexes where these ta
+rgets|>  of opportunity are as under my control if they were surrounded by my troops. 
+This enemy unit may be far from the front but is an unit that every one would attack 
+immediately (excluding exceptions here and there.)
+: |> >
+: (SNIP...)
+: |> 
+: |> I think you are overdoing the targets of opportunity (TOP's). Going for 
+<<<<SNIP>>>>
+: I disagree!
+:  
+: First, I agree I might have over emphasised the "creating" targets of 
+: opportunity part of my statement. But when one exist, taking adventage of 
+: it should be considered prior to carrying on your move towards your 
+: objectives. A single enemy unit behind your lines or out on the flanks 
+: can cause major damages later on if not addressed. 
+: Example: In Clash Of Steel, I win the game on the eastern front by 
+: sending single tanks around and behind enemy line to cut supplies, then 
+: I destroy the unsupplied units. Whether I play the AXIS or the 
+: ALLIES, the strategy usually works since the COS AI is not very good at 
+: recongnizing that enemy units are about to cut his supply routes (In 
+: fact, the COS AI is not very good period).
+
+OK now its my turn to disagree.  In my games I have found that when I 
+allow myself to be distracted from the overall picture to try and take 
+some trivial advantage(eg some poor soul stuck behind my lines without 
+supply and/or support) I lose.  IMHO one of the main reasons behind this 
+thread is the realisation that taking time out from the pursuit of your 
+stratigic objectives to claim a tactical victory is poor play.  One 
+mustn't forget that strength is only one of many factors which decide a 
+battle, in fact one of the less important IMO.  Time, morale, position, 
+cohesion, leadership, etc are IMHO more important than mere manpower.  
+This is shown time and time again, from Alexander the Great, to Hannabal, 
+to William the Conquerer(an example of cohesion), Pitt, Frederik the 
+Great, Napoleon, et al, WWI, Vietmam, Korea, Hundread Years War as 
+examples of the effects of neglecting those other factors.  (I can 
+explain my reasoning behind each of the examples but will do so only by 
+email for brevity).  Oh and Israel and WWII German occupation of france 
+as an example of time.  In each case victory was ensured against 
+signifigant numerical odds by the recognition of the relitive 
+inimportance of overall strength.  It is this realisation which is 
+proving hard to teach a computer.
+
+: In chess, unless you can see that you can check-mate your opponent in a 
+: number of moves, your rarely pass the opportunity to capture one of his 
+: pieces if you will not lose anything. What you have to be careful about 
+: is that doing so is not a trap by your opponent to open up your defenses 
+: and that you will not end up in a less desirable state. 
+
+I would here remind you of the gambit.  And the sacrifice.  I have won 
+many games of chess simply because I had a three or four move lead in my 
+development, bought with a couple of pawns, which I used wisely.  I 
+personally consider this a good analogy to taking the time, and effort, 
+to pick off an insignifigant force left behind the lines.\
+
+: The point about my previous post was that their is a distinction between 
+: being on the defensive and offensive on a front. And maximizing contact 
+: points over time is something you usually do only if you are on the 
+: offensive. So far, many good algorithms have been proposed to identify 
+: fronts. Now I am turning my attention to identifying the state of the 
+: troops on that front (Offensive/Defensive). Further more, if troops 
+: are on the defensive, can they stand or must they fall back and regroup? 
+: If they are on the offensive, can they attack now or should they wait to 
+: group and concentrate fire power instead of trickling into combat?
+
+Good questions.
+
+One question of my own is how you might represent time on an influence 
+map?  I have a feeling that if we could somehow represent the map w.r.t 
+as a 2D-vector field we might be able to quantify the effects of 'attacking 
+now' vs 'attacking in strength'.  I seem to remember someone mentioning 
+that they were using Electo-Magnetic Field theory to aid in producing a 
+good graph.  As an electrical engineering student I know some theory 
+regarding vector fields however representing them on a computer is 
+something I don't know anything about.  I was thinking though if you 
+considered the level of control the angle of the vector, say PI/2=Completely 
+under my control, and -PI/2=Completely under their control, you would be  
+left with the magnitude of the vector to represent some parameter w.r.t. 
+time.  So if the resulting vector was in the 1st or 2nd quadrent I would 
+have some sort of advantage w.r.t time at the location, and a 
+disadvantage in the 3rd/4th quadrants.  The dig' below might help.
+
+              |
+              |
+Enemy Control | My Control
+My time adv   | My time adv
+              |
+              |
+==============================
+              |
+              |
+My Control    | Enemy Control
+Enemy time adv| Enemy time adv
+              |
+              |
+
+Now of course you could swap them and represent the time variable by the 
+angle but I was thinking that if you represent the strenth by an angle 
+then you can have no poles(points going to infinity) in the final 
+function.  This should help with array bounds or the like.  Still I have 
+no idea how you might form the time function(the strenth function should 
+require only a little modification to apply and I will take a shot at it 
+after exams).  
+
+Well what do you think?
+and please no posts telling me how computationally intensive its going to 
+be, I all ready know.
+
+Andrae.
+
+==============================================================================
+
+In article <3qmg26$pv0@dingo.cc.uq.oz.au>, ccamuys@dingo.cc.uq.oz.au (Andrae Muys) writes:
+|> One question of my own is how you might represent time on an influence 
+|> map?  I have a feeling that if we could somehow represent the map w.r.t 
+|> as a 2D-vector field we might be able to quantify the effects of 'attacking 
+|> now' vs 'attacking in strength'.  I seem to remember someone mentioning 
+|> that they were using Electo-Magnetic Field theory to aid in producing a 
+|> good graph.  As an electrical engineering student I know some theory 
+|> regarding vector fields however representing them on a computer is 
+|> something I don't know anything about.  I was thinking though if you 
+|> considered the level of control the angle of the vector, say PI/2=Completely 
+|> under my control, and -PI/2=Completely under their control, you would be  
+|> left with the magnitude of the vector to represent some parameter w.r.t. 
+|> time.  So if the resulting vector was in the 1st or 2nd quadrent I would 
+|> have some sort of advantage w.r.t time at the location, and a 
+|> disadvantage in the 3rd/4th quadrants.  The dig' below might help.
+|> 
+|>               |
+|>               |
+|> Enemy Control | My Control
+|> My time adv   | My time adv
+|>               |
+|>               |
+|> ==============================
+|>               |
+|>               |
+|> My Control    | Enemy Control
+|> Enemy time adv| Enemy time adv
+|>               |
+|>               |
+|> 
+|> Now of course you could swap them and represent the time variable by the 
+|> angle but I was thinking that if you represent the strenth by an angle 
+|> then you can have no poles(points going to infinity) in the final 
+|> function.  This should help with array bounds or the like.  Still I have 
+|> no idea how you might form the time function(the strenth function should 
+|> require only a little modification to apply and I will take a shot at it 
+|> after exams).  
+|> 
+|> Well what do you think?
+|> and please no posts telling me how computationally intensive its going to 
+|> be, I all ready know.
+|> 
+|> Andrae.
+
+This was somewhat the idea I had w.r.t. using two influence maps since there is more 
+than just the soil you control that determines your posture. However, i had not 
+considered time as a second dimentioned but it makes a lot more of sense and the 
+simple matrix you presented with its four quadrant can simply summarized the four 
+behaviors I mentioned earlier:
+
+	1) retreat and regroup
+	2) stand and defend
+	3) stand and group / prepare for attack
+	4) attack now (attack who is another question though.)
+
+On the subject of how to represent a 2D-vector field on the computer, use a 
+rectangular coordinate system such as with imaginary numbers in the form a + ib, 
+instead of angles and magnitudes. You can store it as two different maps (array) 
+or as an array of records/structures with two fields. I am sure one of these two 
+will be better in terms of computational efficiency than the other because of the 
+indexing involved but I do not know which one off the top of my head. 
+
+Now, how do we represent time?  One method that came to mind would be to use the 
+normal influence mapping algorithm proposed and compared the results after n 
+iterations and 2*n iterations where n < number of iterations required for value 
+to stabilize and converge. Basically, compute the map with the influence of the 
+units propagated n times which shows your more immediate influence and compare 
+it to the map with the strengh propagated 2*n times (for example) which is your 
+influence in the more distant future. (In not too sure this thinking is correct 
+but I will do some simulation this weekend to try it out.) 
+
+An Example: After n iterations , the influence map could show that the ground 
+where a friendly unit is located is under enemy control (ie. lots of enemy units 
+close by) however, after 2*n iterations, the influence value  might turn positive, 
+indicating that a lot more  friendly units are close enough to reinforce the position. 
+(I want to simulate this to see if this can happen with the influence mapping algorithm.)
+
+One problem I see with this is that the group of friendly units that could reinforce 
+the position will have its influence spread all around and many friendly units in 
+enemy territory may count on that reinforcement when the 2*n map is considered. 
+Unfortunately this method does not help to make the decision of where the reinforcement 
+should go and the units in enemy territory that do not get the reinforcement will die 
+if they stand.
+
+Marc
+
+==============================================================================
+
+	I've read, with some interest, all of the proposals for wargame 
+AI, and I haven't seen this technique postulated.  This is the technique 
+I intend to use for my Fantasy Wargame Engine.
+
+	First, there are two objectives that are possible in any tactical 
+level combat: 1) Offensive, 2) Defensive.
+
+Offensive: Destroy, or severely damage the enemy's capability to hold the 
+field.  OR taking an objective.
+
+Defensive: Protect an objective or 'holding the line' against enemy attack.
+
+	Both of these rely on two things: concentration of force and 
+taking and holding good ground (ground that gives you the best offensive 
+and defensive capabilities).
+	The first thing the AI must do is to look for good ground on the 
+battlefield.  These points are used for anchors for any offensive or 
+defensive operations.  No units actually have to *occupy* the ground, 
+they just have to protect against the opponent gaining it.  
+	This is done by having the AI look for any enemy units near to 
+the ground every turn.  If an enemy unit approaches the AIs 'good 
+ground', the AI calculates how much force it must use to defeat the 
+enemy unit.  Then it searches through all of its units to find the ones 
+that are least engaged (see below in concentration of force) and 
+detaching them to attack the enemy unit(s).  Then simply move the units 
+chosen to the best ground in which to attack the enemy unit.
+
+Concentration of force:
+	The *MOST* important thing in a battle is to decide where the 
+enemy is weakest and kick his ass there.  This is why flank attacks are 
+so effective.  Flanks are usually weaker than the center and are *not* 
+mutually supportable.  Whereas if you attack the center, it can be 
+reinforced by the flanks (or rear) if need be.
+	Breaking the center will destroy an army because it isolates the 
+flanks (therefore they can't be mutually supporting), but breaking the 
+center is *hard* because it's constantly being reinforced by the flanks 
+and rear.
+
+So, with that little military theory out of the way...
+
+	First you have to find the weak points in the enemy line.  This 
+can simply be done by taking each enemy unit, add up its attack and 
+defense strengths, then add up the attack&defense strengths of the units 
+1 move away, and add them to the unit.  The unit with the lowest score 
+will be the weakest.
+	Now this won't help if that unit happens to have 8 million 
+archers between the AI troops and itself.  So the computer also has to 
+take into account "spheres of influence".  
+	Basically, each unit has a sphere of influence, that is an area 
+of the battlefield where it can inflict damage on the enemy.  The enemy 
+units must have a sphere of influence as well, where those sphere's 
+overlap is the contested area.  Now, the idea is to try to get into a 
+position where the AIs sphere of influence is larger than the human 
+player's unit.  This way the contested area is farther away from the 
+computer's units than the human.  Note that the AI units and the Human 
+units might well be out of range of each other, but that doesn't matter.
+	Right now all the AI is trying to do is to control the field.
+	Then all the computer has to do is to move its units so that if 
+it's losing the strength battle in a contested area, it either moves the 
+outnumbered unit towards its other units (combining their contested 
+areas), or moving a reserve unit to the understrength unit thereby 
+reinforcing its contested area.
+
+Now, here's where the fun begins...
+
+	The above model works fairly well with units making independant 
+decisions about where they want to go and who they want to attack.  But 
+this is just the starting point!
+	The description up above mentioned a few things like detaching 
+units to defend a piece of ground, or reinforcement of in-dnager units.  
+This requires a "General" level of AI.  The General has to make overall 
+decisions about the course of the battle.
+	Luckily the General only has to make two types of decisons.
+
+1) Where is the enemy line weakest so that it can concentrate its forces 
+on that area.
+
+2) Where is its line weakest so that it can reinforce the area with more 
+units.
+
+	Don't forget to have the general define some units at the 
+beginning of the battle as reserve troops.  This can easily be 
+calculated.  Just set back the units that have the greatest sphere of 
+influence and/or greatest strength *AFTER* it assigns units to control 
+the good ground.
+
+	Well, I've typed enough.  If anyone has any questions, feel free 
+to E-Mail me (as I don't read this newsgroup often).
+
+							Chris.
+
+==============================================================================
+
+   My apolgies to all for the lengthly quotes, but I didn't want any  
+quotes or responses to be out of context.
+
+Christopher Spencer (clspence@iac.net) wrote:
+: 	I've read, with some interest, all of the proposals for wargame 
+: AI, and I haven't seen this technique postulated.  This is the technique 
+: I intend to use for my Fantasy Wargame Engine.
+
+   Oooohhh....sounds interesting!  ;)
+
+
+: 	Both of these rely on two things: concentration of force and 
+: taking and holding good ground (ground that gives you the best offensive 
+: and defensive capabilities).
+: 	The first thing the AI must do is to look for good ground on the 
+: battlefield.  These points are used for anchors for any offensive or 
+: defensive operations.  No units actually have to *occupy* the ground, 
+: they just have to protect against the opponent gaining it.  
+: 	This is done by having the AI look for any enemy units near to 
+: the ground every turn.  If an enemy unit approaches the AIs 'good 
+: ground', the AI calculates how much force it must use to defeat the 
+: enemy unit.  Then it searches through all of its units to find the ones 
+: that are least engaged (see below in concentration of force) and 
+: detaching them to attack the enemy unit(s).  Then simply move the units 
+: chosen to the best ground in which to attack the enemy unit.
+
+    You do address this somewhat farther on, but I'll go ahead and bring
+this up here:  I am somewhat concerned over the effects of finding those
+units which are 'least engaged' and then detaching them to attack the
+identified weaker enemy units.  First, there may be some penalty for detaching
+from combat, which must be taken into account in any such weighting of
+possible options.  Second, while it may be desirable to attack the enemy
+in question I *may* want to finish off the unit I'm currently engaging
+first, even if it is in the middle of a nest of enemy units.  The enemy
+I'm currently engaged with may only need one more hit/attack/whatever to
+finish off, while the enemy unit I would *like* to engage may be a turn
+of two away from its (presumed) objective.  In other words, sometimes it's
+better to take the bird in hand than the one in the bush.
+
+   This is easily solved by adding an additional 'cost' for disengaging
+and/or adding value to the destruction of the weak enemy unit or units
+currently being engaged.
+
+: Concentration of force:
+: 	The *MOST* important thing in a battle is to decide where the 
+: enemy is weakest and kick his ass there.  This is why flank attacks are 
+: so effective.  Flanks are usually weaker than the center and are *not* 
+: mutually supportable.  Whereas if you attack the center, it can be 
+: reinforced by the flanks (or rear) if need be.
+: 	Breaking the center will destroy an army because it isolates the 
+: flanks (therefore they can't be mutually supporting), but breaking the 
+: center is *hard* because it's constantly being reinforced by the flanks 
+: and rear.
+
+   Good summation....
+
+: So, with that little military theory out of the way...
+
+: 	First you have to find the weak points in the enemy line.  This 
+: can simply be done by taking each enemy unit, add up its attack and 
+: defense strengths, then add up the attack&defense strengths of the units 
+: 1 move away, and add them to the unit.  The unit with the lowest score 
+: will be the weakest.
+: 	Now this won't help if that unit happens to have 8 million 
+: archers between the AI troops and itself.  So the computer also has to 
+: take into account "spheres of influence".  
+: 	Basically, each unit has a sphere of influence, that is an area 
+: of the battlefield where it can inflict damage on the enemy.  The enemy 
+: units must have a sphere of influence as well, where those sphere's 
+: overlap is the contested area.  Now, the idea is to try to get into a 
+: position where the AIs sphere of influence is larger than the human 
+: player's unit.  This way the contested area is farther away from the 
+: computer's units than the human.  Note that the AI units and the Human 
+: units might well be out of range of each other, but that doesn't matter.
+: 	Right now all the AI is trying to do is to control the field.
+: 	Then all the computer has to do is to move its units so that if 
+: it's losing the strength battle in a contested area, it either moves the 
+: outnumbered unit towards its other units (combining their contested 
+: areas), or moving a reserve unit to the understrength unit thereby 
+: reinforcing its contested area.
+
+
+   Okay, that's an interesting approach.  Isn't it somewhat similar, 
+however, to the 'mesh analysis' approach suggested in the earlier thread?
+In this case, rather than spreading the influence of a unit across the
+map, it merely spreads to adjacent hexes.  This is certainly simpler, 
+but don't you lose the ability to readily identify fronts and lines of
+control?
+
+   On the other hand, it may be a good 'sub-system' approach for determing
+actual engagement strategy.  That is, having first used the mesh analysis
+approach for mapping out the battlefield zones of control, one could then
+use this methodology for picking out individual weak points.
+
+: 	The above model works fairly well with units making independant 
+: decisions about where they want to go and who they want to attack.  But 
+: this is just the starting point!
+: 	The description up above mentioned a few things like detaching 
+: units to defend a piece of ground, or reinforcement of in-dnager units.  
+: This requires a "General" level of AI.  The General has to make overall 
+: decisions about the course of the battle.
+: 	Luckily the General only has to make two types of decisons.
+
+: 1) Where is the enemy line weakest so that it can concentrate its forces 
+: on that area.
+
+: 2) Where is its line weakest so that it can reinforce the area with more 
+: units.
+
+   This begins to approach something mentioned earlier, the concept
+of breaking the AI into a 'General' and a 'Sergeant' makes a lot of 
+sense.  The General draws up the overall battle plan and determines
+what objectives to take.  The Segeant determines the best way to do it.
+Beyond Squad Leader will reportedly use a similar approach.
+
+: 	Don't forget to have the general define some units at the 
+: beginning of the battle as reserve troops.  This can easily be 
+: calculated.  Just set back the units that have the greatest sphere of 
+: influence and/or greatest strength *AFTER* it assigns units to control 
+: the good ground.
+
+    Reserves are something we never even really talked about.  Good point.
+
+
+Steve
+==============================================================================
+Steven Woodcock                                           _
+Senior Software Engineer, Gameware                  _____C .._.
+Lockheed Martin Information Systems Group      ____/     \___/
+Phone:  407-826-6986                          <____/\_---\_\      "Ferretman"
+E-mail: woodcock@gate.net (Home)
+        swoodcoc@oldcolo.com (Alternate Home)
+        woodcock@escmail.orl.mmc.com (Work)
+Disclaimer:  My opinions in NO way reflect the opinions of the
+             Lockheed Martin Information Systems Group, although
+             (like Rush Limbaugh) they should.  ;)
+Motto:
+    "...Men will awake presently and be Men again, and colour and laughter and
+ splendid living will return to a grey civilization. But that will only come
+ true because a few Men will believe in it, and fight for it, and fight in its
+ name against everything that sneers and snarls at that ideal..."
+
+                                                  --  Leslie Charteris
+                                                      THE LAST HERO
+
+==============================================================================
+
+Steve Woodcock <woodcock@escmail.orl.mmc.com> proclaimed:
+>Christopher Spencer (clspence@iac.net) wrote:
+>: detaching them to attack the enemy unit(s).  Then simply move the units 
+>: chosen to the best ground in which to attack the enemy unit.
+>
+>    You do address this somewhat farther on, but I'll go ahead and bring
+>this up here:  I am somewhat concerned over the effects of finding those
+>units which are 'least engaged' and then detaching them to attack the
+>identified weaker enemy units.  First, there may be some penalty for detaching
+>from combat, which must be taken into account in any such weighting of
+>possible options.  Second, while it may be desirable to attack the enemy
+>in question I *may* want to finish off the unit I'm currently engaging
+>first, even if it is in the middle of a nest of enemy units.  The enemy
+>I'm currently engaged with may only need one more hit/attack/whatever to
+>finish off, while the enemy unit I would *like* to engage may be a turn
+>of two away from its (presumed) objective.  In other words, sometimes it's
+>better to take the bird in hand than the one in the bush.
+
+	The best way of calculating this is to first apply the reserve 
+(if it can get there in time).  If the reserve is commited, or if it 
+can't get there in time, then check the units that have the greatest 
+positive imbalance in their areas of contention.  
+	The second method will (somewhat) violate the rules of 
+concentration of force, but it's better than losing the good ground.
+
+>: 	Then all the computer has to do is to move its units so that if 
+>: it's losing the strength battle in a contested area, it either moves the 
+>: outnumbered unit towards its other units (combining their contested 
+>: areas), or moving a reserve unit to the understrength unit thereby 
+>: reinforcing its contested area.
+>
+>   Okay, that's an interesting approach.  Isn't it somewhat similar, 
+>however, to the 'mesh analysis' approach suggested in the earlier thread?
+
+	Hmmm....could be.  If I'm correct in understanding which method 
+you are talking about, then it's very similar except that the only values 
+that need to be calculated are the contested area values.  The 
+calculation of the contested area, then comparing the strength of the two 
+opposing units in that area *should* take much less time than the mesh 
+analysis approach since you are calculating only a bare small percentage 
+of the battlefield.
+
+>In this case, rather than spreading the influence of a unit across the
+>map, it merely spreads to adjacent hexes.  This is certainly simpler, 
+>but don't you lose the ability to readily identify fronts and lines of
+>control?
+
+	In the words of Robert E. Lee: "In front, behind, the direction 
+does not matter.  We will fight them wherever they are."
+	A front is an artificial contruct devised to show the general 
+area of conflict between two forces.  As a General, it is your *only* 
+consideration to take objectives, hold good ground, and protect your 
+supply line (a concept that also includes protecting industrial centers 
+and transportation infrastructure).
+	When the AI finds good ground, it moves to occupy it or deny it 
+to the enemy.  It pushes out from there by extending the army group's 
+sphere of influence thereby denying the enemy room to maneuver or 
+deploy.  
+	So, you see, the front will take care of itself.  And the lines 
+of control will also take care of themselves if the computer maintains a 
+contested area strength>=the human player contested area strength.
+	Also, as implied by this scheme, if the computer is losing the 
+strength contest in the contested area, it will automatically shorten its 
+own line by moving the understrength units towards other units.
+
+>
+>   On the other hand, it may be a good 'sub-system' approach for determing
+>actual engagement strategy.  That is, having first used the mesh analysis
+>approach for mapping out the battlefield zones of control, one could then
+>use this methodology for picking out individual weak points.
+
+	That makes for another step to the process and more "thinking" 
+time for the AI (not bad, but even *I* get bored at some wargames and 
+start shouting at the screen: "Come on!!").  Also, the extra step is not 
+needed as the sphere of control scheme, by reflex (implied by the 
+concept), will automatically take care of finding the front, and 
+maintaining good lines of control.
+	Think of it this way:  Two amoebae (sp?) are fighting with their 
+cilia (the units).  They're stuck in the same test tube in a limited area 
+(the battlefield).  Each feels the genetic need to grow to fill the test 
+tube and can only do that by killing the other amoeba's cilia and pushing 
+its cell wall back.
+	Initially, the two amoebae are seperated by a certain distance.  
+However, they feel the need to expand.  The growth is instinctive (AI is 
+programmed to do this, the human player needs to do this to gain control 
+of the battle).  
+	The AI amoeba looks out with its sensors to the maximum range 
+that it's cilia can attack (with deady morphogens!!).  Suddenly it sees 
+the contested area for a few of its cilia, and the Human amoeba has more 
+cilia in that area.  Well, the DNA looks for nearby cilia that have a low 
+area of contention or none at all, and moves them to strengthen the weak 
+area.  
+	The advance continues.
+
+	I hope this analogy brings across the basic theory behind what 
+I'm saying.
+
+>   This begins to approach something mentioned earlier, the concept
+>of breaking the AI into a 'General' and a 'Sergeant' makes a lot of 
+>sense.  The General draws up the overall battle plan and determines
+>what objectives to take.  The Segeant determines the best way to do it.
+>Beyond Squad Leader will reportedly use a similar approach.
+
+	Precisely.  It's how actual armies work, and there's a good 
+reason for that....why?  Because it works!
+
+>
+>: 	Don't forget to have the general define some units at the 
+>: beginning of the battle as reserve troops.  This can easily be 
+>: calculated.  Just set back the units that have the greatest sphere of 
+>: influence and/or greatest strength *AFTER* it assigns units to control 
+>: the good ground.
+>
+>    Reserves are something we never even really talked about.  Good point.
+
+	Yah.  I've beaten more AIs by probing the enemy line with my 
+front line units while holding back a sizable reserve.  When I identify a 
+weakness in the enemy attack (or defense), I send my reserves in to bust 
+open the enemy line and kick 'em in the ass!
+	I want my AI to be able to do that.
+
+>Steve
+
+							Chris.
+
+==============================================================================
+
+Christopher Spencer (clspence@iac.net) wrote:
+
+: 	The best way of calculating this is to first apply the reserve 
+: (if it can get there in time).  If the reserve is commited, or if it 
+: can't get there in time, then check the units that have the greatest 
+: positive imbalance in their areas of contention.  
+: 	The second method will (somewhat) violate the rules of 
+: concentration of force, but it's better than losing the good ground.
+
+
+   True, using the reserve is a logical approach, but I'm still a bit
+worried that this overall technique will tend to force units to run
+back and forth around the battlefield, engaging the weakest enemy unit
+they see and/or grabbing the most valuable piece of real estate in the
+immediate vicinity.  Without some kind of factoring in the value of
+an 'attack in progress', so to speak, I'm not sure that units using
+this technique will ever finish the job.
+
+: 	In the words of Robert E. Lee: "In front, behind, the direction 
+: does not matter.  We will fight them wherever they are."
+: 	A front is an artificial contruct devised to show the general 
+: area of conflict between two forces.  As a General, it is your *only* 
+: consideration to take objectives, hold good ground, and protect your 
+: supply line (a concept that also includes protecting industrial centers 
+: and transportation infrastructure).
+: 	When the AI finds good ground, it moves to occupy it or deny it 
+: to the enemy.  It pushes out from there by extending the army group's 
+: sphere of influence thereby denying the enemy room to maneuver or 
+: deploy.  
+: 	So, you see, the front will take care of itself.  And the lines 
+: of control will also take care of themselves if the computer maintains a 
+: contested area strength>=the human player contested area strength.
+: 	Also, as implied by this scheme, if the computer is losing the 
+: strength contest in the contested area, it will automatically shorten its 
+: own line by moving the understrength units towards other units.
+
+   Hmmm.
+
+   While I readily admit that it may all be due to a difference in
+semantics, I still think this is a derivation of the approach discussed
+earlier.  The influence of the units is only propogated to adjacent hexes
+(which I admit is MUCH faster and may be 'good enough' to do good tactical
+maneuvers on, mind you) and you're choosing to examine the battlefield
+in a more piecemeal fashion.
+
+   I assume, although I didn't explicity see it stated, that objectives
+are induced by marking those hexes/sites/whatever as the equivalent of
+'extra good ground'?
+
+: 	Think of it this way:  Two amoebae (sp?) are fighting with their 
+: cilia (the units).  They're stuck in the same test tube in a limited area 
+: (the battlefield).  Each feels the genetic need to grow to fill the test 
+: tube and can only do that by killing the other amoeba's cilia and pushing 
+: its cell wall back.
+: 	Initially, the two amoebae are seperated by a certain distance.  
+: However, they feel the need to expand.  The growth is instinctive (AI is 
+: programmed to do this, the human player needs to do this to gain control 
+: of the battle).  
+: 	The AI amoeba looks out with its sensors to the maximum range 
+: that it's cilia can attack (with deady morphogens!!).  Suddenly it sees 
+: the contested area for a few of its cilia, and the Human amoeba has more 
+: cilia in that area.  Well, the DNA looks for nearby cilia that have a low 
+: area of contention or none at all, and moves them to strengthen the weak 
+: area.  
+: 	The advance continues.
+: 	I hope this analogy brings across the basic theory behind what 
+: I'm saying.
+
+
+   This *does* help somewhat, actually.  I'm still somewhat concerned
+over the focus of the technique though.  Without actually coding it
+up (maybe I'll have time this weekend to try that experiment), it feels
+to me as if units will rush to and fro.
+
+: >   This begins to approach something mentioned earlier, the concept
+: >of breaking the AI into a 'General' and a 'Sergeant' makes a lot of 
+: >sense.  The General draws up the overall battle plan and determines
+: >what objectives to take.  The Segeant determines the best way to do it.
+: >Beyond Squad Leader will reportedly use a similar approach.
+
+: 	Precisely.  It's how actual armies work, and there's a good 
+: reason for that....why?  Because it works!
+
+ 
+   But that's my point, I think.  This approach seems aimed purely at the
+General's side of things--"these are important objectives to seize, these
+are units I'd like to see killed"--without consideration of the 'practical'
+aspects of the problem (the Sergeant's job, in other words).  Please don't
+misunderstand; I think this is valuable IF being presented as an approach
+for the General side of things.  
+
+
+Steve
+
+==============================================================================
+Steven Woodcock                                           _
+Senior Software Engineer, Gameware                  _____C .._.
+Lockheed Martin Information Systems Group      ____/     \___/
+Phone:  407-826-6986                          <____/\_---\_\      "Ferretman"
+E-mail: woodcock@gate.net (Home)
+        swoodcoc@oldcolo.com (Alternate Home)
+        woodcock@escmail.orl.mmc.com (Work)
+Disclaimer:  My opinions in NO way reflect the opinions of the
+             Lockheed Martin Information Systems Group, although
+             (like Rush Limbaugh) they should.  ;)
+Motto:
+    "...Men will awake presently and be Men again, and colour and laughter and
+ splendid living will return to a grey civilization. But that will only come
+ true because a few Men will believe in it, and fight for it, and fight in its
+ name against everything that sneers and snarls at that ideal..."
+
+                                                  --  Leslie Charteris
+                                                      THE LAST HERO
+
+==============================================================================
+
+From iplmail.orl.mmc.com!news.den.mmc.com!news.coop.net!cs.umd.edu!zombie.ncsc.mil!
+news.mathworks.com!news.kei.com!wang!news Fri Jun 16 16:15:16 1995
+Newsgroups: comp.ai.games
+Path: iplmail.orl.mmc.com!news.den.mmc.com!news.coop.net!cs.umd.edu!zombie.ncsc.mil!
+news.mathworks.com!news.kei.com!wang!news
+From: bruck@actcom.co.il (Uri Bruck)
+Subject: Re: Influence Mapping:  Strategic . . .
+Organization: ACTCOM - Internet Services in Israel
+Date: Fri, 16 Jun 1995 13:05:10 GMT
+Message-ID: <DA9oCn.91w@actcom.co.il>
+References: <3rict3$bl2@theopolis.orl.mmc.com> <3rl3f3$88b@clarknet.clark.net> 
+<3rnl56$n83@theopolis.orl.mmc.com>
+Sender: news@wang.com
+Lines: 103
+
+
+I thinkI can add something to the thread about influence mapping, using 
+the already mentioned idea of General/Sargent algorithm.
+This may seem obvious to many of you, but it's a point worth mentioning.
+
+The hierarchical division to General/Sargent can be used to save a lot of 
+computation time if each level sees the map in a different resolution.
+Personally I prefer having four levels (am currently trying to implement
+something using four levels of units) where the two lower levels
+are actually represented as field units, and therefore structurally similar,
+the two higher levels are command levels.
+
+This design (with more or less levels) becomes effective if the General
+only sees the map  in a lower resolution than. 
+(Perhaps I should also mention that I like to use cartesian coordinates rather
+than hexes, since I have no pre-computer war game experience, this deosn't 
+mean using squares - like Dune II apparently does, but continous coordinates)
+Influence mapping can still be done this way.
+
+Suppose we have different maps of the playing fields, in different
+resolutions (sp?), each level sees the map in an appropriate resolution.
+The General(HQ) sees the entire map in low resolution, it will see groups 
+of units as areas of influence, we could also add heading and velocity of 
+units to determine how dangerous they are to areas that the AI wants to 
+defend. A faster group of units would be more dangerous because it would 
+reach the AI area in less time. The AI knows it has several 2nd level 
+commanders at its disposal, it can assign one to defend a specific area, 
+it can assign a couple of others to secure a position that will threaten 
+an enemy installation, this will be done after low resolutions analysis 
+is done using perhaps one of the previously posted methids of influence mapping.
+
+The 2nd level commanders - Colonels - receive their instructions, such as, 
+attack a certain area,= they would need a more detailed map of that area, and
+perhaps the way to get there, it is not necessary to make the detailed map
+for the entire playing field, only for those areas which the Colonels need 
+information about, if two Colonels need information about the same area, they
+can use the same piece of map. Colonels have different kinds of units they
+can use to carry out their mission. The units are grouped under sargents,
+I see two possible kinds of groups, homogenous groups, or mixed groups, 
+provided the units in the mixed groups can travel the same types of terrain
+at more or less the same speeds.
+ 
+Colonels need to find the method that will give the best chance of success
+in their mission. They can another method mentioned under several names
+in the thread, like 'flowing' through the influence map and determine
+the shortest route, finding the weakest spot etc.
+They can try to determine which tatics would have the best chance of 
+success.
+
+If they 'know' (pre-programmed knowledge) that destroying a certain defended
+installation can be done in one of two ways:
+1. head on attack
+2. long range artillery first - short range attack later.
+each of these tactics would state some requirements
+(f'rinstance no.2 would require that the Colonel can use its long range units
+to shell the destination, while the other forces maneaver into position
+to attack - it would need to calculate the approximate amount of time
+it would take to carry this out, it could also test the possibily of 
+using different balances)
+In short the Colonel would have access to many generalized tactical
+scripts for each command would have to choose the one with the highest 
+possibilty of success.
+
+Sargents are simpler - They receive one of the basic command from the Colonel
+and distribute them among their units, basic command like move, attack, stand
+and hold fire, all the lower level stuff like changing direction, updating
+position etc. is handled by the unit itself. The Sargent may receiv a command
+to attack a group of units, and assign each of its units to on of the units in
+the group. Most of the units in the group can be pretty dumb - the Sargent can
+be used to check out the surounding area and adjust the movement orders if 
+necessary.
+
+F'rinstance, if they are being shot at while en route, it would be up to 
+the Sargent to decide whether they should try to evade the attack and still
+try to make it to their assigned destination, or dispatch some of the units 
+to take care of the immediate danger while the others continue on their
+main mission.
+
+This may sound comlicated to do at every turn - but then I was not thinking
+of a turn based game in the usual sense, but something more along the lines 
+of Dune II, which runs continously.
+
+What is left is detemining how often each level of command should be updated.
+Units that actually move should be continously updated. The higher the level
+the less updating one needs, what the higher level units should do is mostly
+check on the progress of the current mission and things that may need 
+immediate attention. this can be done both by using the maps,and the reports
+(In my implementation I update the maps about every six program cycles, when
+considereing a turn based game this sound too slow, but I my design was 
+a continous play game, to prvent jerkiness, I update 1 sixth of the 
+general map, every turn)
+
+Reports - just as commands flow down the command hierarchy, reports should
+flow upwards, information from reports can sometimes greatly enhance the 
+information received from control maps, letting each command level know
+the exact status of the units one level below, thus it can determine whether 
+its plans are being carried out successfuly, whether it is necessary to call
+on resrves, change plan of action, give commands at the proper time.
+(this assumes flasless communications - it would interesting to watch
+what happens if we allow comminications to falter)
+
+AI should also try to guess where the enemy intends to attack, recognize
+concentrations of force before they happen, this is posssible, by 
+extrapolating movement vectors of groups o funits, this isn't precise, but 
+it give the AI a general idea where the enemy might converge and it could send
+some forces to be in the vicinity, so they can at least slow down the 
+enemy forces.
+
+Uri Bruck
+
+==============================================================================
+
+Christopher Spencer <clspence@iac.net> wrote:
+>	I've read, with some interest, all of the proposals for wargame 
+>AI, and I haven't seen this technique postulated.  This is the technique 
+>I intend to use for my Fantasy Wargame Engine.
+>:
+>:Lots of stuff
+>:
+
+I would prefer a General/Sargeant AI over this.  The General AI should:
+1.  Look at the types of troops you have
+2.  Look at the types of troops the opponent has
+3.  Determine a strategy that best suits the troop types
+4.  Given the constraint of the given geography, selects the best set up
+    and determines objectives.
+
+Types of troops I would break into three categories:
+1.  Mobile
+2.  Infantry or ground
+3.  Missile
+
+Let me site some historical examples of why I think this would work best:
+1.  At crechy bridge, the English had superior missile strength and 
+    inferior mobile troops.  Neither force had much infantry.  Now, if the
+    English had made their stand on a hill in open country, the French would
+    have been able to threaten all sides then concentrate the forces on a
+    weak point.  Instead, the English chose to defend a gap between woods,
+    which funneled the French mobile troop into the English fire and enable
+    the English to set up a short defensive line to repel what French made
+    it through the fire.
+2.  During the era of Phalanx combat, high ground was a disadvantage.  Missile
+    fire at the time was not very effective and more effective for disrupting
+    formations.  The general's goal was to find an area were his Phalanx
+    would be on level, clear ground while they were fighting so that their
+    line would be the most cohesive.
+3.  When Marc Anthony invaded Persia, he had very little cavalry and the 
+    Persians had a lot of effective horsebowmen.  Then eventually forced
+    Marc Anthony's retreat not by keeping any ground but by taking advantage
+    that they could damage him from a distance and that the Romans were
+    not mobile enough to catch them.
+
+You also have to consider the bigger picture.  Let's say the battle is between
+a small, mobile force and your larger force of infantry and artillery.  Logic
+would say that you should use your artillery to pin the opponent down, move up
+infantry in a deliberate fashion to prevent the units from being disorganized
+when the mobile units could possible attack, then overwhelm the mobile units.
+But what if the mobile units are holding a bridge and are soon going to be
+relieved by an army much larger than yours?  Now, you need a whole new attack
+method so that you can destroy the bridge as quickly as possible.
+
+Dennis W. Disney
+disney@mcnc.org
+
+==============================================================================
+
+In article <3rsl65$ade@stingray.mcnc.org>,
+   disney@mcnc.org (Dennis W. Disney) wrote:
+>Christopher Spencer <clspence@iac.net> wrote:
+>>	I've read, with some interest, all of the proposals for wargame 
+>>AI, and I haven't seen this technique postulated.  This is the technique 
+>>I intend to use for my Fantasy Wargame Engine.
+>>:
+>>:Lots of stuff
+>>:
+>
+>I would prefer a General/Sargeant AI over this.  The General AI should:
+>1.  Look at the types of troops you have
+>2.  Look at the types of troops the opponent has
+>3.  Determine a strategy that best suits the troop types
+>4.  Given the constraint of the given geography, selects the best set up
+>    and determines objectives.
+>
+[lot's of interesting and intelligent stuff deleated]
+
+>You also have to consider the bigger picture.  Let's say the battle is 
+between
+>a small, mobile force and your larger force of infantry and artillery.  Logic
+>would say that you should use your artillery to pin the opponent down, move 
+up
+>infantry in a deliberate fashion to prevent the units from being disorganized
+>when the mobile units could possible attack, then overwhelm the mobile units.
+>But what if the mobile units are holding a bridge and are soon going to be
+>relieved by an army much larger than yours?  Now, you need a whole new attack
+>method so that you can destroy the bridge as quickly as possible.
+>
+>Dennis W. Disney
+>disney@mcnc.org
+
+I'm not a programmer but I know a little about strategy.  You might try for a 
+"personality" algorythm of some kind -- e.g. a agressive, defensive, or 
+conservative algorythm which could be varied according to circumstances.
+
+Two possible examples:
+
+1 - The "Commanders" are alocated thier algorythm at the start of the game and 
+make all moves accordingly.
+
+2 - The "Commanders" "adopt" an algorythm according to the intelligence 
+"available" to them.
+
+Re: 1 -- A commander with a conservative offensive algorythm would lose the 
+bridge in the example above.
+
+Re: 2 --
+
+One historical example that comes to mind is Montgomery's defeat at Arnhiem 
+bridge.  According to Cornelius Ryan, Montgomery's strategy was completely 
+"out of character".  He made the attacks in a daring move based on available 
+intelligence.  In a game AI scenerio this could be used as an example of a 
+personality template.  The "Player", if he understands the weaknesses of a 
+particular opponent, can devise a strategy taking advantage of these 
+weaknesses -- the example of the bridge above could work this way.  In other 
+words, the Player gets to "play against the man".
+
+This may be of no use to anyone, but the idea of a game with "personality 
+algorythms" effecting strategies is intriguing to me.  I mean, would anyone 
+really consider the Charge Of The Light Brigade good strategy?  It was an act 
+of personality and ego -- and cost too many lives.
+
+Owen Coughlan
+
+PS, I don't want to argue about Montgomery, I'm just citing it as a tenuous 
+example.
+
+==============================================================================
+
+Dennis W. Disney (disney@mcnc.org) wrote:
+
+: I would prefer a General/Sargeant AI over this.  The General AI should:
+: 1.  Look at the types of troops you have
+: 2.  Look at the types of troops the opponent has
+: 3.  Determine a strategy that best suits the troop types
+: 4.  Given the constraint of the given geography, selects the best set up
+:     and determines objectives.
+
+: Types of troops I would break into three categories:
+: 1.  Mobile
+: 2.  Infantry or ground
+: 3.  Missile
+
+
+    Okay.  Reasonable enough partitioning.
+
+: Let me site some historical examples of why I think this would work best:
+: 1.  At crechy bridge, the English had superior missile strength and 
+:     inferior mobile troops.  Neither force had much infantry.  Now, if the
+:     English had made their stand on a hill in open country, the French would
+:     have been able to threaten all sides then concentrate the forces on a
+:     weak point.  Instead, the English chose to defend a gap between woods,
+:     which funneled the French mobile troop into the English fire and enable
+:     the English to set up a short defensive line to repel what French made
+:     it through the fire.
+: 2.  During the era of Phalanx combat, high ground was a disadvantage.  Missile
+:     fire at the time was not very effective and more effective for disrupting
+:     formations.  The general's goal was to find an area were his Phalanx
+:     would be on level, clear ground while they were fighting so that their
+:     line would be the most cohesive.
+: 3.  When Marc Anthony invaded Persia, he had very little cavalry and the 
+:     Persians had a lot of effective horsebowmen.  Then eventually forced
+:     Marc Anthony's retreat not by keeping any ground but by taking advantage
+:     that they could damage him from a distance and that the Romans were
+:     not mobile enough to catch them.
+
+    Good examples.  We have perhaps been lax on using historical examples
+while considering the feasibility of these 'theoretical' AIs.
+
+: You also have to consider the bigger picture.  Let's say the battle is between
+: a small, mobile force and your larger force of infantry and artillery.  Logic
+: would say that you should use your artillery to pin the opponent down, move up
+: infantry in a deliberate fashion to prevent the units from being disorganized
+: when the mobile units could possible attack, then overwhelm the mobile units.
+: But what if the mobile units are holding a bridge and are soon going to be
+: relieved by an army much larger than yours?  Now, you need a whole new attack
+: method so that you can destroy the bridge as quickly as possible.
+
+
+   This is the point I was trying to make earlier with regards to deciding
+which units to use.  Most of the algorithms we've discussed fail to 'weight'
+their decision making based on what they're doing AT THE MOMENT.  If already
+engaged in battle, for example, they may very well be ABLE to run over and
+nuke some isolated enemy unit, but they might be better off standing where
+they are to finish off the unit or units they're presently engaged with.
+
+   Consideration of time in the equation is also a factor which we've
+tended to overlook, as you point out.  If we use an idea previously presented
+regarding the computation of movement vectors, then the AI can use that
+information to 'look ahead' and see that the enemy is maneuvering units
+towards reinforcement of the bridge.  That information could be used to
+weight its decision making towards taking the bridge now while it can
+vs. waiting for more reinforcements.  The odds might be lower, but the
+price of success LATER is so much higher that it may make sense to attack
+now.
+
+Steven
+</DIV></PRE>
+</TD></TR></TABLE></CENTER>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1085&forum_id=35&Topic_Title=Recognizing+Strategic+Dispositions+thread  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1085&forum_id=35&Topic_Title=Recognizing+Strategic+Dispositions+thread'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1085&forum_id=35&Topic_Title=Recognizing+Strategic+Dispositions+thread">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

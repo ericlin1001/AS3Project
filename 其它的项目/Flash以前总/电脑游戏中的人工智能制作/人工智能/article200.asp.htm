@@ -1,0 +1,235 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			Comp.AI.Games FAQ
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<PRE>
+                               COMP.AI.GAMES
+
+                         FREQUENTLY ASKED QUESTIONS
+
+                                  96/04/28
+
+         ---------------------------------------------------------
+
+                     Currently maintained by (Drumroll)
+                                 Sunir Shah
+                             sshah@intranet.ca
+
+         ---------------------------------------------------------
+
+                             TABLE OF CONTENTS
+
+0 Introductory Stuff
+
+   * 0.1 Copyright
+   * 0.2 Disclaimer
+   * 0.3 Work in Progress
+   * 0.4 Netiquette and related topics
+   * 0.5 Whom to blame
+   * 0.6 What's New in this Release?
+
+1 Overview of comp.ai.games
+
+   * 1.1 What is the purpose of comp.ai.games?
+   * 1.2 What are appropriate topics on c.a.g?
+   * 1.3 What are _not_ appropriate topics on c.a.g?
+   * 1.4 Is there an archive for this group?
+
+2 Overview of Artificial Intelligence
+
+   * 2.1 What is Artificial Intelligence
+   * 2.2 What constitues AI in games? What doesn't?
+   * 2.3 Should computer opponents be considered AI at all?
+   * 2.4 What languages and tools are available for developing AI
+     applications?
+   * 2.5 What development methods have been shown to work?
+        o 2.5A Choose the least amount of AI that will get the job done
+        o 2.5B Start Small
+
+3 Solved and Unsolved Problems in AI for Games
+
+   * 3.1 What game AI problems have been solved?
+        o 3.1A Finding the shortest path from point A to point B
+        o 3.1B Traversing a maze
+        o 3.1C Exhaustive search of sequences of a limited set of moves
+          (gametrees)
+
+   * 3.2 What game-applicable AI problems have not been solved yet?
+   * 3.3 What games have been "solved"
+
+4 Promising areas of AI research in gaming
+
+5 Fact Sheets and descriptions of gaming AI projects
+
+   * 5.1 RARS
+   * 5.2 Bolo
+   * 5.3 OMEGA
+   * 5.4 WASTE
+
+6 Summaries of useful c.a.g threads
+
+7 Game AI in the larger world
+
+   * 7.1 Who is sponsoring research into AI in games?
+   * 7.2 How can I get a job or assistanceship writing games?
+   * 7.3 What commercial games use AI?
+   * 7.4 What commercial games advertise AI but don't really use it?
+   * 7.5 Are there any AI competitions?
+
+8 Further information
+
+   * 8.1 What are some related news groups?
+   * 8.2 Where can I FTP text and binaries?
+   * 8.3 What books are available on AI and gaming topics?
+
+9 Source Code
+
+10 Glossary
+
+11 Acknowledgements
+
+         ---------------------------------------------------------
+
+0 Introductory Stuff
+
+0.1 Copyright
+
+Copyright 1996 Sunir Shah. All rights reserved.
+Portions copyright (c) 1995 by Steve Furlong. All rights reserved.
+Portions copyright 1995 by Doug Walker and others.
+
+Sunir Shah currently has permission to edit sections copyright Steve
+Furlong, Doug Walker and Rob Uhl.
+
+This FAQ may be freely redistributed in its entirety without modification
+provided that this copyright notice is not removed. It may not be sold for
+profit or incorporated in commercial documents (e.g., published for sale on
+CD-ROM, floppy disks, books, magazines, or other print form) without the
+prior written permission of the copyright holder. Permission is expressly
+granted for this document to be made available for file transfer from
+installations offering unrestricted anonymous file transfer on the
+Internet.
+
+------------------------------------------------------------
+
+0.2 Disclaimer
+
+This FAQ is provided AS IS without any express or implied warranty. While
+the copyright holder and others have made every effort to ensure that the
+information contained herein is accurate, they cannot be held liable for
+any damages arising from its use.
+
+------------------------------------------------------------
+
+0.3 Work in Progress
+
+This is very preliminary, and incomplete, not very nicely formatted,
+illogically orderded, etc.. But it IS a starting point.
+
+I'd appreciate any answers you can give to be mailed to me at
+sshah@intranet.ca . For those topics that have threads currently underway,
+could an interested party summarize the discussions?
+
+This is a relatively new group, and this FAQ has bounced from person to
+person and I've (foolishly?) agreed to take it over. Hopefully this will
+become the "official" FAQ of comp.ai.games but don't hold your breath.
+
+------------------------------------------------------------
+
+0.4 Netiquette and Related Topics
+
+Some Guidelines to Better Living:
+
+In general, there are several broad areas which can harm the
+signal-to-noise ratio in a newsgroup. By taking a little extra care in
+posting, we can all help keep the noise down.
+
+First, do not post questions which are answered in the FAQ. The FAQ will be
+posted regularly and will also be available by www. DO, however, send
+useful information to the keeper of the FAQ, sshah@intranet.ca. That will
+help us keep the FAQ useful. The reason some questions are frequently asked
+is that the FAQ has dated information and just asking often provides much
+more information than reading the FAQ.
+
+Second, do not respond to flames, flame-bait, and other obnoxious posts.
+Often, trollers will post false or inflammatory messages and attempt to
+whip up a flamewar by working both sides of the debate. Let them flame each
+other, there's no need to help them out.
+
+Third, use KEYWORDS. If your post is about chess, put "CHESS:" at the start
+of your subject line. This will enable those with smart newsreaders to
+automatically select or kill your article. If it's a question, add "Q:" to
+the subject line. A larger list of suggested keywords will be included in
+the FAQ. Any keywording conventions which arise in the course of the
+group's development will also be added.
+
+Fourth, please don't cross-post. If an article is earth-shatteringly
+important to more than one group, fine. When following up an article which
+is excessively cross-posted, remove the cross-posts. There was a three-
+month flamewar/debate over the merits of Ada which would have died if the
+original troll hadn't been cross-posted to every comp.lang group in
+existance. What finally killed it was a lot of people removing the
+excessive cross-posts. If it starts here, let's put it out of our misery
+quickly. You can set a Follow-Up To: newsgroup in your article, to let
+folks who are interested follow the discussion without taking up more than
+one newsgroup.
+
+Finally, if someone is posting in the wrong group, tell them via mail.
+There are a lot of newbies out there, and there are more on the way. If we
+let a flamewar erupt every time a newbie posts in the wrong place, we'll be
+all noise and no signal in no time.
+
+------------------------------------------------------------
+
+0.5 Whom to blame
+
+If you have comments or concerns about this FAQ, please direct them to
+Sunir Shah, sshah@intranet.ca.
+
+One thing you may notice is that this FAQ is more an introduction to the
+topic of AI in gaming than an actual list of frequently-asked questions.
+When the bulk of the FAQ was written, the newsgroup hadn't been around long
+enough to have any frequently asked questions. Well, there are a few now.
+
+------------------------------------------------------------
+
+0.6 What's New in this Release?
+
+Sunir Shah has taken over the comp.ai.games FAQ and he has editted it a
+bunch. Big changes are the removal of the bulky "summaries of useful c.a.g
+threads" section (more of an archive than a summary), I've added a lot to
+empty sections and I've probably ended up self-referencing myself about
+10348 times (who knows? I'm writing this before I've made those changes).
+
+Hopefully I can guilt Steve Woodcock into keeping those alive on his pages:
+                   http://www.cris.com/~swoodcoc/ai.html
+
+If not, I'll download them and store them somewhere accessible.
+
+------------------------------------------------------------
+
+Part 2.
+
+------------------------------------------------------------
+
+  [Image] [Image] [Image] [Image] [Image] [Image] [Image] [Image] [Image]
+                          [Image] [Image] [Image]
+
+      [ Home | E-Mail | FTP | Synapsis Entertainment | Lamer | WASTE |
+comp.ai.games FAQ | The Programmers' Booklist | Wall o' Gratin | Acid | The
+              Seafood and Crab Subway Sandwich Mystery | z ]
+</PRE>
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=200&forum_id=35&Topic_Title=Comp%2EAI%2EGames+FAQ  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=200&forum_id=35&Topic_Title=Comp%2EAI%2EGames+FAQ'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=200&forum_id=35&Topic_Title=Comp%2EAI%2EGames+FAQ">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

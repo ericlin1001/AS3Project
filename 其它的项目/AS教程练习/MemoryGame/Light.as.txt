@@ -1,0 +1,62 @@
+package{
+import flash.geom.Graphics;
+import flash.display.Shape;
+import flash.display.Sprite;
+//
+public Light extends Sprite {
+static const OFF:String="off";
+static const ON:String="on";
+public var num:uint=0;
+privae var _status:String=OFF;
+private var greyColor:Shape;
+private var lightColor:Shape;
+//
+public function Sprite(tcolor:uint=0xff0000,tradius:Number=30){
+lightColor=new Shape();
+var g:Graphics=lightColor.graphics;
+g.clear();
+g.lineStyle();
+g.beginFill(tcolor);
+g.drawCircle(0,0,tradius);
+g.endFill();
+addChild(lightColor);
+//
+greyColor=new Shape();
+g=greyColor.graphics;
+g.clear();
+g.lineStyle();
+g.beginFill(0xaaaaaa);
+g.drawCircle(0,0,tradius);
+g.endFill();
+greyColor.alpha=0.75;
+addChild(greyColor);
+//
+_status=OFF;
+num=0;
+}
+//
+public function on():void{
+if(_status!=ON)[
+removeChild(greyColor);
+_status=ON;
+}
+}
+public function off():void{
+if(_status!=OFF)[
+addChild(greyColor);
+_status=OFF;
+}
+}
+public function get status():String{
+retrun _status;
+} 
+public fuction set status(value:String){
+if(value==OFF){
+off();
+}else if(value==ON){
+on();
+}
+}
+
+}
+}

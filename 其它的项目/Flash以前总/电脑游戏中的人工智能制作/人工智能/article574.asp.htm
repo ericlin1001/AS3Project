@@ -1,0 +1,167 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			Building Brains Into Your Games
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+                               
+
+<CENTER><SPAN CLASS="title">Building Brains into Your Games</SPAN>
+<BR><SPAN CLASS="author">by <A HREF="javascript:if(confirm('http://www.xgames3d.com/  \n\nÕâ¸öÎÄ¼þ²»ÄÜÍ¨¹ý Teleport Pro È¡»Ø, ÒòÎª Ëü±»·ÃÎÊÓÚÒ»¸öÓò»òÔÚËüµÄÆðÊ¼µØÖ·±ß½çÍâ²¿µÄÂ·¾¶ÉÏ.  \n\nÄãÏë´Ó·þÎñÆ÷´ò¿ªËüÂð?'))window.location='http://www.xgames3d.com/'" tppabs="http://www.xgames3d.com/">André LaMothe</A>
+<BR>August, 1995</SPAN></CENTER>
+
+<P>Game developers have always pushed the limits of the hardware when it comes to graphics and sound, but I think we all agree that when it's time to implement artificial intelligence for a game, AI always gets the short end of the stick! In this article, we are going to study a potpourri of AI topics ranging from the simple to the complex.
+<P>Along the way, we are going to try out a few demos that use a very rudimentary graphics interface to illustrate some of the simpler concepts. However, most of our discussion will be quasi-theoretical and abstract. This is because AI is not as simple as an algorithm, a data structure, or similar things. Artificial intelligence is a fluid concept that must be shaped by the game it is to be used on. Granted, you may use the same fundamental techniques on myriad games, but the form and implementation may be radically different.
+<P>Let's begin our discussion with some simple statements that define what AI is in the context of games. Artificial intelligence in the arena of computer games implies that the computer-controlled opponents and game objects seem to show some kind of cognitive process when taking actions or reacting to the player's actions. These actions may be implemented in a million different ways, but the bottom line, from an observers point of view, is that they seem to show intelligence.
+<P>This brings us to the fundamental definition of intelligence. For our purposes, intelligence is simply the ability to survive and perform tasks in an environment. The tasks may be to hunt down and destroy the player, find food, navigate an asteroid field, or whatever. Nevertheless, this will be our loose definition of intelligence.
+<P>Now that we have an idea of what we are trying to accomplish, where on earth should we begin? We will begin by using humans as our models of intelligence because they seem to be reasonably intelligent for carbon units. If we observe a human in an environment, we can extrapolate a few key behaviors of intelligence that we can model using fairly simple computer algorithms and techniques.
+<P>These behaviors are blind reflexes, random selection, use of known patterns, environmental analysis, memory-based selections and sequential behaviors that may encompass some or all of the other behaviors. We'll take a look at all of these behaviors and explore how we might implement them in a computer game, but first let's talk about the graphics module we are going to use for some of the demos.
+
+<H1>The Graphics Module</H1>
+<P>Half the world uses Microsoft C and C++ compilers and the other half uses Borland C and C++ compilers--so it's always a problem publishing demos that depend on the use of either. Hence, we are going to write C code that is totally compiler independent, based on a graphics interface that we are going to write ourselves, and that will work on both compilers. The graphics interface will be based on graphics mode 13h, which is 320 by 200 pixels with 256 colors as shown in Figure 1. For the simple demos we are going to write, all we want to do is place the VGA/SVGA card in mode 13h and plot single pixels on the screen. Thus we need two functions:
+
+<BLOCKQUOTE><SPAN CLASS="code">Set_Video_Mode(int mode);</SPAN></BLOCKQUOTE>
+
+<P>and
+
+<BLOCKQUOTE><SPAN CLASS="code">Plot_Pixel(int x, int y,unsigned char color);</SPAN></BLOCKQUOTE>
+
+<P>We will use the video BIOS function 10h to set the video mode, but how can we plot pixels? Plotting pixels in mode 13h is very simple because the graphics are fully memory mapped. Basically, mode 13h is a totally linear array of memory that represents each pixel with a single byte. Further, this video memory starts at location A000:0000. Figure 1 shows that there are 200 rows and 320 columns. Therefore, to compute the address of any pixel at (x,y) we simply multiply the Y component by 320 and add the X. Or in other words:
+
+<BLOCKQUOTE><SPAN CLASS="code">memory offset = y*320+x;</SPAN></BLOCKQUOTE>
+
+<P>Adding this memory offset to A000:0000 gives us the final memory location to access the desired screen pixel. Hence, if we alias a FAR pointer to the video memory like this:
+
+<BLOCKQUOTE><SPAN CLASS="code">unsigned char far* video_buffer = (unsigned char far*)A0000000L;</SPAN></BLOCKQUOTE>
+
+<P>Then we can access the video memory using a syntax like:
+
+<BLOCKQUOTE><SPAN CLASS="code">video_buffer[y*320+x] = color;</SPAN></BLOCKQUOTE>
+
+<P>And that's it. So, using that information, we can then write a simple pixel-plotting function and graphics-mode function. These two functions should be added to each demo so that the demos can perform the graphics-related functions without help from the compiler-dependent graphics library. We're also going to add a little time-delay function based on the PC's internal timer. The function is called Time_Delay() and takes a single parameter, which is the number of clicks to wait for. Listing 1 shows the complete graphics interface named GMOD.H for the demos contained within this article. Simply include the code of the graphics module with each demo and everything should work fine. Now that we have the software we need to do graphics, let's begin our discussion of AI.
+
+<H1>Deterministic Algorithms</H1>
+<P>Deterministic algorithms are the simplest of the AI techniques used in games. These algorithms use a set of variables as the input and then use some simple rules to drive the computer- controlled enemies or game objects based on these inputs. We can think of deterministic algorithms as reflexes or very low-level instincts. Activated by some set of conditions in the environment, the algorithms then perform the desired behavior relentlessly without concern for the outcome, the past, or future events.
+<P>The chase algorithm is a classic example of a deterministic algorithm. The chase algorithm is basically a method of intelligence used to hunt down the player or some other object of interest in a game by applying the spatial coordinates of the computer-controlled object and the object to be tracked. Figure 2 illustrates a good example of this. It depicts a top view of a typical battleground, on which three computer-controlled bad guys and one player are fighting. The question is, how can we make the computer-controlled bad guys track and move toward the player? One way is to use the coordinates of the bad guys and the coordinates of the player as inputs into a deterministic algorithm that outputs direction changes or direction vectors for the bad guys in real time.
+<P>Let's use bad guy one as the example. We see that he is located at coordinates (bx1,by1) and the player is located at coordinates (px,py). Therefore, a simple algorithm to make the bad guy move toward the player would be:
+
+<BLOCKQUOTE><PRE><DIV CLASS="code">
+// process x-coords
+if (px&gt;bx1) bx1++;
+else if (px&lt;bx1) bx1--;
+
+// process y-coords
+if (py&gt;by1) by1++;
+else if (py&lt;by1) by1--; 
+
+</DIV></PRE></BLOCKQUOTE>
+
+<P>That's all there is to it. If we wanted to reverse the logic and make the bad guy run then the conditional logic could be inverted or the outcome increment operators could be inverted. As an example of deterministic logic, Listing 2 is a complete program that will make a little computer-controlled dot chase a player-controlled dot. Use the numeric keypad to control your player and press ESC to exit the program.
+<P>Now let's move on to another typical behavior, which we can categorize as random logic.
+
+<H1>Random Logic</H1>
+<P>Sometimes an intelligent creature exhibits almost random behaviors. These random behaviors may be the result of any one of a number of internal processes, but there are two main ones that we should touch upon--lack of information and desired randomness.
+<P>The first premise is an obvious one. Many times an intelligent creature does not have enough information to make a decision or may not have any information at all. The creature then simply does the best it can, which is to select a random behavior in hopes that it might be the correct one for the situation. For example, let's say you were dropped into a dungeon and presented with four identical doors. Knowing that all but one meant certain death, you would simply have to randomly select one!
+<P>The second premise that brings on a random selection is intentional. For example, say you are a spy trying to make a getaway after acquiring some secret documents (this happens to me all the time). Now, imagine you have been seen, and the bad guys start shooting at you! If you run in a straight line, chances are you are going to get shot. However, if during your escape you make many random direction changes and zigzag a bit, you will get away every time!
+<P>What we learn from that example is that many times random logic and selections are good because it makes it harder for the player to determine what the bad guys are going to do next, and it's a good way to help the bad guys make a selection when there isn't enough information to use a deterministic algorithm. Motion control is a typical place to apply random logic in bad- guy AI. You can use a random number or probability to select a new direction for the bad guy as a function of time. Let's envision a multiplayer game with a single, computer- controlled bad guy surrounded by four human players. This is a great place to apply random motion, using the following logic:
+
+<BLOCKQUOTE><PRE><DIV CLASS="code">
+// select a random translation for X axis
+bx1 = bx1 + rand()%11 - 5;
+// select a random translation for Y axis
+by1 = by1 + rand()%11 - 5;
+
+</DIV></PRE></BLOCKQUOTE>
+
+<P>The position of the bad guy is translated by a random amount in both X and Y, which in this case is +-5 pixels or units.
+<P>Of course, we can use random logic for a lot of other things besides direction changes. Starting positions, power levels, and probability of firing weapons are all good places to apply random logic. It's definitely a good technique that adds a bit of unpredictability to game AI. Listing 3 is a demo of random logic used to control motion. The demo creates an array of flies and uses random logic to move them around. Press ESC to exit the demo.
+<P>Now let's talk about patterns.
+
+<H1>Encoded List Processing</H1>
+<P>Many intelligent creatures have prerecorded patterns or lists of behaviors that they have either learned from experience or are instinctive. We can think of a pattern as a sequence of steps we perform to accomplish a task. Granted, this sequence may be interrupted if something happens during the sequence that needs attention. But in general, if we forget about interruptions then we can think of patterns as a list of encoded instructions that an intelligent creature consumes to accomplish some task.
+<P>For example, when you drive to work, school, or your girlfriend's or boyfriend's house, you are following a pattern. You get into your car, start it, drive to the destination, stop the car, turn it off, get out, and finally do whatever it is you're going to do. This is a pattern of behavior. Although during the entire experience a billion things may have gone through your head, the observed behavior was actually very simple. Hence, patterns are a good way to implement seemingly complex thought processes in game AI. In fact, many games today still use patterns for much of the game logic.
+<P>So how can we implement patterns for game AI? Simply by using an input array to a list processor. The output of the processor is the control of a game object or bad guy. In this case, the encoded list has the following set of valid instructions:
+
+<UL>
+  <LI>Turn right
+  <LI>Turn left
+  <LI>Move forward
+  <LI>Move backward
+  <LI>Sit still
+  <LI>Fire weapon
+</UL>
+
+<P>Even though we only have six selections, we can construct quite a few patterns with a short input list of 16 elements as in the example. In fact there are 6 16 different possible patterns or roughly 2.8 trillion different behaviors. I think that's enough to make something look intelligent! So how can we use encoded lists and patterns in a game for the AI? One solid way is to use them to control the motion of a bad guy or game object. For example, a deterministic algorithm might decide it's time to make a bad guy perform some complex motion that would be difficult if we used standard conditional logic. Thus, we could use that pattern, which simply reads an encoded list directing the bad guy to make some tricky moves. For example, we might have a simple algorithm like this:
+
+<BLOCKQUOTE><PRE><DIV CLASS="code">
+int move_x[16] = {-2,0,0,0,3,3,2,1,0, -2,-2,-,0,1,2,3,4};
+int move_y[16] = {0,0,0,1,1,1,0,0,-1,-1, 2,3,4,0,0.-1};
+
+// encoded pattern logic for a 16 element list
+for (index=0; index<16; index++)
+{
+  bx1+=move_x[index];
+  by1+=move_y[index];
+} // end for index
+
+</DIV></PRE></BLOCKQUOTE>
+
+<P>You'll notice that the encoded pattern is made up simply of X and Y translations. The pattern could just as well have contained complex records with a multitude of data fields. I've written detailed code that will create an example of patterns and list processing, a demo of an ant that can process one of four patterns selected by the keys 1-4. Unfortunately, it's too long to print here. Go to the Game Developer ftp site, though (ftp://ftp.mfi.com/gdmag/src), and you can download it there.
+<P>Now we're starting to get somewhere, but we need an overall control unit with some form of memory, and we must select the appropriate types of behaviors.
+
+<H1>Finite State Machines</H1>
+<P>Finite state machines, or FSMs, are abstract models that can be implemented either in hardware or software. FSMs are not really machines in the mechanical sense of the word, but rather abstract models with a set of "states" that can be traversed. Within these states, the FSM not only has a special set of outputs but remembers the state and can transition to another state, if and only if a set of inputs or premises are met. Figure 3 is a typical depiction of a finite state machine. We see that there is a set of states labeled, S0, S1, S2, and Sn. We also see that there is a set of connecting edges or arcs. These are called transition arcs and are the premises that must be met for the FSM to move from state to state. Finally, within each state is a set of outputs. These outputs can be anything we wish-- from motion controls for a game's bad guys to hard disk commands.
+<P>So how do we model an FSM in software and use it to control the game AI? Let's begin with the first question.
+<P>We can model an FSM with a single variable and a set of logical conditions used to make state transitions along with the output for each state. For example, let's actually build a simple software state machine that controls a computer bad guy differently based on the bad guy's distance to the player. The state machine will have the following four states:
+
+<UL>
+  <LI>State 0: Select new state = STATE_NEW
+  <LI>State 1: Move randomly = STATE_RANDOM
+  <LI>State 2: Track player = STATE_TRACK
+  <LI>State 3: Use a pattern = STATE_PATTERN
+</UL>
+
+<P>The FSM's transition diagram is shown in Figure 4. We can see that if the bad guy is within 50 units of the player, then the bad guy moves into State 2 and simply attacks. If the bad guy is in the range of 51 to 100 units from the player, then the bad guy goes into State 3 and moves in a pattern. Finally, if the bad guy is farther than 100 units from the player then chances are the bad guy can't even see the player (in the imaginary computer universe). In that case, the bad guy moves into State 1, which is random motion.
+<P>So how can we implement this simple FSM machine? All we need is a variable to record the current state and some conditional logic to perform the state transitions and outputs. Listing 4 shows a rough algorithm that will do all this.
+<P>Note that S0 (the new state) does not trigger any behavior on the part of the opponent. Rather, it acts as a state "switchbox," to which all states (except itself) transition. This allows you to localize in a single control block all the decision making about transitions
+<P>Although this requires two cycles through the FSM loop to create one behavior, it's well worth it. In the case of a small FSM, the entire loop can stay in the cache, and in the case of a large FSM loop, the localization of the transition logic will more than pay for the performance penalty. If you absolutely refuse to double-loop, you can handcraft the transitions between states. A finite-state machine diagram will vividly illustrate, in the form of spaghetti transitions, when your transition logic is out of control.
+<P>Now that we have an overall thought controller, that is, an FSM, we should discuss simulating sensory excitation in a virtual world.
+
+<H1>Environmental Sensing</H1>
+<P>One problem that plagues AI game programming is that it can be very unfair-- at least to the player. The reason for this is that the player can only "see" what's on the computer screen, whereas the computer AI system has access to all variables and data that the player can't access.
+<P>This brings us to the concept of simulated sensory organs for the bad guys and game objects. For example, in a three- dimensional tank game that takes place on a flat plain, the player can only see so far based on his or her field of view. Further, the player can't see through rocks, buildings, and obstacles. However, because the game logic has access to all the system variables and data structures, it is tempting for it to use this extra data to help with the AI for the bad guys.
+<P>The question is, is this fair to the player? Well, of course not. So how can we make sure we supply the AI engine of the bad guys and game objects with the same information the player has? We must use simulated sensory inputs such as vision, hearing, vibration, and the like. Figure 5 is an example of one such imaginary tank game. Notice that each opponent and the player has a cone of vision associated with it. Both the bad guys and the player can only see objects within this cone. The player can only see within this cone as a function of the 3D graphics engine, but the bad guys can only see within this cone as a function of their AI program. Let's be a little more specific about this.
+<P>Since we know that we must be fair to the player, what we can do is write a simple algorithm that scans the area in front of each bad guy and determines if the player is within view. This scanning is similar to the player viewing the viewport or looking out the virtual window. Of course, we don't need to perform a full three-dimensional scan with ray tracing or the like--we can simply make sure the player is within the view angle of the bad guy in question by using trigonometry of any technique we wish.
+<P>Based on the information obtained from each bad guy scan, the proper AI decision can be made in a more uniform and fair manner. Of course, we may want to give the computer-controlled AI system more advantage than the human player to make up for the AI system itself being rather primitive when compared to the 100 billion- cell neural network it is competing against, but you get the idea.
+<P>Finally, we might ask, "Can we perform other kinds of sensing?" Yes. We can create simulated light detectors, sound detectors, and so forth. I have been experimenting with an underwater game engine, and in total darkness the only way the enemy creatures can "see" you is to listen to your propulsion units. Based on the power level of the player's engines the game AI determines the sound level that the bad guys hear and moves them toward the sound source or sources.
+
+<H1>Memory and Learning</H1>
+<P>The final topic we're going to touch upon is memory and learning. Memory is easy enough to understand, but learning is a bit more nebulous. Learning as far as we are concerned is the ability to interact in an environment in such a way that behaviors that seem to work better than others under certain conditions are "memorized" and used more often. In essence, learning is based on memory of past actions being good or bad or whatever. Imagine that we have written a fairly complex game composed of computer-controlled aliens. These aliens use an FSM- based AI engine and environmental sensing. The problem is that one of the resources in the game is energion cubes and the player and aliens must compete for these cubes.
+<P>As the player is moving around in the environment, he or she can create a mental map of where energion cubes seem to be plentiful, but the alien creatures have no such ability; they can only stand and are at a disadvantage. Can we give them a memory and teach them where these energion cubes are? Of course we can, we are cybergods!
+<P>One such implementation would work as follows: We could use a simple data structure that would track the number of times an alien found energion in each geographical region of the game.(Figure 6 illustrates one such memory map.) Then, when an alien was power hungry, instead of randomly bouncing around, the alien would refer to this memory data structure and select the geographical region with the highest probability of finding energion and set its trajectory for this region.
+<P>The previous example is a simple one, but as we can see, memory and learning are actually very easy to implement. Moreover, we can make the computer AI learn much more than where energion is. It could learn the most common defensive moves of the player and use this information against the player.
+<P>Well that's enough for basic AI techniques. Let's take a quick look at how we can put it all together.
+
+<H1>Building Monsters from the Id</H1>
+<P>We have quite a repertoire of computer AI tricks at our fingertips, so how should we use it all? Basically, when you write a game and are implementing the AI, you should list the types of behaviors that each game object or bad guy needs to exhibit. Simple creatures should use deterministic logic, randomness, and patterns. Complex creatures that will interact with the player should use an FSM-based AI engine. And the main game objects that harass and test the player should use an FSM and sensory inputs and memory. Figure 7 illustrates a final model of the most advanced AI engine we can construct with what we have to work with.
+
+<H1>The Future</H1>
+<P>I see AI as the next frontier to explore. Without a doubt, most game programmers have focused so much on graphics that AI hasn't been researched much. The irony is that researchers have been making leaps and bounds in AI research and Artificial Life or A-Life.
+<P>I'm sure you've heard the common terms "genetic algorithms" and "neural networks." Genetic algorithms are simply a method of representing some aspect of a computer-based AI model with a set of "genes," which can represent whatever we wish--aggressiveness, maximum speed, maximum vision distance, and so on. Then, a population of creatures is generated using an algorithm that adds a little randomness in each of the output creatures' genes.
+<P>Our game world is then populated with these gene-based creatures. As the creatures interact in the environment, they are killed, survive, and are reborn. The biological analog comes into play during the rebirthing phase. Either manually or by some other means, the computer AI engine "mates" various pairs of creatures and mixes their genes. The resulting offspring then survive another generation and the process continues. This causes the creatures to evolve so that they are most adapted for the given environment.
+<P>Neural networks, on the other hand, are computer abstractions of a collection of brain cells that have firing thresholds. You can enhance or diminish these thresholds and the connections between cells. By "teaching" a neural network or strengthening and weakening these connections, the neural net can learn something. So we can use these nets to help make decisions and even come up with new methods.
+<P><HR SIZE="1">
+<P><I>Andre LaMothe is the author of the best-selling Tricks of the Game Programming Gurus (SAMS Publishing, 1994) and Teach Yourself Game Programming in 21 Days (SAMS Publishing, 1994). His latest creation is the Black Art of 3D Game Programming (Waite Group Press, 1995).</H1>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=574&forum_id=35&Topic_Title=Building+Brains+Into+Your+Games  \n\nÕâ¸öÎÄ¼þ²»ÄÜÍ¨¹ý Teleport Pro È¡»Ø, ÒòÎª Ëü±»Á´½Óµ½ÀëËüµÄÆðÊ¼µØÖ·Ì«Ô¶µÄµØ·½. Èç¹ûÄãÔö´óÆðÊ¼µØÖ·ÔÚÆä·¶Î§ÄÚµÄÉî¶ÈÉèÖÃ, Õâ¸öÎÄ¼þ½«½øÐÐÁÐ¶ÓµÈ´ýÈ¡»Ø.  \n\nÄãÏë´Ó·þÎñÆ÷´ò¿ªËüÂð?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=574&forum_id=35&Topic_Title=Building+Brains+Into+Your+Games'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=574&forum_id=35&Topic_Title=Building+Brains+Into+Your+Games">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

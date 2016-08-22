@@ -1,0 +1,175 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			AI Uncertainty
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<FONT FACE="Verdana" SIZE="2">
+
+Newsgroups: comp.ai.games
+<BR>From: smt@cs.monash.edu.au (Scott M Thomson)
+<BR>Subject: Uncertainty in AI
+<BR>Summary: This posting will hopefully publicise Bayesian networks, which provide
+<BR>Keywords: AI
+<BR>Date: Fri, 31 Mar 1995 04:56:58 GMT
+
+
+<P>Have you ever played peek-a-boo with a small child?  Why is it that it works?  What is it that engages the child's delight?  Why doesn't it work with older people?
+
+<P>The game of peek-a-boo takes advantage of the limited cognitive development of the child, when we hide ourselves behind an object the child's mind no longer registers our presence.  When we pop out from hiding the child's mind is delirious at the magic of our rematerialization.
+
+<P>A complicated challenge for artificial intelligence since its inception has been knowledge representation in problems with uncertain domains.  What a system can't see is, nonetheless, of possible importance to its reasoning mechanisms.  What is unknown is also often still vital to common sense reasoning.  This posting will hopefully publicise Bayesian networks, which provide a formalism for modelling and an inference mechanism for reasoning under uncertainty and initiate discussion about uncertainty problems and probabilistic reasoning in game AI's.
+
+<P>Sun Tzu was a Chinese general who lived approximately 2400 years ago. His work, "The Art of War", describes the relationships between warfare, politics, economics, diplomacy, geography and astronomy. Such modern generals as Mao Zedung have used his work as a strategic reference.
+
+<P>Sun Tzu's philosophy on war can be summed up in this statement, "to win one hundred victories in one hundred battles is not the acme of skill.  To subdue the enemy without fighting is the supreme excellence" [11].  In computer games utilising cheats for toughening computer AI there is no skill in a computer player's victory.  If a computer player can beat a human on even terms then we may start to discuss the skill of the AI designer and any human victory is that much more appreciated.
+
+<P>The difficulty in representing uncertainty in any game AI is in the vast numbers of combinations of actions, strategies and defences available to each player.  What we are left with is virtually impossible to represent in tables or rules applicable to more than a few circumstances.  Amongst the strategies expounded by Sun Tzu are enemy knowledge, concealment and position[11].
+
+<P>Enemy knowledge is our most obvious resource.  Another player's units or pieces inform us about possible future actions or weaknesses by location, numbers and present vectored movement.  They suggest possibilities for defensive correction, offensive action and bluffing.  Sun Tzu states that we should, ``Analyse the enemy's plans so that we will know his shortcomings as well as strong points.  Agitate him in order to ascertain the pattern of his movement"[11].
+
+<P>Concealment may be viewed as the art of both hiding one's own strategy and divining one's opponent's.   By considering our opponent's past history and placing our current situation in that context we hope to discover something about what is hidden in their mind.  Conversely, our actions must be designed to convey as little as possible about the true strength or weakness of our positions.
+
+<P>The position of units refers to their terrain placement in the game.  Those terrains that grant defensive or offensive bonuses to computer players units should be utilised to the best advantage.  In addition computer units should strike where the enemy is weakest and where the most damage can be inflicted at the least loss.  Impaling units on heavily fortified positions for nominal gain is best left to real generals in real war and is not a bench mark of intelligent behaviour. 
+
+<P>To combine everything we need to play a good game in the face of a deceptive and hostile opponent is not a trivial task.  Sun Tzu believed, "as water has no constant form, there are no constant conditions in war.  One able to win the victory by modifying his tactics in accordance with the enemy situation may be called a divine!" [11].  Our aim in designing game AI's is to obtain a mechanism for moderate strategic competence, not a program with a claim to god-hood.
+
+<P>Debate on the mechanism for the representation of uncertainty has settled into two basic philosophies, extensional and intensional systems [19, p3]. Extensional systems deal with uncertainty in a context free manner, treating uncertainty as a truth value attached to logic rules.  Being context free they do not consider interdependencies between their variables.  Intensional systems deal with uncertainty in a context sensitive manner.  They try to model the interdependencies and relevance relationships of the variables in the system.
+
+<P>If an extensional system has the rule, 
+<BLOCKQUOTE>
+	if A then B with some certainty factor m.
+</BLOCKQUOTE>
+and observes A in its database it will infer something about the state of B regardless of any other knowledge available to it.  Specifically, on seeing A it would update the uncertainty of B by some function of the rule strength 'm' [].
+
+<P>If an intensional system were to consider the same rule, it would interpret it as a conditional probability expression P(B|A) = m [].  What we believe about B in this system is dependent on our whole view of the problem and how relevant information interacts.
+
+<P>The difference between these two systems boils down to a trade-off between semantic accuracy and computational feasibility.  Extensional systems are computationally efficable but semantically clumsy.  Intensional systems on the otherhand were thought by some to be computationally intractable even though they are semantically clear.
+
+<P>Both MYCIN (1984) and PROSPECTOR (1978) are examples of extensional systems. MUNIN (1987) is an example of an intensional system.
+
+<P>MYCIN is an expert system which diagnoses bacterial infections and recommends prescriptions for their cure.  It uses certainty factor calculus to manipulate generalised truth values which represent the certainty of particular formulae. The certainty of a formula is calculated as some function of the certainty of it subformulae.
+
+<P>MUNIN is an expert system which diagnoses neuromuscular disorders in the upper limbs of humans.  It uses a causal probabilistic network to model the conditional probabilities for the pathophysiological features of a patient[1].
+
+<P>Some of the stochastic infidelity of extensional systems arises in their failure to handle predictive or abductive inference.  For instance, there is a saying, ``where there's smoke there's fire".  We know that fire causes smoke but it is definitely not true that smoke causes fire.  How then do we derive the second from the first?  Quite simply, smoke is considered evidence for fire, therefore if we see smoke we may be led to believe that there is a fire nearby.
+
+<P>In an extensional approach to uncertainty it would be necessary to state the rule that smoke causes fire in order to obtain this inferencing ability.  This may cause cyclic updating which leads to an over confidence in the belief of both fire and smoke, from a simple cigarette.  To avoid this dilemma most extensional systems do not allow predictive inferencing.  An example of predictive inferencing in a strategic game is the consideration of a player's move in reasoning about their overall strategy.
+
+<P>Even those authors that support extensional systems as a means for reasoning under uncertainty acknowledge their semantic failures. "There is unfortunately a fundamental conflict between the demands of computational tractability and semantic expressiveness.  The modularity of simple rule-based systems aid efficient data update procedures.  However, severe evidence independence assumptions have to be made for uncertainties to be combined and propagated using strictly local calculations"[5].
+
+<P>Although computationally feasible these systems lack the stochastic reliability of plausible reasoning.  THE PROBLEM WITH CERTAINTY FACTORS OR TRUTH VALUES BEING ATTACHED TO FORMULAE IS THAT CERTAINTY MEASURES VISIBLE FACTS WHEREAS UNCERTAINTY IS RELATED TO WHAT IS UNSEEN, THAT WHICH IS NOT COVERED BY THE FORMULAE[].
+
+<P>The semantic merits of intensional systems is also the reason for their 
+computational complexity.  In the example, 
+<BLOCKQUOTE>
+if P(A|B) = m,
+</BLOCKQUOTE>
+we cannot assert anything about B even if given complete knowledge about A. The rule says only that if A is true and is the only thing that is known to be relevant to B, then the probability of B is 'm'.  When we discover new information relevant to B we must revoke our previous beliefs and calculate P(B|A,K), where K is the new knowledge.  The stochastic fidelity of intensional systems leaves them impotent unless they can determine the relevance relationships between the variables in their domain.  It is necessary to use a formalism for articulating the conditions under which variables are considered relevant to each other, given what is already known.  Using rule-based systems we quickly get bogged in the unwieldy consideration of all possible probable interactions.  This leads to complex and computationally infeasible solutions.
+
+<P>Bayesian networks are a mechanism for accomplishing computational efficacy with a semantically accurate intensional system.  They have been used for such purposes as, sensor validation [9], medical diagnoses[1, 2], forecasting [3], text understanding [6] and naval vessel classification [7].
+
+<P>The challenge is to encode the knowledge in such a way as to make the ignorable quickly identifiable and readily accessible.  Bayesian networks provide a mathematically sound formalism for encoding the dependencies and independencies in a set of domain variables.  A full discussion is given in texts devoted to this topic [10].
+
+<P>Bayesian networks are directed acyclic graphs in which the nodes represent stochastic variables.  These variables can be considered as a set of exhaustive and mutually exclusive states.  The directed arcs within the structure represent probabilistic relationships between the variables.  That is, their conditional dependencies and by default their conditional independencies.
+
+<P>We have then, a mechanism for encoding a full joint probability distribution, graphically, as an appropriate set of marginal and conditional distributions over the variables involved.  When our graphical representation is sparsely connected we require a much smaller set of probabilities than would be required to store a full joint distribution.
+
+<P>Each root node within a Bayesian network has a prior probability associated with each of its states.  Each other node in the network has a conditional probability matrix representing probabilities, for that variable, conditioned on the values of its parents.
+
+<P>After a network has been initialised according to the prior probabilities of its root nodes and the conditional probabilities of its other variables, it is possible to instantiate variables to certain states within the network.  The network, following instantiation, already has posteriors associated with each node as a result of the propagation during initialisation. Instantiation leads to a propagation of probabilities through the network to give posterior beliefs about the states of the variables represented by the graph.  
+
+<P>In conclusion, I am not proposing that Bayesian networks are some god given solution to all of AI's problems.  It is quite plain that quite a few problems push the bounds of computational feasibility even for Bayesian networks.  It is my hope that by posting this I may play some game in the future that "reasons" in a remotely intelligent way about strategies for victory.  Perhaps incorporating the concepts of probabilistic reasoning into a hybrid system is a feasible solution to a competent strategic AI.
+
+<P>Here is a list of some references I used in my Honours thesis.  Numbers 8 and 10 are texts devoted to Bayesian Networks.  
+
+<P>[1]
+<BR>Andreassen, S; et al.
+<BR>"MUNIN - an Expert EMG Assistant."
+<BR>{Computer-Aided Electromyography and Expert Systems}, 1989.
+
+<P>[2]
+<BR>Berguini, C; Bellazi, R; Spiegelhalter, D.
+<BR>"Bayesian Networks Applied to Therapy Monitoring.",
+<BR>{Uncertainty in Artificial Intelligence},
+<BR>Proceedings of the Seventh Conference (1991) p35.
+
+<P>[3]
+<BR>Dagum, P; Galpher, A; Horvitz, E.
+<BR>"Dynamic Network Models for Forcasting."
+<BR>{Uncertainty in Artificial Intelligence},
+<BR>Proceedings of the Eighth Conference (1992) p41.
+
+<P>[4]
+<BR>Findler, N.
+<BR>"Studies in Machine Cognition using th Game of Poker."
+<BR>{Communications of the ACM}, v20, April 1977, p230.
+
+<P>[5]
+<BR>Fox, J; Krause, P.
+<BR>"Symbolic Decision Theory and Autonomous Systems."
+<BR>{Uncertainty in Artificial Intelligence},
+<BR>Proceedings of the Seventh Conference (1991) p103.
+
+<P>[6]
+<BR>Goldman, R; Charniak, E.
+<BR>"A Probabilistic Approach to Language Understanding."
+<BR>{Tech Rep CS-90-34}, Dept Comp Sci, Brown University 1990.
+
+<P>[7]
+<BR>Musman, SA; Chang, LW.
+<BR>A Study of Scaling In Bayesian Networks for Ship Classification."
+<BR>{Uncertainty in Artificial Intelligence},
+<BR>Proceedings of the Ninth Conference (1993) p32.
+
+<P>[8]
+<BR>Neapolitan, RE.
+<BR>{"Probabilistic Reasoning in Expert Systems, Theory and Algorithms."}
+<BR>John Wiley and Sons, 1989.
+
+<P>[9]
+<BR>Nicholson, AE; Brady, JM.
+<BR>"Sensor Validation using Dynamic Belief Networks."
+<BR>{Uncertainty in Artificial Intelligence},
+<BR>Proceedings of the Eighth Conference (1992) p207.
+
+<P>[10]
+<BR>Pearl, J.
+<BR>{"Probabilistic Reasoning in Intelligent Systems, Networks of Plausible Inference."}
+<BR>Morgan Kaufmann Publishers, Inc, 1988.
+
+<P>[11]
+<BR>Wordsworth Reference.
+<BR>{"Sun Tzu, The Art of War."}
+<BR>Sterling Publishing Co Inc, 1990.
+
+<P>I hope this has been helpful,
+
+<P>Scott Thomson
+<PRE><FONT FACE="Courier New, fixedsys" SIZE=2 COLOR="#000088">
+###############################################################################
+Scott M Thomson                                 \|/  ^^^  \|/
+smt@bruce.cs.monash.edu.au                      -O-[/@ @\]-O-
+                                                  \ | > | /
+                                                  | |___| |
+                                                  \ \ U / /
+                                                     ---
+"Cognito cognito ergo cognito sum cognito"
+"I think I think therfore I think I am I think?"
+(pardon the grammar)
+###############################################################################
+</FONT></PRE>
+</FONT>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=197&forum_id=35&Topic_Title=AI+Uncertainty  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=197&forum_id=35&Topic_Title=AI+Uncertainty'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=197&forum_id=35&Topic_Title=AI+Uncertainty">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

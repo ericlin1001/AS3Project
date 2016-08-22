@@ -1,0 +1,94 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<P ALIGN="center"><SPAN CLASS="title">Chess Programming Part III: Move Generation</SPAN>
+<BR><SPAN CLASS="author">by <A HREF="javascript:if(confirm('http://pages.infinit.net/idjy/  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://pages.infinit.net/idjy/'" tppabs="http://pages.infinit.net/idjy/">Fran&ccedil;ois Dominic Laram&eacute;e</A></SPAN>
+
+<P>Last month, I finished Part II of this series by introducing a data structure which pre-processes and stores most of the work related to chess move generation.&nbsp; This time, I will return to the topic in more detail, examining the two major move generation strategies and explaining how to choose between them for a given application.
+
+<H1>The Dilemma</H1>
+<P>No matter how you slice it, chess is a complicated game, especially for a computer.
+<P>In any given situation, a player may have 30 or more legal moves to choose from, some good, some suicidal.&nbsp; For trained humans, it is easy to characterize the majority of these moves as foolish or pointless: even beginners learn that they had better come up with a solid plan before leaving their queen in a position where she can be captured, and masters know (more through instinctive pattern matching than by conscious effort) which 1-2 moves are likely to be the strongest in the position.
+<P>However, coding this information (especially the unconscious type!) into a computer has proven spectacularly difficult, and the strongest programs (except, to some extent, Hans Berliner's Hitech and its siblings) have given up on this approach, instead relying on "brute force": if you can analyze all possible moves fast enough and predict their consequences far enough down the road, it doesn't matter whether or not you start with a clear idea of what you are trying to accomplish, because you'll discover a good move <I>eventually</I>.&nbsp; Therefore, move generation and search should be made as fast as possible, so as to minimize the loss of effort required by the brute force method.
+<P>Search will be discussed in Parts IV and V of this series; this month, we will concentrate on move generation.&nbsp; Historically, three major strategies have been used in this area:
+<UL>
+  <LI>Selective generation: Examine the board, come up with a small number of "likely" moves and discard everything else.</LI>
+  <LI>Incremental generation: Generate a few moves, hoping that one will prove so good or so bad that search along the current line of play can be terminated before generating the others.</LI>
+  <LI>Complete generation: Generate all moves, hoping that the transposition table (discussed in Part II) will contain relevant information on one of them and that there will be no need to search anything at all.</LI>
+</UL>
+<P>Selective generation (and its associated search technique, called forward pruning) have all but disappeared since the mid 1970's.&nbsp; As for the other two, they represent two sides of the same coin, trading off effort in move generation vs search.&nbsp; In games where move generation is easy and/or there are lots of ways to transpose into the same positions (i.e., Othello and GoMoku), complete generation may be most efficient, while in games where move generation rules are complicated, incremental generation will usually work faster.&nbsp; Both strategies are sound and viable, however.
+
+<H1>The Early Days: Forward Pruning</H1>
+<P>In 1949 (yes, really), Claude Shannon described two ways to build a chess-playing algorithm:
+<UL>
+  <LI>Look at all possible moves, and all the possible moves resulting from each, recursively.</LI>
+  <LI>Only examine the "best" moves, as determined from a detailed analysis of a position, and then only the "best" replies to each, recursively.</LI>
+</UL>
+<P>At first, the second alternative seemed more likely to succeed.&nbsp; After all, this is how human players do it, and it seems logical to assume that looking at only a few moves at each node will be faster than looking at all of them.&nbsp; Unfortunately, the results disproved the theory: programs using selective search just didn't play very well.&nbsp; At best, they achieved low to mid-level club player ratings, often committing humiliating blunders at the worst possible time.&nbsp; Beating a world champion (or even playing reasonably well on a consistent basis) was beyond their reach.
+<P>The problem is that, for a "best move generator" to be any good, it has to be almost perfect.&nbsp; Suppose that a program is equipped with a function that looks for the 5 best moves in a position, and that the objective best move is among those 5 at least 95% of the time.&nbsp; (That, by the way, is a <I>big</I> assumption.)&nbsp; This means that the probability that the generator's list will always contain the best choice at all times, during a 40-move game, is <I>less than 13%</I>.&nbsp; Even a god-like generator with 99% accuracy will blunder at least once in about a third of its games, while a more reasonable 90%-accurate function will play an entire game without messing up less than 1.5% of the time!
+<P>In the mid 1970's, the legendary Northwestern team of Slate and Atkin decided to do away with the complicated best-move generator; it turned out that the time they saved in avoiding costly analysis during move generation was enough to cover the added expense of a full-width search (i.e., examining all possible moves).&nbsp; To all intents and purposes, this discovery buried forward pruning for good.
+
+<P><B>Botvinnik's work</B>
+<BR>An extreme example of a forward pruning algorithm was developed in the Soviet Union, in the 1970's and early 1980's, under the tutelage of former World chess champion Mikhail Botvinnik.&nbsp; Botvinnik was convinced that the only way for a computer to ever play grandmaster-level chess was to play like a grandmaster, i.e., examine only a few moves, but in great depth and detail.&nbsp; His program seeked to identify and implement the sort of high-level plans and patterns which a world-class player might come up with during a game.&nbsp; While it led to some fascinating books, revealing insights into the master's mind which only Botvinnik could provide, this work unfortunately did not reach its lofty goals.
+
+<H1>Generating All Moves Up-Front</H1>
+<P>Once forward pruning is eliminated from consideration, the most straightforward way to implement full-width searching consists of:
+<UL>
+  <LI>Finding all of the legal moves available in a position.</LI>
+  <LI>Ordering them in some way, hopefully speeding up search by picking an advantageous order.</LI>
+  <LI>Searching them all one at a time, until all moves have been examined or a cutoff occurs.</LI>
+</UL>
+<P>Early programs, for example Sargon, did this by scanning the board one square at a time, looking for pieces of the moving side, and computing possible move destinations on the fly.&nbsp; Memory being at a premium, the expenditure of CPU time required to re-compute these moves every time was a necessary evil.
+<P>These days, a pre-processed data structure like the one I described last month can avoid a considerable amount of computation and code complexity, at the cost of a few dozens of Kbytes.&nbsp; When this super-fast move generation is combined with transposition tables, an added bonus may fall into the programmer's lap: if even one of the moves has already been searched before, and if its evaluation (as retrieved from the table) is such that it triggers a cutoff, there will be no need to search any of the moves at all!&nbsp; Obviously, the larger the transposition table, and the higher the probability of a transposition given the rules of the game, the bigger the average payoff.
+<P>Not only is this technique conceptually simple, it is also the most "universal": while there are easy ways to segregate chess moves into different categories (i.e., captures and non-captures), other games like Othello do not provide such convenient tools to work with.&nbsp; Therefore, if you intend your program to play more than one game, you should probably pick this technique instead of the one described in the next section.
+
+<H1>One Move At A Time</H1>
+<P>Sophisticated chess programs since at least CHESS 4.5 have adopted the opposite strategy: generate a few moves at a time, search them, and if a cutoff can be caused, there will be no need to generate the rest of the moves.
+<P>A combination of factors has made this technique popular:
+<UL>
+  <LI>Search does not require much memory.&nbsp; Programs of the 1970's had to make do with small transposition tables and could ill afford&nbsp; pre-processed move generation data structures, limiting the usefulness of the complete generation scheme described above.</LI>
+  <LI>Move generation is more complicated in chess than in most other games, with castling, en passant pawn captures, and different rules for each piece type to contend with.</LI>
+  <LI>Very often, a refutation (i.e., a move that will cause a cutoff) is a capture.&nbsp; For example, if Player A leaves a queen "en prise", the opponent will quickly grab it and wreck A's game.&nbsp; Since there are usually few possible captures in a position, and since generating captures separately is relatively easy, computing captures is often enough to trigger a cutoff at little expense.</LI>
+  <LI>Captures are usually one of the few (if not the only) type of move examined during quiescence search (which will be discussed in a later article), so generating them separately is doubly useful.</LI>
+</UL>
+<P>Therefore, many programs will generate captures first, often starting with those of highly valuable pieces, and look for a quick cutoff.&nbsp; A number of techniques have been developed to speed up piece-meal move generation, most of them involving bitboards:
+<UL>
+  <LI>CHESS 4.5 maintains two sets of 64 bitboards, with one bitboard per square on the board.&nbsp; One contains the squares attacked by the piece, if any, located on that square; the other is the transpose, containing all squares occupied by pieces attacking that square.&nbsp; Therefore, if the program is looking for moves that would capture Black's queen, it looks for its position in the basic bitboard database, uses these new data structures to identify the pieces which attack the queen's position, and only generates moves for these pieces.</LI>
+  <LI>Maintaining these "attack bitboards" after each move requires some rather involved technical wizardry, but a tool called a rotated bitboard can accelerate the work significantly.&nbsp; The best discussion of rotated bitboards I have seen was written by James F. Swafford, and can be found on the web at <A HREF="rotated.htm" tppabs="http://sr5.xoom.com/_XMCM/jswaff/chessprg/rotated.htm">rotated.htm</A></LI>
+</UL>
+
+<H1>Ordering Moves To Speed Up Search</H1>
+<P>As we will see next time, search efficiency depends on the order in which moves are searched.&nbsp; The gains and losses related to good or poor move ordering are not trivial: a good ordering, defined as one which will cause a large number of cutoffs, will result in a search tree about the <I>square root</I> of the size of the tree associated with the worst possible ordering!
+<P>Unfortunately, it turns out that the best possible ordering is simply defined by trying the best move first.&nbsp; And of course, if you knew which moves are best, you wouldn't be searching in the first place.&nbsp; Still, there are ways to "guess" which moves are more likely to be good than others.&nbsp; For example, you might start with captures, pawn promotions (which dramatically change material balance on the board), or checks (which often allow few legal responses); follow with moves which caused recent cutoffs at the same depth in the tree (so-called "killer moves"), and then look at the rest.&nbsp; This is the justification for iterative deepening alphabeta, which we will discuss in detail next month, as well as the history table we talked about last time.&nbsp; Note that these techniques do not constitute forward pruning: all moves will be examined eventually; those which appear bad are only delayed, not eliminated from consideration.
+<P>A final note: in chess, some moves may be illegal because they leave the King in check.&nbsp; However, such an occurrence is quite rare, and it turns out that validating moves during generation would cost a tremendous amount of effort.&nbsp; It is more efficient to delay the check until the move is actually searched: for example, if capturing the King would be a valid reply to Move X, then Move X is illegal and search should be terminated.&nbsp; Of course, if search is cutoff before the move has to be examined, validation never has to take place.
+
+<H1>My Choice</H1>
+<P>For my chess program, I have chosen to generate all moves at the same time.&nbsp; These are only some of the reasons why:
+<UL>
+  <LI>I intend to use the program as a basis for several other games, most of which have no direct counterparts to chess captures.</LI>
+  <LI>I have plenty of memory to play with.</LI>
+  <LI>The code required to implement this technique is simpler to write and to understand; you will thank me when you see it.</LI>
+  <LI>There are several freeware programs that implement piece-meal move generation; the curious reader should look at Crafty, for example, as well as James Swafford's Galahad.</LI>
+</UL>
+<P>While overall performance may be slightly less stellar than otherwise, my program (written in Java, no less) wouldn't exactly provide a challenge to Deep Blue even in the best case, so I won't feel too bad!
+
+<H1>Next Month</H1>
+<P>Now, we are ready to delve into the brains of a chess-playing program, with search techniques.&nbsp; This is such a large topic that it will require two articles.&nbsp; We will begin with the basic search algorithms common to all games, before continuing with new developments and chess-specific optimizations in the next installment.
+<BR>&nbsp;
+<P><I>Fran&ccedil;ois Dominic Laram&eacute;e, July 2000</I>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1126&forum_id=35&Topic_Title=Chess+Programming+Part+III%3A+Move+Generation  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1126&forum_id=35&Topic_Title=Chess+Programming+Part+III%3A+Move+Generation'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1126&forum_id=35&Topic_Title=Chess+Programming+Part+III%3A+Move+Generation">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

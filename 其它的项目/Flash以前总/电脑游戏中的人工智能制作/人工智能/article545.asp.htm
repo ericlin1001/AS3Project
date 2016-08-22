@@ -1,0 +1,95 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			Project AI
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<FONT FACE="Verdana" SIZE="2">
+<CENTER><B><FONT COLOR="#003E98" SIZE="5">Project AI</B></FONT><BR>
+<B>by Mark Lewis Baldwin and Bob Rakosky</B></CENTER>
+
+<P>
+<P><FONT COLOR="#00983E" SIZE="4"><B>Introduction</B></FONT>
+<P>When designing an artificial intelligence (AI) for a strategy game, one must keep clearly in mind the final goal, i.e. winning the game (actually the goal is to entertain the customer, but the sub-goal of trying to win the game seems more appropriate here). Normally, winning the game is accomplished by reaching a set of victory conditions. To achieve these victory conditions, the computer needs to control a divergent set of resources (units and other decisions) in a coordinated and sophisticated manner.
+<P>In order to give a frame of reference for this discussion, we will be discussing Project AI from the point of view of a strategic wargame, which has multiple units. Each needs to make separate movement decisions in each turn of the game play. However, this system is not restricted to wargames. It's applicable in any game in which a large number of decisions have to be made controlling a number of resources, which work best in coordination with each other.
+<P>There are a number of ways to approach the problem and what will be discussed is by no means the only approach. Project AI is a methodology that allows the computer to solve this problem at a strategic as well as tactical level. But first, we need to build up to it by discussing the levels of AI decision making upon which it is based. Each level described below is build upon it's previous levels.
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>First level...</B></FONT>
+<P>Approach: In each turn (or cycle), examine each unit to be moved (i.e. node of decision making), build an list of possible decisions and pick one randomly. In other words, look around and move somewhere.. It doesn't matter what. Note that an action of doing nothing is still an action.
+<P>Problems: This does not direct the computer AI's resources toward the goal of victory, other than at a noise level. It will however confuse the opponent something awful.
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Second level...</B></FONT>
+<P>Approach: When selecting from the possible moves (decision list) for each unit, pick that move that achieves the victory conditions. To be specific, look around. Are there any victory goals achievable by the unit (i.e. can the unit move into a victory location)? If so, implement.
+<P>Problem: When there are multiple actions which achieve the same goal, there is no filter in differentiating equal (or nearly equal) actions. Also, most victory conditions cannot be achieved by any one decision, therefore placing us back to the first level.
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Third level...</B></FONT>
+<P>Approach: Evaluate each alternate move for a unit by how well it moves us toward the final victory goal. Each move needs to evaluated not as a TRUE/FALSE but as a numeric value, analyzing how well the target victory goal is reached. For example, an action which would move to a victory location in two turns is worth more than an action that would move to a victory location in 20 turns.
+<P>Problems: This method does not allow for actions that will support reaching the final victory conditions, but in and of themselves do not achieve victory (i.e. killing another unit when that is not part of the victory goals).
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Fourth level...</B></FONT>
+<P>Approach: Define specific sub-goals which assist the artificial intelligence in achieving the victory conditions, but in and of themselves are not victory conditions. When a unit is making a decision, it evaluates the possibility of achieving these sub-goals. Such sub-goals might include killing enemy units, protecting friendly units, maintaining a defensive line, achieving a strategic position, etc. Accomplishment of each of the subgoals is then factored in the evaluation of the decision tree. A decision is then made upon it. This process can actually produce a semi-intelligible game.
+<P>Problems: Each unit makes it's decisions independent of all others. It's like warfare pre-Napoleonic. It works well until the opponent starts coordinating their forces.
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Fifth level...</B></FONT>
+<P>Approach: Allow a unit making decisions to examine the decisions of other friendly units in weighing it's own decision. Weigh the possible outcomes of the other units planned actions, and balance those results with the current unit's action tree.
+<P>Problems: This allows for coordination, but not strategic control of the resources. However, this level is actually beyond what many computer AI's do today. It can also lead to iterative cycling, in which each unit is modifying it's decision based on the others in a viscous circle.
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Sixth level...</B></FONT>
+<P>Approach: Create a strategic (or grand tactical) decision making structure that can control units in a coordinated manner.
+<P>This leads us to the problem of how does one coordinate diverse resources to reach a number of sub-victory goals. This question may be described as strategic level decision making. One solution would be to look at how the problem is solved in reality, i.e. on the battlefield or in business.
+<P>The solution on the battlefield is several layers of a hierarchical command and control. For example, squad's 1, 2 and 3 are controlled by Company A which in and of itself is controlled by a higher layer of the hierarchy. Communications of information mostly go up the hierarchy (information about a squad 20 miles away is not relayed down to the local squad), while control mostly goes down the hierarchy. Upon occasion, information and control can cross the hierarchy, and although it's happening more now than 50 years ago, it is still relatively infrequent.
+<P>As a result, the lowest level unit must depend on it's hierarchical commander to make strategic decisions. It cannot itself because a) it doesn't have as much information to make the decision with as it's commander, and b) it is capable of making a decision based on known data different that others with the same data, causing chaos instead of coordination.
+<P>OK, first cut solution. We build our own hierarchical control system, assigning units to theoretical larger units or in the case where the actual command/control system is modeled (V for Victory), the actual larger units. Allow these headquarters to control their commands and work with other headquarters as some type of 'mega-unit'. These in turn could report to and be controlled by some larger unit.
+<P>Note that this was actually my first approach to the problem.
+<P>But there seems to be some problems here. The hierarchical command system modeled on the real world does not make optimal use of the resources. Because of the hierarchical structure, too many resources may be assigned to a specific task, or resources in parallel hierarchies will not cooperate. For example, two units might be able to easily capture a victory location they are near, but because they each belong to a separate command hierarchy (mega unit) they will not coordinate to do so, but if by chance they did belong to the same hierarchy, they would be able to accomplish the task. In other words, this artificial structure can be too constraining and might produce sub optimal results.
+<P>And the human player does not have these constraints.
+<P>First, we have to ask ourselves, if the hierarchical command and control structure is not the best solution, why is it used by business and the military? The difference is in the realities of the situations. As we previously pointed out, in the battlefield, information known at one point in the decision making structure might not be known at another point in the hierarchy. In addition, even if all information was known everywhere, identical decisions might not be made from the same data. However, in game play, there is only one decision maker (either the human or the AI) and all information known is known by that decision maker. This gives the decision make much more flexibility on controlling and coordinating her resources than does the military hierarchy.
+<P>In other words, the military and business system of strategic decision is not our best model. It's solution exists because of constraints on communication. But those constraints do not exist in strategy games (command and control is perfect) and therefore modeling military command and control decision making is not our perfect model to solve the problem in game play AI.
+<P>And we want the best technique of decision making we can construct for our AI. So below is an alternative Sixth Level attack on the problem...
+
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Project AI (Level 6 Alternative)</B></FONT>
+<P>This leads us to a technique we call Project AI. Project AI is a methodology that extrapolates the military hierarchical control system into something much more flexible.
+<P>The basic idea behind Project AI is to create a temporary mega-unit control structure (called a Project) designed to accomplish a specific task. Units (resources) are assigned to the Project on an as needed basis, used to accomplish the project and then released when not required. Projects exist temporarily to accomplish a specific task, and then are released.
+<P>Therefore, as we cycle through the decision making process of each unit, we examine the project the unit is assigned to (if it is assigned to one). The project then contains the information needed for the unit to accomplish its specific goal within the project structure.
+<P>Note that these goals are not the final victory conditions of the game, but very specific sub-goals that can lead to game victory. Capturing a victory location is an obvious goal here, but placing a unit in a location with a good line of sight could also be a goal, although less valuable.
+<P>Let's get a little more into the nitty gritty of the structure of such projects, and how they would interact.
+<P>What are some possible characteristics of a project?
+<P>- Type of project -- What is the project trying to accomplish, for example, defend a city, kill an enemy unit, capture a geographical location, etc.
+<P>Project Type Examples:<BR><UL>
+	<P>- Kill an enemy unit.
+	<BR>- Capture a location
+	<BR>- Protect a location
+	<BR>- Protect another unit.
+	<BR>- Invade a region.</p></UL>
+
+<P>- Specifics of the project -- Exactly what are the specifics for the project? Examples are "kill the 239 Panzer Division", "capture the town of St. Vith", etc. </p>
+<P>- Priority of the project -- How important is the project compared to other ongoing projects toward the final victory. This priority is used in general prioritizing and killing off low priority projects should there be memory constraints.
+<P>- Formula for calculating the incremental value of assigning a unit to a project -- In other words, given a unit and a large number of projects, how do we discern what project to assign the unit to. This formula might take into account many different factors including how effective the unit might be on this project, how quickly the unit can be brought in to support the project, what other resources have already been allocated to the project, what is the value of the project, etc. In practice, we have associated the formula with the project type, and the each project has just carried specific constants that are plugged into the formula. Such constants might include enemy forces opposing the project, minimum forces required to accomplish the project, and probability of success.
+<P>- A list of units assigned to the project.
+<P>- Other secondary data.
+<P>OK, now how do we actually use these 'projects'. Here is one approach...
+<P>1) For every turn, examine the domain for possible projects, updating the data on current projects, deleting old projects that no longer apply or have too low a priority to be of value, and initializing new projects that present themselves. For example, we have just spotted a unit threatening one of our towns, we create a new project which is to defend the town, or if the project already existed, we might have to reevaluate its value and resources required considering the new threat.
+<P>2) Walk through all units one at a time, assigning each unit to that project that gives the best incremental value for the unit. Note, that this actually may take an iterative process since assigning/releasing units to a project can actually change the value of assigning other units to a project. Also, some projects may not receive enough resources to accomplish their goal, and may then release those resources previously assigned.
+<P>3) Reprocess all units, designing their specific move orders taking into account what Project they are assigned to, and what other units also assigned to the project are  planning on doing. Again, this may be an iterative process.
+<P>The result of this Project structure is a very flexible floating structure that allows units to coordinate between themselves to meet specific goals. Once the goals have been met, the resources can be reconfigured to meet other goals as they appear during the game.
+<P>One of the implementation problems that Project AI can generate is that of oscillations of units between projects. In other words, a unit gets assigned to one project in one turn, thus making a competing project more important, grabbing the unit the next turn, etc. This can result in a unit wandering between two goals and never going to either. The designer needs to be aware of this possibility and protect for it. Although there can be several specific solutions to the problem, there is at least one generic solution. Previously, we mentioned a formula for calculating the incremental value of adding a unit to a project. The solution lies in this formula. To be specific, a weight should be added to the formula if a unit is looking at a project it is already assigned to (i.e., a preference is given to remaining with a project instead of jumping projects). The key problem here is assigning a weight large enough that it stops the oscillation problem, but small enough that it doesn't prevent necessary jumps in projects. So one may have to massage the weights several times before a satisfactory value is achieved.
+	
+<BR><P><FONT COLOR="#00983E" SIZE="4"><B>Seventh Level</B></FONT>
+<P>One can extrapolate past the "Project" structure just as we built up to it. One extrapolation might be a multilayer level of projects and sub-projects. There are other possibilities as well to explore.
+
+<P><ADDRESS><FONT COLOR="#800040">© Copyright 1997 - Mark Baldwin and Robert Rakosky</FONT></ADDRESS></P>
+
+<P>You can find out more about myself and services provided by Baldwin Consulting at <a HREF="javascript:if(confirm('http://members.aol.com/markb01  \n\nÕâ¸öÎÄ¼þ²»ÄÜÍ¨¹ý Teleport Pro È¡»Ø, ÒòÎª Ëü±»·ÃÎÊÓÚÒ»¸öÓò»òÔÚËüµÄÆðÊ¼µØÖ·±ß½çÍâ²¿µÄÂ·¾¶ÉÏ.  \n\nÄãÏë´Ó·þÎñÆ÷´ò¿ªËüÂð?'))window.location='http://members.aol.com/markb01'" tppabs="http://members.aol.com/markb01">http://members.aol.com/markb01</A>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=545&forum_id=35&Topic_Title=Project+AI  \n\nÕâ¸öÎÄ¼þ²»ÄÜÍ¨¹ý Teleport Pro È¡»Ø, ÒòÎª Ëü±»Á´½Óµ½ÀëËüµÄÆðÊ¼µØÖ·Ì«Ô¶µÄµØ·½. Èç¹ûÄãÔö´óÆðÊ¼µØÖ·ÔÚÆä·¶Î§ÄÚµÄÉî¶ÈÉèÖÃ, Õâ¸öÎÄ¼þ½«½øÐÐÁÐ¶ÓµÈ´ýÈ¡»Ø.  \n\nÄãÏë´Ó·þÎñÆ÷´ò¿ªËüÂð?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=545&forum_id=35&Topic_Title=Project+AI'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=545&forum_id=35&Topic_Title=Project+AI">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

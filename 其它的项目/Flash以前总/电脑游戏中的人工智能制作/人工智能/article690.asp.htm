@@ -1,0 +1,205 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			A* Algorithm Tutorial
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<FONT FACE="Verdana, Tahoma, Arial" SIZE="2">
+
+<CENTER><FONT COLOR="#003E98" SIZE="4"><B>A* algorithm tutorial</B></FONT></CENTER>
+
+
+
+<P><B>Contents</B>
+<UL>
+<LI>Introduction
+<li>State space search
+<li>8 Puzzle
+<li>Map route finding
+<li>Implementing A*
+<li>Priority Queues
+<li>Linked lists
+</UL>
+
+<P>Feedback is welcome... Let me know how this page could be improved.<br>
+Email : <A HREF="mailto:justinhj@hotmail.com">justinhj@hotmail.com</A><br>
+Author : Justin Heyes-Jones BSc<br>
+<br>
+
+<br>
+<a href="javascript:if(confirm('http://www.geocities.com/SiliconValley/Lakes/4929  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://www.geocities.com/SiliconValley/Lakes/4929'" tppabs="http://www.geocities.com/SiliconValley/Lakes/4929">Click for my home page</a><br>
+<br>
+
+<h4>Introduction</h4>
+
+This document contains a description of the AI algorithm known as A*, and two example programs showing the kind of problems it can solve.<br>
+<br>
+Please note that this tutorial does not assume you will use any particular language, but you must be able to program fairly
+competently to make use of this information. I can't give individual advice on C or C++ programming but I'm happy to answer
+questions specifically about the A*.<br>
+<br>
+
+<br>
+I've included two example programs to which show the search in action and enable you, by example, to see the diversity of problems
+which can be solved using this algorithm. 
+<br><br>
+Please have a look at Steven Woodcock's great and large site at this address...
+<a href="javascript:if(confirm('http://www.gameai.com/  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://www.gameai.com/'" tppabs="http://www.gameai.com/">http://www.gameai.com</a>
+<br>
+<br>
+<a href="javascript:if(confirm('http://tawny.cs.nott.ac.uk/~sbx/winnie/aim/search/search3.htm  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://tawny.cs.nott.ac.uk/~sbx/winnie/aim/search/search3.htm#ASTAR'" tppabs="http://tawny.cs.nott.ac.uk/~sbx/winnie/aim/search/search3.htm#ASTAR">http://tawny.cs.nott.ac.uk/~sbx/winnie/aim/search/search3.htm#ASTAR</a> is also a good
+resource.<br>
+<br>
+Also the pseudo code I found most helpful for implementing the algorithm, as well as some very good explanations of how to use it, can be found 
+on the Game Developer Mag site, <a href="javascript:if(confirm('http://www.gdmag.com/stout.htm  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://www.gdmag.com/stout.htm'" tppabs="http://www.gdmag.com/stout.htm">http://www.gdmag.com/stout.htm</a>. Brian Stout, the author of this article,
+also created a useful PC program that allows you to experiment with types of search including the A* search, and watch them in real time.<br>
+
+<h4>State space search</h4>
+
+Almost any problem can be solved (given infinite resources) by using a search program. You have to find a way to describe the problem in terms of a set
+of states, and rules you can apply to get between those states. Imagine the state space as being a tree with the start of your problem as the root, and
+expanding downwards branching at each point depending on how many rules you can apply at each point.<br>
+<br>
+To solve a problem described like this you just find the first goal state in this tree and make a path back up to the start.<br>
+<br>
+The problem is that even quite simple problems create huge trees for you to search. The A* algorithm requires help to search the tree in the
+most efficient way. You provide it with a heuristic. This returns an evaluation of how good each state is, so that the search can go down
+the most promising routes first.
+<br>
+<h4>8 Puzzle</h4>
+A good example of a search problem is the 8 puzzle. This is a simple sliding tile puzzle on a 3*3
+grid where one tile is missing and you can move the other tiles into the gap until you get the puzzle into the goal position.<br>
+<br>
+Although not exactly a real life problem, or even the kind of problem your video game enemies are likely to need to do, it is a great example of how to
+represent the states and rules for the purpose of example. It is also quite hard to solve. There are 362,880 different states that the puzzle
+can be in, and to find a solution the search has to find a route through them.<br>
+<br>
+The 8 puzzle game state is as simple as representing a list of the 9 squares and what's in them. Here are two states for example; the last one is the
+GOAL state, at which point we've found the solution. The first is a jumbled up example that you may start from.<br>
+<br>
+A start state [ C, E, H, D, G, F, B, A, SPACE ]<br>
+Goal state [ A, B, C, H, SPACE, D, G, F, E ]<br>
+<br>
+The rules that you can apply to the puzzle are also simple. If there is a blank tile above, below, to the left or to the right of a given tile, then you can
+move that tile into the space. To solve the puzzle you need to find the path from the start state, through the "OR graph" as the tree is known, down to the GOAL state. We've reduced
+the abstract problem of how to do a puzzle to a simple search.<br>
+<br>
+What makes the problem useful from an academic point of view is that it is hard to write a good heuristic function. The heuristic I used here
+is to add the distances together that each tile is from where it should be. Then, since the tiles are clockwise around the centre in the goal
+state, tiles get 2 points added to the heuristic (low is good in heuristic terms) if they are not followed by the tile they should be followed
+by in a clockwise direction.<br>
+Although usually effective this does not work for every arrangement.<br>
+<br>
+
+the algorithm. The puzzle is solved, then the program walks through the solution on screen for you. When it's done you can mess it up and watch it solve the 
+puzzle from the new position. The program shows how many states it has evaluated giving some idea of the size of the search space for even such a simple puzzle.<br>
+
+<h4>Map route finding</h4>
+
+The most common use for A* in games is pathfinding. For clarity the example program is pretty simple but should show you the basic principles
+of using A* to move your enemies intelligently around objects and mazes.<br>
+Each state is simply where you are, stored as say a grid co-ordinate. The rules that you can apply to each state are similar to the 8-puzzle.
+At each point you can move up to 4 directions depending on whether you're at the edge of the map and whether walls block your path.<br>
+<br>
+
+
+<h4>Implementing A*</h4>
+
+The idea is to search the state space and find the shortest
+route to the goal state. I'll refer to the demo program through-out and include bits of code where appropriate.<br>
+<br>
+During the search we need to keep track of two lists of states (referred to as nodes as well from now on, as they are nodes in a tree). The first list is the
+OPEN list. This stores nodes which we have generated by using the rules from an existing node, but we don't yet know where they lead to.<br>
+The second list is nodes that we have generated and we have also explored where they go.<br>
+<br>
+Each state is stored along with some extra data required to help us in our search. The first thing that is required is a parent pointer. We need to know 
+how we got to this node, as the end result of finding the GOAL state will be to generate a path back to the start. Tracking which node parented this node
+allows to do this.<br>
+<br>
+The node also has three ratings used during the search which are the cost of the node, the heuristic estimate of this node and 'f' which is the total of the
+other two.<br>
+<br>
+The cost of a node is easy to work out. Each move can usually be assigned a cost. In the example program on a simple grid, the cost is always one, but since
+we want to know the cost of the path all the way from the start to this node, when we generate a node we add its cost to the cost of its parent.<br><br>
+The heuristic estimate can be much more complexas we have seen. We can guess how good the node is by how near it is to the GOAL. This works well on the
+tiled maze. In practice though the more help you give the algorithm the better. For example, if you know that all your enemies are going to 
+go through a door on the map to get into a certain area, then the heuristic would need to support that.<br>
+In the case of my grid I'm using the x and y difference between the node and the GOAL as a heuristic.<br>
+<br>
+Finally the 'f' rating of a node, which represents how good it is in terms of how much it cost to get there and how near to the goal we are, is used 
+throughout the search to always follow the most promising path.<br>
+<br>
+Here's the "Pseudo C" for the search as I implemented it.<br>
+<br>
+
+Simple as that. If you run the demo you can move the pacman about with the cursor keys and watch the generated path change. If you hold down 
+the Ctrl key you can move the target cherries around with the same cursor keys.<br><BR>
+The best way to really understand the algorithm is to watch it working. Run the demo with the command line argument 'showsearch' and it will slowly
+step through a search, and show squares that are on the OPEN list with O, and squares on the CLOSED list as C.<br>
+<br>
+Most A* implementations I've seen on the web use a simple linked list to do the OPEN list of nodes. This is a bad idea because you need to retrieve
+the lowest 'f' valued item, and doing that in an un-ordered list is slow. The next section will describe the way I implemented the Priority Queue
+data structure which is used instead. A priority queue is a neat algorithm based on a heap, which is perfect for our purposes.<br>
+<br>
+Another important issue is the data structure and algorithm you select for the CLOSED list. As pointed out by 
+<A HREF="mailto:nazareth@alum.mit.edu">Aneel Nazareth</A>, a hash table is very useful for this purpose. When I next spend some
+time on this tutorial I will implement the CLOSED list in this way and provide more of the source code for the project.<BR>
+<br>
+Thanks to <A HREF="mailto:srabin@gaspowered.com">Steve Rabin</A> for pointing out an error in my pseudo code which may have caused 
+problems in implenetation. I'd forgotten to point out that in the end of NodePushSuccessors you must not add the new_node that
+you've created to the OPEN list, if it is already on it. Don't worry the algorithm as stated should work fine now.<br>
+
+<h4>Priority Queues and Heaps</h4>
+
+References? I got this info on heaps and in particular the stuff on using them from "Dr Dobb's Essential Books on Algorithms and Data Structures"
+which should be in every programmers libarary as it iss extremely useful. The Heap and PQueue stuff is the whole of Chapter 9 in the book "Data structures from arrays
+to Priority Queues". I recommend you read up the formal theory somewhere but the provided code should explain them pretty well.<br>
+<br>
+A heap is a 'leftist-tree'. The heap always grows like this ...<br>
+<BLOCKQUOTE><PRE><FONT FACE="Courier New, fixedsys" SIZE=2 COLOR="#000088">
+A    add a node      A       
+                    B        
+
+
+
+add another  A  and another  A
+            B C             B C
+                           D                             
+
+</FONT></PRE></BLOCKQUOTE>
+
+<P>If you remove nodes you must maintain this structure. Another thing that makes them cool for the priority queue is that they are sorted from top to
+bottom. If you sort them so that the top item has the lowest value then they are perfect for the A* algorithm which sorts on lowest f values.<br>
+<br>
+A useful thing about this data structure is that if we know how big our open list is going to get we can store the queue as an array. The array represents
+the tree. We leave element 0 blank because then we have the useful property that any nodes children are at the array of the index parent *2 and *2+1.<br>
+In the same way a nodes parent is at the index given by the nodes array index /2;
+<br>
+The push and pop functions in the source files add and take away nodes from the tree making sure that the tree is still leftist (all the layers
+above the bottom layer are filled and the bottom layer is filled left to right), and making sure that from top to bottom the nodes are sorted in
+descending order. You provide an application specific routine to return the rating of a node.<br>
+<br>
+
+<h4>Linked lists</h4>
+<br>
+<br>
+Copyright 1998 Justin Heyes-Jones<br>
+All rights Reserved.<br>
+Linking to this site is welcome and encouraged, but reproduction in whole or in part either on the WWW or other media is prohibited under appropriate copyright laws. Please ask for permission first.<br>
+<br>
+No warranty provided for use of software, either expressed or implied.<br>
+<br>
+
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=690&forum_id=35&Topic_Title=A%2A+Algorithm+Tutorial  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=690&forum_id=35&Topic_Title=A%2A+Algorithm+Tutorial'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=690&forum_id=35&Topic_Title=A%2A+Algorithm+Tutorial">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

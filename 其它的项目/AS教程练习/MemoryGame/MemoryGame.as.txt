@@ -1,0 +1,130 @@
+package{
+import flash.display.Sprite;
+import flash.geom.Graphics;
+import flash.events.*;
+import flash.text.*;
+import flash.utils.Timer;
+//
+public class MemoryGame extends Sprite{
+private var numLights:int=5;
+private var lights:Array;//store flashLight;
+private var playOrders:Array;//the order of playing lights;
+private var replayOrders:Array;
+private var level:int=0;
+private var gameMode:String="play";
+private var pLight:int=0;
+//
+private var messageText:TextField;
+private var container:Sprite;
+private var lightOnTimer:Timer;
+//constrator
+public function MemoryGame(){
+/*
+container=new Sprite();
+addChild(container);
+container.y=100;
+container.x=50;
+//
+lights=new Array();
+for(var i:uint=0;i<numLights;i++){
+var light:FlashLight=new FlashLight(30);
+light.y=0;
+light.x=75*i;
+light.num=i;
+light.buttonMode=true;
+light.addEventListener(MouseEvent.CLICK,clickLight);
+container.addChil(light);
+lights.push(light);
+}
+lights[0].color=0xff0000;
+lights[1].color=0x888800;
+lights[2].color=0x00ff00;
+lights[3].color=0x008888;
+lights[4].color=0x0000ff;
+//
+messageText=new TextField();
+messageText.multiLine=true;
+messageText.y=150;
+addChild(messageText);
+var txtFt:TextFormat=new TextFormat();
+txtFt.font="Arial";
+txtFt.size=24;
+txtFt.align="center";
+txtFt.bold=true;
+messageText.setTextFormat(txtFt);
+messageText.text="";
+//
+playOrders=new Array();
+replayOrders=new Array();
+nextLevel();
+*/
+/*testing
+gameMode="test";
+*/
+}
+//*********************function************
+private function nextLevel():void{
+gameMode="play";
+level++;
+var r:int=Math.floor(Math.random()*numLights);
+playOrders.push(r);
+pLight=0;
+replayOrders=playOrders.concat();
+messageText.text="Please watch carefully!\nTry your best to REMEMBER the order of lights's flashing";
+messageText.appendText("\nlevel: "+level);
+//
+lightOnTimer=new Timer(1200,level+1);
+lightOnTimer.addEventListener(TimerEvent.TIMER,lightOn);
+lightOnTimer.start();
+//
+}
+private function lightOn(e:TimerEvent):void{
+if(pLight>=level){//flashing light is over;
+pLight=0;
+gameMode="replay";
+playerReplay();
+return ;
+}else {
+lights[pLight].flashOn();
+pLight++;
+}
+}
+private function clickLight(e:MouseEvent):void{
+if(gameMode!="replay"){
+	if(gameMode=="test"){//testing
+var light:FlashLight=e.currentTarget as FlashLight;
+if(light!=null){
+light.flashOn();
+}
+	}
+return ;
+}else {
+var light:FlashLight=e.currentTarget as FlashLight;
+if(light!=null){
+if(light.num==replayOrders.shift(){
+light.flashOn();
+if(replayOrders.length==0){
+nextLevel();
+}
+}else{
+lose();
+}
+}
+}
+}
+private function win(){
+messageText.text+="You wins!!!";
+}
+private function lose(){
+messageText.text="Game Over!!!";
+gameMode="lose";
+}
+ 
+
+
+
+
+
+
+}
+}

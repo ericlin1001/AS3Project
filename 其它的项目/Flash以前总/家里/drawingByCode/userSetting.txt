@@ -1,0 +1,14 @@
+Up=up
+&Down=down
+&Right=right
+&Left=left
+&Pen=pen
+&NoPen=nopen
+&Clear=clear
+&Draw=draw
+&Undo=undo
+&Line=line
+&Color=color
+&Set=set
+&Reset=reset
+&AllReset=allreset

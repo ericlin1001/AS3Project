@@ -1,0 +1,107 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<CENTER><SPAN CLASS="title">Chess Programming Part II: Data Structures</SPAN>
+<BR><SPAN CLASS="author">by <A HREF="javascript:if(confirm('http://pages.infinit.net/idjy/  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://pages.infinit.net/idjy/'" tppabs="http://pages.infinit.net/idjy/"></A>Fran&ccedil;ois Dominic Laram&eacute;e</SPAN></CENTER>
+
+<P>Last month, I presented the major building blocks required to write a program to play chess, or any other two-player game of perfect information.&nbsp; Today, I will discuss in a bit more detail the most fundamental of these building blocks: the internal representation of the game board.
+<P>You may be surprised to notice that, for all intents and purposes, the state of the art in this area has not changed in thirty years.&nbsp; This is due to a combination of ingenuity (i.e., smart people made smart choices very early in the field's history) and necessity (i.e., good data structures were a pre-requisite to everything else, and without these effective techniques, not much would have been achieved.)
+<P>While we're at it, I will also present three support data structures which, although not absolutely required to make the computer <I>play</I>, are invaluable if you want it to play <I>well</I>.&nbsp; Of these, two (one of which consumes ungodly amounts of memory) are designed to accelerate search through the game tree, while the third is used to speed up move generation.
+<P>Before we go any further, a word to the wise: in chess as in any other game, the simplest data structure that will get the job done is usually the one you should use.&nbsp; While chess programmers have developed numerous clever data representation tricks to make their programs go faster, very simple stuff is quite sufficient in many other games.&nbsp; If you are a novice working on a game for which there is limited literature, start with something easy, encapsulate it well, and you can experiment with more advanced representations once your program works.
+
+<H1>Basic Board Representations</H1>
+<P>Back in the 1970's, personal computer memory was at a premium (that's an understatement if there ever was one!), so the most compact the board representations, the better.&nbsp; There is a lot to be said for the most self-evident scheme: a 64-byte array, where each byte represents a single square on the board and contains an integer constant representing the piece located in that square.&nbsp; (Any chess board data structure also needs a few bytes of storage to track down <I>en passant</I> pawn capture opportunities and castling privileges, but we'll ignore that for now, since this is usually implemented separately, and pretty much always the same way.)
+<P>A few refinements on this technique soon became popular:
+<UL>
+  <LI>The original SARGON extended the 64-byte array by surounding it with two layers of "bogus squares" containing sentinel values marking the squares as illegal.&nbsp; This trick accelerated move generation: for example, a bishop would generate moves by sliding one square at a time until it reached an illegal square, then stop.&nbsp; No need for complicated <I>a priori </I>computations to make sure that a move would not take a piece out of the memory area associated with the board.&nbsp; The second layer of fake squares is required by knight moves: for example, a knight on a corner square might try to jump out of bounds by two columns, so a single protection layer would be no protection at all!</LI>
+  <LI>MYCHESS reversed the process and represented the board in only 32 bytes, each of which was associated with a single piece (i.e., the white king, the black King's Knight's pawn, etc.) and contained the number of the square where that piece was located, or a sentinel value if the piece had been captured.&nbsp; This technique had a serious drawback: it was impossible to promote a pawn to a piece which had not already been captured.&nbsp; Later versions of the program fixed this problem.</LI>
+</UL>
+
+<P>Today, this type of super-miserly structure would only be useful (maybe) if you wrote a chess program for a Palm Pilot, a cell phone or a set-top box where 80-90% of resources are consumed by the operating system and non-game services.&nbsp; However, for some other types of games, there is really no alternative!
+<P>For more information on vintage chess programs, read David Welsh's book, <I>Computer Chess</I>, published in 1984.
+
+<H1>Bit Boards</H1>
+<P>For many games, it is hard to imagine better representations than the simple one-square, one-slot array.&nbsp; However, for chess, checkers and other games played on a 64-square board, a clever trick was developed (apparently by the KAISSA team in the Soviet Union) in the late 60's: the bit board.
+<P>KAISSA ran on a mainframe equipped with a 64-bit processor.&nbsp; Now, 64 happens to be the number of squares on a chess board, so it was possible to use a single memory word to represent a yes-or-no or true-or-false predicate for the whole board.&nbsp; For example, one bitboard might contain the answer to "Is there a white piece here?" for each square of the board.
+<P>Therefore, the state of a chess game could be completely represented by 12 bitboards: one each for the presence of white pawns, white rooks, black pawns, etc.&nbsp; Adding two bitboards for "all white pieces" and "all black pieces" might accelerate further computations.&nbsp; You might also want to hold a database of bitboards representing the squares attacked by a certain piece on a certain square, etc.; these constants come in handy at move generation time.
+<P>The main justification for bit boards is that a lot of useful operations can be performed using the processor's instruction set's 1-cycle logical operators.&nbsp; For example, suppose you need to verify whether the white queen is checking the black king.&nbsp; With a simple square-array representation, you would need to:
+<UL>
+  <LI>Find the queen's position, which requires a linear search of the array and may take 64 load-test cycles.</LI>
+  <LI>Examine the squares to which it is able to move, in all eight directions, until you either find the king or run out of possible moves.</LI>
+</UL>
+
+<P>This process is always time-consuming, more so when the queen happens to be located near the end of the array, and even more so when there is no check to be found, which is almost always the case!
+<P>With a bitboard representation, you would:
+<UL>
+  <LI>Load the "white queen position" bitboard.</LI>
+  <LI>Use it to index the database of bitboards representing squares attacked by queens.</LI>
+  <LI>Logical-AND that bitboard with the one for "black king position".</LI>
+</UL>
+<P>If the result is non-zero, then the white queen is checking the black king.&nbsp; Assuming that the attack bitboard database is in cache memory, the entire operation has consumed 3-4 clock cycles!
+<P>Another example: if you need to generate the moves of the white knights currently on the board, just find the attack bitboards associated with the positions occupied by the knights and AND them with the logical complement of the bitboard representing "all squares occupied by white pieces" (i.e, apply the logical NOT operator to the bitboard), because the only restriction on knights is that they can not capture their own pieces!
+<P>For a (slightly) more detailed discussion of bitboards, see the article describing the CHESS 4.5 program developed at Northwestern University, in Peter Frey's book <I>Chess Skill in Man and Machine</I>; there are at least two editions of this book, published in 1977 and 1981.
+<P>Note: To this day, few personal computers use true 64-bit processors, so at least some of the speed advantages associated with bitboards are lost.&nbsp; Still, the technique is pervasive, and quite useful.
+
+<H1>Transposition Tables</H1>
+<P>In chess, there are often many ways to reach the same position.&nbsp; For example, it doesn't matter whether you play 1. P-K4 ... 2. P-Q4 or 1. P-Q4... 2. P-K4; the game ends up in the same state.&nbsp; Achieving identical positions in different ways is called <I>transposing</I>.
+<P>Now, of course, if your program has just spent considerable effort searching and evaluating the position resulting from 1. P-K4 ... 2. P-Q4, it would be nice if it were able to remember the results and avoid repeating this tedious work for 1. P-Q4... 2. P-K4.&nbsp; This is why all chess programs, since at least Richard Greenblatt's Mac Hack VI in the late 1960's, have incorporated a <I>transposition table</I>.
+<P>A transposition table is a repository of past search results, usually implemented as a hash dictionary or similar structure to achieve maximum speed.&nbsp; When a position has been searched, the results (i.e., evaluation, depth of the search performed from this position, best move, etc.) are stored in the table.&nbsp; Then, when new positions have to be searched, we query the table first: if suitable results already exist for a specific position, we use them and bypass the search entirely.
+<P>There are numerous advantages to this process, including:
+<UL>
+  <LI>Speed.&nbsp; In situations where there are lots of possible transpositions (i.e., in the endgame, when there are few pieces on the board), the table quickly fills up with useful results and 90% or more of all positions generated will be found in it.</LI>
+  <LI>Free depth.&nbsp; Suppose you need to search a given position to a certain depth; say, four-ply (i.e., two moves for each player) ahead.&nbsp; If the transposition table already contains a six-ply result for this position, not only do you avoid the search, but you get more accurate results than you would have if you had been forced to do the work!</LI>
+  <LI>Versatility.&nbsp; Every chess program has an "opening book" of some sort, i.e., a list of well-known positions and best moves selected from the chess literature and fed to the program to prevent it from making a fool out of itself (and its programmer) at the very beginning of the game.&nbsp; Since the opening book's modus operandi is identical to the transposition table (i.e., look up the position, and spit out the results if there are any), why not initialize the table with the opening book's content at the beginning of the game?&nbsp; This way, if the flow of the game ever leaves the opening book and later translates back into a position that was in it, there is a chance that the transposition table will still contain the appropriate information and be able to use it.</LI>
+</UL>
+<P>The only real drawback of the transposition table mechanism is its voracity in terms of memory.&nbsp; To be of any use whatsoever, the table must contain several thousand entries; a million or more is even better.&nbsp; At 16 bytes or so per entry, this can become a problem in memory-starved environments.
+<P><B>Other uses of transposition tables</B>
+<BR>CHESS 4.5 also employed hash tables to store the results of then-expensive computations which rarely changed in value or alternated between a small number of possible choices:
+<UL>
+  <LI>Pawn structure.&nbsp; Indexed only on the positions of pawns, this table requires little storage, and since there are comparatively few possible pawn moves, it changes so rarely that 99% of positions result in hash table hits.</LI>
+  <LI>Material balance, i.e., the relative strength of the forces on the board, which only changes after a capture or a pawn promotion.</LI>
+</UL>
+<P>This may not be as useful in these days of plentiful CPU cycles, but the lesson is a valuable one: some measure of pre-processing can save a lot of computation at the cost of a little memory.&nbsp; Study your game carefully; there may be room for improvement here.
+
+<H1>Generating Hash Keys for Chess Boards</H1>
+<P>The transposition tables described above are usually implemented as hash dictionaries of some sort, which brings up the following topic: how do you generate hashing keys from chess boards, quickly and efficiently?
+<P>The following scheme was described by Zobrist in 1970:
+<UL>
+  <LI>Generate 12x64 N-bit random numbers (where the transposition table has 2^N entries) and store them in a table.&nbsp; Each random number is associated with a given piece on a given square (i.e., black rook on H4, etc.)&nbsp; An empty square is represented by a null word.</LI>
+  <LI>Start with a null hash key.</LI>
+  <LI>Scan the board; when you encounter a piece, XOR its random number to the current hash key.&nbsp; Repeat until the entire board has been examined.</LI>
+</UL>
+<P>An interesting side effect of the scheme is that it will be very easy to update the hash value after a move, without re-scanning the entire board.&nbsp; Remember the old XOR-graphics?&nbsp; The way you XOR'ed a bitmap on top of a background to make it appear (usually in distorted colors), and XOR'ed it again to make it go away and restore the background to its original state?&nbsp; This works similarly.&nbsp; Say, for example, that a white rook on H1 captures a black pawn on H4.&nbsp; To update the hash key, XOR the "white rook on H1" random number once again (to "erase" its effects), the "black pawn on H4" (to destroy it) and the "white rook on H4" (to add a contribution from the new rook position).
+<P>Use the exact same method, with different random numbers, to generate a second key (or "hash lock") to store in the transposition table along with the truly useful information.&nbsp; This is used to detect and avoid collisions: if, by chance, two boards hash to the exact same key and collide in the transposition table, odds are extremely low that they will also hash to the same lock!
+
+<H1>History Tables</H1>
+<P>The "history heuristic" is a descendant of the "killer move" technique.&nbsp; A thorough explanation belongs in the article on search; for now, it will be sufficient to say that a history table should be maintained to note which moves have had interesting results in the past (i.e., which ones have cut-off search quickly along a continuation) and should therefore be tried again at a later time.&nbsp; The history table is a simple 64x64 array of integer counters; when the search algorithm decides that a certain move has proven useful, it will ask the history table to increase its value.&nbsp; The values stored in the table will then be used to sort moves and make sure that more "historically powerful" ones will be tried first.
+
+<H1>Pre-processing move generation</H1>
+<P>Move generation (i.e., deciding which moves are legal given a specific position) is, with position evaluation, the most computationally expensive part of chess programming.&nbsp; Therefore, a bit of pre-processing in this area can go a long way towards speeding up the entire game.
+<P>The scheme presented by Jean Goulet in his 1984 thesis <I>Data Structures for Chess</I> (McGill University) is a personal favorite.&nbsp; In a nutshell:
+<UL>
+  <LI>For move generation purposes, piece color is irrelevant except for pawns which move in opposite directions.</LI>
+  <LI>There are 64 x 5 = 320 combinations of major piece and square from which to move, 48 squares on which a black pawn can be located (they can never retreat to the back rank, and they get promoted as soon as they reach the eight rank), and 48 where a white pawn can be located.</LI>
+  <LI>Let us define a "ray" of moves as a sequence of moves by a piece, from a certain square, in the same direction.&nbsp; For example, all queen moves towards the "north" of the board from square H3 make up a ray.</LI>
+  <LI>For each piece on each square, there are a certain number of rays along which movement might be possible.&nbsp; For example, a king in the middle of the board may be able to move in 8 different directions, while a bishop trapped in a corner only has one ray of escape possible.</LI>
+  <LI>Prior to the game, compute a database of all rays for all pieces on all squares, assuming an empty board (i.e., movement is limited only by the edges and not by other pieces).</LI>
+  <LI>When you generate moves for a piece on a square, scan each of its rays until you either reach the end of the ray or hit a piece.&nbsp; If it is an enemy piece, this last move is a capture.&nbsp; If it is a friendly piece, this last move is impossible.</LI>
+</UL>
+<P>With a properly designed database, move generation is reduced to a simple, mostly linear lookup; it requires virtually no computation at all.&nbsp; And the entire thing holds within a few dozen kilobytes; mere chump change compared to the transposition table!
+<P>All of the techniques described above (bit boards, history, transposition table, pre-processed move database) will be illustrated in my own chess program, to be posted when I finish writing this series.&nbsp; Next month, I will examine move generation in more detail.
+<P><I>Fran&ccedil;ois Dominic Laram&eacute;e, June 2000</I>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1046&forum_id=35&Topic_Title=Chess+Programming+Part+II%3A+Data+Structures  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1046&forum_id=35&Topic_Title=Chess+Programming+Part+II%3A+Data+Structures'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1046&forum_id=35&Topic_Title=Chess+Programming+Part+II%3A+Data+Structures">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

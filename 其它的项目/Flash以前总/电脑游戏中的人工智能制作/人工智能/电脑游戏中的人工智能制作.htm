@@ -1,0 +1,188 @@
+<HTML><HEAD><TITLE>电脑游戏中的人工智能制作</TITLE>
+<BODY aLink=#990000 bottomMargin=0 leftMargin=0 rightMargin=0 
+topMargin=0 marginheight="0" marginwidth="0">
+<CENTER>
+<DIV align=center>
+<DIV align=left class=fst>
+<DIV class=fstdiv3 
+id=print2><BR><BR>电脑游戏随着硬件执行效率与显示解析度等大幅提升，以往很多不可能或非常难以实现的电脑游戏如此都得以顺利完成。虽然电脑游戏的呈现是那么地多样化，然而却与我们今日所要探讨的主题，人工智能几乎都有着密不可分的关系。 
+<BR>　　在角色扮演游戏中，程序员与企划人员需要精确地在电脑上将一个个所谓的“怪物”在战门过程中栩栩如生地制作出来；所以半兽人受了重伤懂得逃跑，法师懂得施展攻性法术。 
+<BR>　　目前能让人立刻想到与人工智能有密切关系的游戏有两种： 
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;一是所谓的战棋／策略模拟游戏，二则是棋弈游戏。人工智能的比重与深浅度，在不同的游戏类型中各有不一。有的电脑游戏非标榜着高人工智能不可，不然没有人买；有的则是几乎渺茫到让玩家无法感觉有任何人工智能的存在。　　　　　　　　　　　　 
+<BR><BR>　导向式思考 
+<BR><BR>　　ai最容易制作的的方式，同时也是早期游戏ai发展的主要方向就是规则导向或称之为假设导向。在一些比较简单的电脑游戏中，程序员可以好不困难地将游戏中的规则与设定转化成一条条的规则，然后将它们写成电脑程序。让我们以角色扮演游戏为例。决大多数的企画在设定所谓电脑怪物时，所设定的属性通常有以下几种： 
+<BR><BR>　　生命值　攻击力　防御力　法力　&nbsp;属性 
+<BR><BR>　　最后一个“属性”是我在设定时喜欢增加的项目之一。透过这项属性的设定，我可以把怪物设定成“贪生怕死的”，也可以把战士设定为“视死如归”。以目前我们所掌握的资料，在战门系统中的大纲如是诞生了：　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR><BR>规则一 <BR><BR>if&nbsp;(生命值&lt;&nbsp;10)&nbsp;//&nbsp;边临死亡了吗　 
+<BR>{　&nbsp;if&nbsp;(属性==&nbsp;贪生怕死)　　　　　　　　　　　　　　　 
+<BR>　　　结果&nbsp;=&nbsp;试图逃跑　　　　　　　　　　　　　　　 
+<BR>　　if&nbsp;(有任何恢复生命值的物品或法术可用)　　　　　　&nbsp; 
+<BR>　　　结果&nbsp;=&nbsp;使用或施展相关物品或法术　　　　　　　&nbsp; 
+<BR>}　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　　　　　　&nbsp; <BR><BR>规则二 
+<BR>　&nbsp; <BR>if&nbsp;(可施攻击性法术&nbsp;&amp;&amp;&nbsp;有足够法力)&nbsp; 
+<BR>{　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　结果&nbsp;=&nbsp;施展攻攻击性法术　　　　　　　　　　　　　&nbsp; 
+<BR>}　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR><BR>　　由以上一连串的“如果－－就－－”规则设定，建立了最基本的ａｉ。说这样的制方式只能建立基本ａｉ其实并不当然正确。只要建立足够及精确的规则，这样的方式仍然有一定水准的表现。 
+<BR>　　规则导向的最大优点就是易学易用。在没有深奥的理论概念的前提下，仍有广大的使用群。所以很多老道的玩家常常没两下就摸清楚敌人的攻击策略，移动方式等等。 
+<BR><BR>　推论式思考 
+<BR><BR>　　相信曾经接触过电脑语言课程，或是自习过相关书籍的朋友们，都曾曾经听过一个著名的程序，那就是井字游戏。用井字游戏作为讨论ai的入门教材，我个人觉得是最适当的例子。或许有人还不知道井字游戏怎么玩。只要任何一方在三乘三的方格中先先成一线便胜利了。我们在前面谈过的规则导向，在这里也可以派得上用场。 
+<BR><BR>　if任何一线已有我方两子&amp;&amp;另外一格仍空//我方即将成一线吗 
+<BR>　　结果&nbsp;=&nbsp;该空格　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　if任何一线已有敌方两子&amp;&amp;另外一格仍空//防止敌方作成一线　 
+<BR>　　结果&nbsp;=&nbsp;该空格&nbsp;　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　if任何一线已有我方一子&amp;&amp;另外两格仍空//作成两子　　　　 <BR>　　结果&nbsp;=&nbsp;该空格&nbsp; 
+<BR><BR>　　有一次我在某本电脑书上，同样地也看到某些以井字游戏为介绍的范例。不同的是，我几乎看不到任何规则导向的影子。但在仔细分析该程序码后，我得到了极大的启发，原来ai是可以不用这么多规则来制作的。它用的方法正是在电脑ai课程中重要的概念：极大极小法。我在这里只说明这法则的概念。继续以井字游戏为例，电脑先在某处下子，接着会以假设的方式，替对方下子，当然，必须假设对方下的是最佳位置，否则一切则毫无意义。在假设对方下子的过程中，自然又需要假设我方的下一步回应，如此一来一往，直到下完整局游戏为止。 
+<BR><BR>底下是节录书中的程序片段：　　　　　　　　　　　　　　　　　　　　　　　&nbsp; <BR>　&nbsp; 
+<BR>bestmove(int&nbsp;p,&nbsp;int*v)&nbsp; <BR>{　&nbsp;　int&nbsp;i;　&nbsp; 
+<BR>　　　int&nbsp;lasttie;　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　int&nbsp;lastmove;　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　int&nbsp;subv;　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>/*first,&nbsp;check&nbsp;for&nbsp;a&nbsp;tie*/　　　　　　　　　　　　&nbsp; 
+<BR>　　　　if&nbsp;(istie())&nbsp;{　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　*v=0;　　　　　　　　　　　　　　　&nbsp; <BR>　　　　　return(0);　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　};&nbsp; 
+<BR>/*if&nbsp;not&nbsp;a&nbsp;tie,&nbsp;try&nbsp;each&nbsp;potential&nbsp;move*/&nbsp; 
+<BR>　for&nbsp;(*v=-1,&nbsp;lasttie=lastmove=-1,i=0;i&lt;9;i++)&nbsp; 
+<BR>　　{&nbsp; 
+<BR>　　　/*if&nbsp;this&nbsp;isn't&nbsp;a&nbsp;possible,&nbsp;skip&nbsp;it*/　　　　　　　　　　&nbsp; 
+<BR>　　　if&nbsp;(board[i]!=0)&nbsp;continue;&nbsp; 
+<BR>　　　/*&nbsp;make&nbsp;the&nbsp;move.&nbsp;*/&nbsp; <BR>　　　　lastmove=i;　&nbsp; 
+<BR>　　　　board[i]=p;　　　　　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　/*&nbsp;did&nbsp;it&nbsp;win?&nbsp;*/　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　if&nbsp;(haswon(p))&nbsp;*v=1;　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　else{　　　　　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　/*if&nbsp;not,&nbsp;find&nbsp;out&nbsp;how&nbsp;good&nbsp;the&nbsp;other&nbsp;side&nbsp;can&nbsp;do*/&nbsp; 
+<BR>　　　　　bestmove(-p,&amp;subv);　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　/*&nbsp;if&nbsp;they&nbsp;can&nbsp;only&nbsp;lose,&nbsp;this&nbsp;is&nbsp;still&nbsp;a&nbsp;win.*/&nbsp; 
+<BR>　　　　　　if&nbsp;(subv==-1)&nbsp;*v=1;　　　　　　　&nbsp; 
+<BR>　　　/*&nbsp;or,&nbsp;if&nbsp;it's&nbsp;a&nbsp;tie,&nbsp;remember&nbsp;it.&nbsp;*/　　　　　　　　　&nbsp; 
+<BR>　　　　　　　else&nbsp;if&nbsp;(subv==0){　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　*v=0;　　　　　　　&nbsp; <BR>　　　　　　　　　　lasttie=i;　&nbsp; 
+<BR>　　　　　　　　　　};　　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　};　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>/*&nbsp;take&nbsp;back&nbsp;the&nbsp;move.&nbsp;*/　　　　　　　　　　　&nbsp; 
+<BR>　　　　&nbsp;　　　　　　board[i]=0;　　　　　　　　　　&nbsp; 
+<BR>/*if&nbsp;we&nbsp;found&nbsp;a&nbsp;win,&nbsp;return&nbsp;immediately&nbsp; 
+<BR>　　　　　(can't&nbsp;do&nbsp;any&nbsp;better&nbsp;than&nbsp;that)*/　　　　　&nbsp; 
+<BR>　　if&nbsp;(*v==1)&nbsp;return(i);　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>/*if&nbsp;we&nbsp;didn't&nbsp;find&nbsp;any&nbsp;wins,&nbsp;return&nbsp;a&nbsp;tie&nbsp;move.*/　　　　　　　　　&nbsp; 
+<BR>　　if&nbsp;(*v==0)&nbsp;return(lasttie);　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>/*if&nbsp;there&nbsp;weren't&nbsp;even&nbsp;any&nbsp;ties,&nbsp;return&nbsp;a&nbsp;loosing&nbsp;move.*/　　　　　&nbsp; 
+<BR>　　else&nbsp;return(lastmove);　&nbsp; <BR>};　　　　&nbsp; 
+<BR><BR>　　国外的一些论坛曾举行过256字节的游戏设计比赛。作品非常多，其中有一件作品正巧也是井字游戏。作者用区区两百多行就写了与上述程序演算方式完全相同的作品，可见功力确实了的。另外，我也很希望类似的活动能在国内推展起来。对了，在这样的比赛条件限制下，除了汇编语言外，几乎没有其它的选择了。　　　　 
+<BR><BR>　&nbsp;.386c　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;code　　　　　　segment&nbsp;byte&nbsp;public&nbsp;use16　　　　　　 
+<BR>　　　　　　　　　&nbsp;assume　cs:code,&nbsp;ds:code　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;org　　&nbsp;100h　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　&nbsp;tictac　　　　　proc　　far　　　　　　　　　　　　　 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　&nbsp;start:　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;push　　cs　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;pop　　&nbsp;ds　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;ax,0b800h　　　　　;&nbsp;清除屏幕 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;es,ax　　　　　　　;　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;xor　　&nbsp;di,di　　　　　　　;　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;cx,7d0h　　　　　　;　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;ax,0f20h　　　　　&nbsp;;　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;rep　　&nbsp;stosw　　　　　　　;　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;xor　　&nbsp;cx,cx　　　　　　　;　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;dl,5　　　　　　　　　　　　&nbsp; 
+<BR>　&nbsp;loc_1:　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　printboard　　　　　　　　　&nbsp; 
+<BR>　&nbsp;loc_2:　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;ah,8　　　　　　　&nbsp;;&nbsp;等待按键 
+<BR>　　　　　　　　　&nbsp;int　　&nbsp;21h　　　　　　　　　　　　　 <BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;movzx　&nbsp;bx,al　　　　　　　　　　　　 
+<BR><BR>　　　　　　　　　&nbsp;sub　　&nbsp;bl,31h　　　　　　&nbsp;;&nbsp;如果不是1..9 
+<BR>　　　　　　　　　&nbsp;jc　　　loc_2　　　　　　　;&nbsp;则重新输入　 
+<BR>　　　　　　　　　&nbsp;cmp　　&nbsp;bl,8　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;ja　　　loc_2　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;cmp　　&nbsp;data_1[bx],al　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;jne　　&nbsp;loc_2　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;byte&nbsp;ptr&nbsp;data_1[bx],'x'　　　　　 
+<BR>　　　　　　　　　&nbsp;dec　　&nbsp;dl　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;jz　　　short&nbsp;loc_3　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;al,'o'　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　bestmove　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;[si],al　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;call　　iswin　　　;&nbsp;判断是否已取得胜利　 
+<BR>　　　　　　　　　&nbsp;jnc　　&nbsp;loc_1　　　　　　　　　　　　　　 
+<BR>　&nbsp;loc_3:　　　　　　　　　　　　　　　　　　&nbsp;　&nbsp;　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　printboard　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;ax,4c00h　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;int　　&nbsp;21h　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;data_1　　　　　db　　　'12'　　　　　　　　　　　　　　&nbsp; 
+<BR>　&nbsp;data_2　　　　　db　　　'3456789'　　　　　　　　　　　　 
+<BR>　&nbsp;data_3　　　　　db　　　0　　　　　　　　　　　　　　　　 <BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;tictac　　　　　endp　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;printboard　　　proc　　near　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;si,offset&nbsp;data_1　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;di,548h　　　　　　　　　　　&nbsp;　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;cl,3　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;locloop_4:　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;movsb　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;add　　&nbsp;di,5　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;movsb　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;add　　&nbsp;di,5　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;movsb　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;add　　&nbsp;di,133h　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;loop　　locloop_4　　　　　　　　　　　　 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;retn　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　&nbsp;printboard　　　endp　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;iswin　　　　　&nbsp;proc　　near　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;bx,1　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;bp,3　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　sub_3　　　　;&nbsp;检查横向是否完成　 
+<BR>　　　　　　　　　&nbsp;inc　　&nbsp;bx　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;inc　　&nbsp;bx　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;dec　　&nbsp;bp　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;dec　　&nbsp;bp　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　sub_3　　　　;&nbsp;检查纵向是否完成　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　sub_4　　　　;&nbsp;检查斜向是否完成&nbsp; 
+<BR>　　　　　　　　　&nbsp;clc&nbsp; <BR>　　　　　　　　　&nbsp;retn　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　&nbsp;iswin　　　　　&nbsp;endp　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;loc_5:　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;stc　　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;retn　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;sub_3　　　　　&nbsp;proc　　near　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;ah,3　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;si,offset&nbsp;data_1　　　　　　　　&nbsp; 
+<BR>　&nbsp;loc_6:　　　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;di,si　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;call　　sub_5　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;add　　&nbsp;si,bp　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;dec　　&nbsp;ah　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;jnz　　&nbsp;loc_6　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;retn　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　&nbsp;sub_3　　　　　&nbsp;endp　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;sub_4　　　　　&nbsp;proc　　near　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;di,offset&nbsp;data_1　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;inc　　&nbsp;bx　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　sub_5　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;di,offset&nbsp;data_2　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;dec　　&nbsp;bx　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;dec　　&nbsp;bx　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;call　　sub_5　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;retn　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　&nbsp;sub_4　　　　　&nbsp;endp　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 <BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;sub_5　　　　　&nbsp;proc　　near　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;mov　　&nbsp;cl,3　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　&nbsp;locloop_7:　　　　　　　　　　　　　　　　　　　　　　　&nbsp; 
+<BR>　　　　　　　　　&nbsp;cmp　　&nbsp;[di],al　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;jne　　&nbsp;short&nbsp;loc_ret_8　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;add　　&nbsp;di,bx　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;loop　　locloop_7　　　　　　　　　　　　 
+<BR>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 
+<BR>　　　　　　　　　&nbsp;add　　&amp;<BR><BR></DIV></DIV></DIV>
+</CENTER></BODY></HTML>

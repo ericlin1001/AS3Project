@@ -1,0 +1,180 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<P ALIGN="center"><SPAN CLASS="title">A Practical Guide to Building a Complete Game AI: Volume I</SPAN>
+<BR><SPAN CLASS="author">by Geoff Howland</SPAN></P>
+
+<P>Artificial Intelligence (AI) in games has taken the backseat in development for a long time for many reasons but the future of games is definitely going to be weighted heavily with increasingly detailed game AI. If your game's AI is not up to the current level that game player's expectations demand then your game will feel dated and suffer for it in their opinions.</P>
+<P>Game AI is not just neural networks and learning systems and complex mathematical structures, although it can be, but primarily game AI is about creating an environment and the appearance of thought from units. Game AI is behavioral, not scientific.</P>
+<P>The key to understanding how to create game AI is understanding what you want your final results to be and then building the system to provide those results. It all comes down to what the player can see; if they can't tell it's happening, then it might as well not be.</P>
+<P><I> The examples and discussion will be given based on the format of Real-Time Strategy (RTS) games, however some of these concepts can be translated into being appropriate for other genres as well. All data examples are done in standard C format.</I></P>
+
+<H1>State Machines</H1>
+<H2>Finite State Machine</H2> 
+<P>A finite state machine (FSM) is a system that has a limited number of states of operation. A real world example could be a light switch which is either on or off, or an alarm clock that is either idling by telling time, ringing an alarm or having its time or alarm set. Any system that has a limited number of possibilities where something can be defined by one state (even combinations) can be represented as a finite state machine.</P>
+<P>Finite state machines are natural for any type of computer program and understanding how to use them effectively to create game AI is only as hard as understanding the system you are trying to represent, which is as detailed or simple as you make it.</P>
+
+<H2>Using Finite State Machines</H2>
+<P>There are many purposes for using FSMs in games but one of the more intricate ones you have to deal with is trying to model unit behavior since trying to simulate human beings is the toughest simulation there is. As guaranteed hard as it is to simulate human behavior there have been many stories of detailed game AI's that were mistaken for human players and vice versa by other players and spectators of the games, especially some detailed FSMs systems. </P>
+<P>While some other systems are designed to more accurately model the way humans think and learn, sometimes you can just never beat the simplicity of having a choice, weighing the factors and deciding, as a human, which one you would make given that choice. When learning more about AI decision and learning systems always keep this in mind as often the best system for the job is the simplest and not the most scientifically accurate.</P>
+<P>Don’t misunderstand this as opposition to Neural Network, Genetic Algorithms or any other artificial intelligence systems, just don’t mistake clever routines and interesting algorithms as being a better solution if they wont give better results. Weigh your choices based off what you need to get your end result, not the latest trends.</P>
+
+<H2>Game State Machines</H2>
+<P>Creating a believable environment for your game means that you need to consider as many detailed elements that the player might possibly focus their attention on as you can. The more of these you anticipate by planning and testing, the more immersive the environment will be for the player when they are discovering your creation.</P>
+<P>In your total game state there will be at least two division of state machines that you will need to keep your game going. The first state machine will deal with the game interface, which includes whether the game is paused, if there are different modes the player can be looking at the world in, then which one, what things the player can and can't see and any other flags you might use for your particular interface.</P>
+<P>The second state machine will deal with what is actually going on in the game, the current state of the environment, objects in the level, objectives completed or failed in the mission and all other variables that you use to guide and challenge the player.</P>
+<P>You may have an alert system where the enemies will be actively patrolling if the player has been spotted or has fired shots, or flags for whether certain critical pieces have been destroyed or not. All of these items can be contained inside of a structure such as the example one below.</P>
+
+<BLOCKQUOTE><PRE CLASS="code">
+struct GameLevelState {
+  int alert;            // Alert status of enemies //
+  struct Positionshot;  // Position of last shot fired //
+  int shotTime;         // Game cycle last shot was fired //
+  int hostage;          // Hostage rescued //
+  int explosives;       // Explosives set or not //
+  int tank;             // Tank destroyed //
+  int dialogue;         // Dialogue variable //
+  int complete;         // Mission completed //
+ };
+</PRE></BLOCKQUOTE>
+
+<H2>Flexibility</H2> 
+<P>Keeping your AI flexible is extremely important. The more modular you make your routines, the more you will be able to expand them as you go on. Its important to understand that designing a game AI is very much an iterative process, you need to try things out and build upon them.</P>
+<P>The goal in creating a good AI is to have units that react in situations that seem realistic in an environment they seem to be interacting with. If you box in what your units will be able to do too early it will be difficult to expand the breadth of their actions later on when you decide to augment the game world to feel more complete or interactive.</P>
+
+<H1>Unit Actions</H1> 
+<P>In a game where the player controls units, it is all important to have meaningful and well organized information on them. Without this, adapting the units to the players will become difficult and the users interface with the game could suffer. If the player doesn’t feel he is controlling the units and getting appropriate information back from them, then all he is doing is clicking around in an interface and all immersive aspects the game held will be lost. Meaning the player won't be having any fun and could be becoming frustrated. </P>
+
+<H2>Anatomy 101</H2>
+<P>To get a sense of what kind of information you may want to provide to the player with let's take a look at a sample data structure.</P>
+
+<BLOCKQUOTE><PRE CLASS="code">
+struct Character {
+  struct Positionpos;               // Map position //
+  int screenX, screenY;             // Screen position //
+  int animDir, animAction, animNum; // Animation information, action and animation frame number //
+  int rank;                         // Rank //
+  int health;                       // Health //
+  int num;                          // Number of unit //
+  int group;                        // Group number //
+  int style;                        // Style of unit (elf, human) //
+  struct AnimationObject animObj;   // Animation object for complex animations //
+};
+</PRE></BLOCKQUOTE>
+
+<P>Now some definitions of the variables:</P>
+<P>The <I>pos</I> variable determines the unit's position in the game world and the <I>screenX, screenY </I>variables are useful for easily adding information around the unit on the screen such as health or selection information.</P>
+<P>The <I>animDir, animAction and animNum</I> all refer to the units current animated state that will be drawn to the screen.</P>
+<P>The <I>rank</I> and <I>health </I>variables are both fairly obvious and are extremely simplified for what information they could hold.</P>
+<P>The <I>num </I>variable is the number that the unit is in the main unit array. Later, when calling the unit information from its group it is sometimes useful to pass off which unit it is, without giving the actual structure address.</P>
+<P>The <I>group</I> variable determines which group the unit belongs to as a unit should belong to a group at almost all times. The only time a unit should not be in a group is if the unit is dead.</P>
+<P>The <I>style </I>and <I>animObj</I> variables are both more information about how the unit's graphics will be drawn.</P>
+
+<H2>Building Past Basics</H2>
+<P>Once you have your initial routines working based on a simple version of your units, such as the above, its time to start building more information into them to really bring them to life.</P>
+<P>You will need to think about what kind of actions and reactions you want the units to have. Do you want them to be controlled by emotions? Do you want them to be able to freeze up? Run away? Charge like a madman?</P>
+<P>If you do then adding variables to determining emotional states could be a next step. The best way to try to understand what components your units can have is to try and understand yourself and what you would be dealing with in a situation that they are. In order to create human like reactions, you need to base it off of how a human would react.</P>
+<P>There is another side to this, almost an opposite of human reaction, which is providing a synthetic experience that is not based on reality, but instead based on challenging the player. Instead of making your units based on your instincts, you will need to think in whatever manner you want your units to react in. The point is that you have to make the decisions about every facet you can or you will end up with flat, boring reactions that are too easy to predict, or even seemingly random. Either of these traits could ruin an otherwise good game, so put a lot of thought into it, and most importantly, play it to death to make sure it works!</P>
+
+<H1>Grouping</font></H1>
+<H2>To group or not to group?</H2>
+<P>If you are creating a First Person Shooter game then it comes as no big surprise that grouping isn't for you. However, if you are creating a RTS or a game that has the player controlling more than one unit at a time then you have a question to ask yourself.</P>
+<P>Do you need your units to act in a coordinated way?</P>
+<P>If the answer is yes, then there is a good chance that grouping is for you. If the answer is no there still may be advantages to grouping but you will have to sort those out on your own as they will no doubt be totally dependent on exactly the kind of actions you want your units to perform.</P>
+
+<H2>Benefits of Grouping</H2>
+<OL>
+  <LI>Units can move in a formation only accessing one master list of movement information. The advantage here is that you do not have to propagate information to every unit in the group when a destination or target changes as they all get their movement information off of the group source.</LI>
+  <LI>Multi-unit coordinated actions, such as surrounding a building, can be controlled at a central location instead of each unit trying to work out where it is in relation to other units and bumping back and forth until they are in the correct position.</LI>
+  <LI>Groups can maintain their structure so that issuing new orders only takes the same amount of time and data as issuing an order to a single unit. Most important you will create something that can be easily understood and read. Changing around 25 units or so and having them try to pass information to each other can be quite a chore if they don’t have any common ground.</LI>
+  <LI>Depending on the formation of the group, obstacle avoidance and detection can be simplified and time to find paths can be reduced, which can be a serious concern when dealing with a large amount of units.</LI>
+</OL>
+
+<H2>The Big Picture</H2>
+<P>Organizing your group, just like everything else in creating a game AI, is about understand the final affect you want to gain with control of the units. The idea is to create a place where there is a central repository of information which can be found quickly and shared between units. The idea is also not to duplicate any data, you want data to be found at one source and one source only, and that source needs to be the most logical position for the information so that when you are later working with it and building off of it, other logical extensions will equally seem to be in the correct places.</P>
+<P>From my experience I decided that this separation in my work should be split where anything that has to do with the unit as an enclosed entity will be placed in the unit's data structure, while anything that had to do with movement, or actions, since those are what we are trying to organize and share, will be placed in the group data structures.</P>
+<P>This means that the units alone will not have any information on where they are going, or what they are doing beyond the physical position they are in, like their animation frame and position in the world. To do this it means that a unit must ALWAYS be in a group as long as they are capable of moving or their actions changing. If they are alone, then they are just a group of one.</P>
+
+<H2>One of many</H2>
+<P>While we are ultimately looking for a group to act as a coordinated system, the system is definitely made up of individual pieces and it's important to keep track of what each unit is doing individually so that when we need the group to break formation and move about as separate entities with common or individual purposes we can. For this goal I created a structure similar to the one below.</P>
+
+<BLOCKQUOTE><PRE CLASS="code">
+struct GroupUnit {
+  int unitNum;                  // Character Number //
+  struct Unit *unit;            // Unit character data //
+  struct Positionwaypoint[50];  // Path in waypoints for units //
+  int action[50];               // Actions by waypoints //
+  int stepX, stepY;             // Step for individual units, when in cover mode // 
+  int run, walk, sneak, fire, hurt, sprint, crawl;          // Actions //
+  int target;                   // Targets for units //
+  struct Position targetPos;    // Target Position //
+};
+</PRE></BLOCKQUOTE>
+
+<P>Explanations of the variables:</P>
+<P>The <I>unitNum</I> is the number of the unit in the group. If there is a maximum of 10 units in a group, then there will be 10 possible slots that could have units. The first unit would be unitNum 0, following to unitNum 9.</P>
+<P>The <I>unit</I> is a pointer to the unit's character data, which holds information like the characters current position, health and every other piece of information on the individual. Its important that a unit's vital signs and other information can be monitored from the group so that you can easily check to see if a group member has been wounded and communicate this to the other members, along with a myriad of other possibilities.</P>
+<P>The <I>waypoint</I> array contains all the places that the unit has to move in a queue. All actions and waypoints are only specified in the GroupUnit structure if the group is not in a formation and units need to move about on their own.</P>
+<P>The <I>action</I> array contains actions that are associated with the movements to waypoints. This allows you to create more detailed command chains, as telling units to sneak across one area and then sprint across another adds a lot of possibilities to making more strategic and thought out movements by the player.</P>
+<P>The <I>stepX, stepY</I> information can be used for simple velocity; every frame move this unit this many world-position-units in any direction on the map. Used properly this can be just as applicable for all situations as doing real physics modeling, only with a simpler system and usually reduced processing time (not to mention ease of implementing the first time or quickly).</P>
+<P>The <I>run, walk, sneak…</I>variables all deal with different states the unit are in. These are not animations, but action states that can be toggled easily and even have multiple states that effect each other differently when more than one are turned on. </P>
+<P>The <I>target </I>and <I>targetPos</I> variables are used to hold the unit number of the enemy being targeted and his current position. The enemies position, as well as health and other attributes, could just be referenced each time by looking up the enemies unit number, but for readability I decided it would be easier to keep a local copy of the enemies position.</P>
+
+<H2>Mob mentality</H2>
+<P>The ultimate goal of course is to have a centralized location for as much of the data as possible to limit the amount of look ups and processing to a minimum and keep things simple. Lets take a look at a sample data structure for doing this.</P>
+
+<BLOCKQUOTE><PRE CLASS="code">
+struct Group {
+  int numUnits;              // Units in group //
+  struct GroupUnit unit[4];  // Unit info //
+  int formation;             // Formation information for units and group //
+  struct Position destPos;   // Destination (for dest. circle) //
+  int destPX, destPY;        // Destination Screen Coords //
+  struct Position wayX[50];  // Path in waypoints for group //
+  float formStepX, formStepY;  // Formation step values for group movements //
+  int formed;                // If true, then find cover and act as individuals, otherwise move in formation //
+  int action, plan;          // Group action and plans //
+  int run, walk, sneak, sprint, crawl, sniper;   // Actions //
+  struct Position spotPos;   // Sniper Coords //
+  int strategyMode;          // Group strategy mode //
+  int orders[5];             // Orders for group //
+  int goals[5];              // Goals for group //
+  int leader;                // Leader of the group //
+  struct SentryInfo sentry;  // Sentry List //
+  struct AIStateaiState;     // AI State //
+};
+</PRE></BLOCKQUOTE>
+
+<P>The <I>numUnits</I> variable refers to the number of units in the group and the <I>unit</I> array holds the GroupUnit information. For this particular group the maximum units has been hard coded to 4.</P>
+<P>The <I>formation</I> flag determines what type of formation the group is in. They could be formed in a column, wedge or diamond shape easily by just changing this variable and letting the units reposition themselves appropriately.</P>
+<P>The <I>destPos </I>and <I>destPX,destPY </I>are all information for keeping track of the final destination of the group and relaying that information quickly to the player. The waypoints and steps work the same manner as individuals except that when units are in a formation they will all have the same speed so they stay in formation. There is no need to update each unit by its own speed value, as the group's can be used.</P>
+<P>The <I>formed</I> variable is one of the most important as it determines whether the units act in formation or as individuals. The concept is that if the group is formed then all the units will have the same operations performed on them each cycle. If there is a reason that they can't all move the same way, such as enemies attacking or a necessary break in formation to get past an obstacle, then the units need to move on their own.</P>
+<P>The actions are the same as individual, and you'll notice that there is a variable for a sniper that is not in GroupUnit structure as there is no reason to have one unit in a group be a sniper while the rest are off running around. It is logical to split that unit into its own group and then control the sniper activities at the group level. This is the kind of planning you need to do to figure out what information is best served in what section of your structures.</P>
+<P>The <I>strategyMode</I> is a quick variable that determines how the units respond to enemies. Is it aggressive, aggressive with cause, defensive, or run-on-sight? Having an easy to access overview variable that controls basic responses is a good way to cut out a lot of individual unit and group situation calculations. Beyond that it gives the control to the player, who can set different groups in different modes so they know how each group will react if they encounter any enemies.</P>
+<P>The <I>orders</I> and <I>goals</I> arrays point to orders and goals described in an order and goal database so that when orders are given they can be assigned to multiple groups easily and each group feeds off the same information.</P>
+<P>The <I>sentry</I> and <I>aiState </I>are fairly self explanatory as they contain sentry information and more detailed aiState information for doing detailed pattern matching.</P>
+
+<H2>Putting it together</H2>
+<P>Now that we have some structures for our groups, what's next? The next step is to figure out how you are going to use this information by routines in your game.</P>
+<P>It's <B><I>crucial</i></B> that you carefully plan for your AI routines to be modular and flexible so that you can add on to them later and easily call different pieces. The concept here, as in data structure organization, is to only do something in one function, and to make that function limited so that it does a specific thing. Then if you need to do that thing again you can call the routine that is already tested and is a known single point of operation on that data. Later if you run into problems with your AI and need to debug it, you don’t have to go hunting all over the place for the offending routine, because there is only one routine that would operate on that data, or at least in that manner.</P>
+
+<H1>Tips</H1>
+<P>Walk before you run. Learn the basics, create the basics, add more advanced routines for your particular game as you need them. Never fall into the trap of using a routine because it is popular and everyone else seems to be using it. Often other people are using a routine because its' benefits fit their needs, but it may not fit yours. Furthermore, people often use routines just because they are the standard, even if they are actually not the best routines for their situation.</P>
+<P>Your concern should always be on getting the best results, not having the current fashionable routines; if it works, use it. The game developer mantra used to be, and always should be, "If it looks right, it is right." Don’t let the people who are interested in designing real world total physics simulations make you feel bad for creating a simple positional system where you add X to the position each frame. If that is what works in your particular situation, then do it. Correct physics has its place in some games, but not all of them and there are other ways of achieving nearly the same results.</P>
+<P>You can never build a perfect replica of reality. That is just a fact. So you need to draw your own line on where <I>good enough</I> is and then make your good enough reality.</P>
+<P><B><A HREF="article785.asp.htm" tppabs="http://www.gamedev.net/reference/articles/article785.asp">Volume II: Unit Goals and Path Finding</A></B>
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=784&forum_id=35&Topic_Title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+I  \n\nÕâ¸öÎÄ¼þ²»ÄÜÍ¨¹ý Teleport Pro È¡»Ø, ÒòÎª Ëü±»Á´½Óµ½ÀëËüµÄÆðÊ¼µØÖ·Ì«Ô¶µÄµØ·½. Èç¹ûÄãÔö´óÆðÊ¼µØÖ·ÔÚÆä·¶Î§ÄÚµÄÉî¶ÈÉèÖÃ, Õâ¸öÎÄ¼þ½«½øÐÐÁÐ¶ÓµÈ´ýÈ¡»Ø.  \n\nÄãÏë´Ó·þÎñÆ÷´ò¿ªËüÂð?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=784&forum_id=35&Topic_Title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+I'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=784&forum_id=35&Topic_Title=A+Practical+Guide+to+Building+a+Complete+Game+AI%3A+Volume+I">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+  xmlns:mx="http://www.adobe.com/2006/mxml" 
+  layout="absolute" 
+  width="640" 
+  height="480" 
+  applicationComplete="appComplete()">
+  
+	<mx:Script>
+		<![CDATA[
+			
+			private function appComplete():void
+			{
+				this.addChild(new DisplayObjectUIComponent(new FlixelGame()));
+			}
+			
+		]]>
+	</mx:Script>  
+	
+</mx:Application>

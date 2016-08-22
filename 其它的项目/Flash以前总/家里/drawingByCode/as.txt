@@ -1,0 +1,76 @@
+var settedOrders:Object={Up:"up",Down:"down",Left:"left",Right:"right",Pen:"pen",NoPen:"nopen",
+Clear:"clear",Draw:"draw",Undo:"undo",Color:"color",Reset:"reset",AllReset:"allreset"};
+var orders_txt:TextField=new TextField();
+with(orders_txt){
+type=TextFieldType.INPUT;
+border=true;
+width=400;
+height=200;
+x=0;
+y=200;
+}
+enter_mc.addEventListener(MouseEvent.CLICK,clickHandler);
+//*****************************
+var request:URLRequest=new URLRequest("userSetting.txt");
+var loader:URLLoader=new URLLoader();
+loader.addEventListener(Event.COMPLETE,completeHandler);
+try{
+loader.load(request);
+}
+catch(error:Erro){
+trace("Can't load the userSettingj.txt");
+}
+finally{
+for(var i:String in settedOrders ){
+trace (i+"="+settedorders[i]);
+}
+}
+function completeHandler(event:Event):void{
+var Vars:URLVariables=new URLVariables(event.target);
+var regExp:RegExp=/[a-zA-Z0-9]+/;
+for(var i:String in settedOrders){
+if(regExp.test(Vars[i])){
+settedOrders[i]=Vars[i];
+}
+trace(i+"="+settedorders[i]);
+}
+
+//*************************
+//************************
+function executeOrder(str:String):void{
+var orderRegExp:RegExp=/(\w+)[ (]*(\d*)(,\d+)*[ )]*;*/;
+settedOrders =toLowerCase(settedOrders);
+var results:Array=orderRegExp.exec(str);
+trace(results);
+/*
+switch(results[1].toLowerCase()){
+case settedOrders.Up:
+Up(Number(results[2]);
+break;
+case settedOrder.Down:
+Down(Number(results[2]);
+break;
+default:
+break;
+}
+*/
+}
+//********************
+function toLowerCase(obj:Object):Object{
+for(var i:String in obj){
+obj[i]=obj[i].toLowerCase();
+}
+}
+//*****************
+function separteOrders(str:String):Array{
+eachOrder:RegExp=/.+?[;\n\r]+/g;
+return str.match(eachOrder);
+}
+//*************************
+function clickHandler(event:MouseEvent):void{
+var orders:Array=separteOrders(orders_txt.text);
+for(var i=0;i<orders.length;i++){
+executeOrder(orders[i]);
+}
+}
+

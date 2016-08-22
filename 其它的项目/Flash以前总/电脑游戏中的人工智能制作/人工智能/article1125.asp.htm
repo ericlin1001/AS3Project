@@ -1,0 +1,59 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<P ALIGN="center"><SPAN CLASS="title">Motion Planning Using Potential Fields</SPAN>
+<BR><SPAN CLASS="author">by <A HREF="mailto:strategicalliance@softline.be">Stefan Baert</A></SPAN></P>
+
+<H1>Introduction</H1>
+<P>First of all, I'm no authority on pathfinding or motion planning. There just seems to be a lot of interest in pathfinding algorithms on the artificial intelligence message board. Last year I did a big project on motion planning for a university course, but since almost nobody on the net understands Dutch, I thought it might be best to translate it and let a much broader public get acquainted with the general concepts of motion planning. In this article I'll shed some light on several techniques using potential fields. We'll focus on the theoretical part of the algorithms and now and then I'll throw in some screenshots from a demo-application I made for the project.</P>
+<P>Should you have more questions or ideas on the subject, my name is <A HREF="mailto:StrategicAlliance@softline.be">Stefan Baert</A>, I live in Belgium and on the net you'll mostly find me as 'StrategicAlliance'.</P>
+
+<H1>What is a potential field anyway?</H1>
+<P>Before we start we have to agree on some definitions. We'll be talking about a pixel-sized 'unit' that can freely maneuver in all 8 directions at a speed of one pixel per turn in an environment. This environment is a 2D-map that has been divided in squares, sized one pixel each. In this example we'll take a 100*100 environment and call it a 'grid'. The borders are walls that can not be penetrated and there are several 'objects' on the map which have to be avoided. In theory, these objects can have any form, but we'll focus on differently sized rectangles.</P>
+<P>Now, what we still have to do is define a potential field. In essence, you could think of it as a big matrix. Every pixel in the 'grid' we mentioned above is represented in the matrix by a number, telling us something about the state of that pixel under the current circumstances. Since our ultimate goal is to find a path from our starting location to our destination, it's logical to assume that we're going to manipulate and use these numbers as the decisive factor to move in the 'grid'.</P>
+<P>In the examples below we'll always try to make the 'potential' of our destination as low as possible, while making the starting location as high as possible. We can then, symbolically, glide down the numbers, moving from pixel to pixel in the grid, only accessing pixels in the grid that have a lower potential than the one our unit stands in at that moment. To avoid bumping into obstacles we'll give them a very high potential value (higher than the highest accessible pixel in the grid) so our unit will never be tempted to enter such an object.</P>
+<P>In the included screenshot you see a potential field indicated with colors. In this case a lower potential means a darker green. The unit is the blue pixel in the top left corner. Our goal is the red pixel in the lower right corner. Obstacles are shown in white.</P>
+<P ALIGN="center"><IMG BORDER="0" SRC="images/MP_shot1.gif" tppabs="http://www.gamedev.net/reference/programming/features/motionplanning/MP_shot1.gif" WIDTH="269" HEIGHT="269"></P>
+
+<H1>Technique 1 : Forward... march!</H1>
+<P>We'll now look at a few techniques. Each one will be slightly more complicated than the previous one, solving the problems from the previous technique, but unfortunately creating different ones at the same time.</P>
+<P>We start easy. We calculate the distance in each pixel point to the destination and give this distance as 'potential' value to that pixel. Please note that in this case you don't have to care about the obstacles (just give them a very high value). The distance from the destination to a pixel can be measured in a straight line. Once this is done we apply this algorithm : &quot;Check all the neighboring pixels of the current pixel and select the one with the lowest potential value. Move to that pixel and continue to do this until you reach your goal or get stuck.&quot;</P>
+<P>It can hardly be easier and this algorithm works quite well if you have few objects in the grid, but most of the time the unit will get stuck behind an object and have no way to get back on the right track.</P>
+
+<H1>Technique 2 : Filling local minima</H1>
+<P>As we saw in the first technique it is possible to get stuck. This happens when the unit enters a local minimum. In the potential field this is represented by a pixel that has neighbors which are either objects or are accessible but have a higher value, yet they are not our destination. If you have some experience with theoretical algorithms you may have noticed that we performed a depth-first search in the grid.</P>
+<P>We'll improve our algorithm by using a best-first search. We'll do this by building a tree with the pixels in the grid. Our root in the tree is the starting location. This root has the 8 directions in which our unit can travel as children. We'll take the child with the lowest value and evaluate all the directions we can travel from here, but not the ones that are already in the tree. We then evaluate all the leaves in the tree and repeat the process for the leave with the lowest value. We continue to do this until we either find our destination or until we have evaluated all leaves and cannot find another pixel to move to (which will happen if the destination is simply unreachable from our starting location). If we are successful the path is defined by traversing the tree from the root to the leave containing our destination.</P>
+<P ALIGN="center"><IMG BORDER="0" SRC="images/MP_shot2.gif" tppabs="http://www.gamedev.net/reference/programming/features/motionplanning/MP_shot2.gif" WIDTH="268" HEIGHT="268"></P>
+<P>If you do a graphical representation of building the tree, you can see that local minima are 'filled' until the 'bucket runs over' and we can continue a straight line to our goal. In the picture, the members of the tree are blue, except for the leaves which are yellow. Obstacles are represented in white.</P>
+
+<H1>Technique 3 : It is better to prevent...</H1>
+<P>We may have found a way to get out of local minima in our previous solution, but it would be better if we could just find a way to have no local minima at all. To accomplish this we need to change the way in which we build our potential field.</P>
+<P>Instead of directly calculating the distance between a pixel and the destination, we'll give our destination zero as value and then apply this algorithm : Every direct (horizontal and vertical but not diagonal) neighbor of the destination gets value 1, then their direct neighbors get 2, and so on...</P>
+<P>We can then start of where our unit is and glide down the numbers to our goal. Since only our destination has a zero value and every other pixel always has a neighbor with a lower value we'll be successful when a path exists. This method is also known as a wavefront-expansion.</P>
+<P ALIGN="center"><IMG BORDER="0" SRC="images/MP_shot3.gif" tppabs="http://www.gamedev.net/reference/programming/features/motionplanning/MP_shot3.gif" WIDTH="268" HEIGHT="268"></P>
+<P>If you look at the picture you'll notice that local minima now get a higher value (indicated by a brighter yellow) because it's a longer way around an object to get there than in a straight line. The path we follow is indicated by the blue line moving east and then south.</P>
+
+<H1>Technique 4 : Get away from the edges</H1>
+<P>Since we began our exploration of the potential field, we've learnt to get out of minima and even to ban them completely. But you'll have noticed in the last screenshot that we were moving dangerously close to the edge of objects and walls. In an environment where we might only know an approximate location of objects it would be best to stay as far away from them as possible to avoid collisions.</P>
+<P>For this we need to enhance our algorithm from the previous technique. Instead of initiating one wavefront in the destination, we will now start a wavefront in every pixel that is on the edge of an object. Each of these 'edge-pixels' gets a unique ID and gives this ID to all his direct neighbors. When two ID's that are sufficiently different collide we've found the middle between two close objects. The result will be a kind of Voronoi diagram between the objects which we can use as roadmap to navigate between the objects. All we then have to do is give the pixels in the grid that do not belong to this roadmap, a value so that our unit will get on the roadmap as soon as possible. For this we can use one of the techniques above.</P>
+<P ALIGN="center"><IMG BORDER="0" SRC="images/MP_shot4.gif" tppabs="http://www.gamedev.net/reference/programming/features/motionplanning/MP_shot4.gif" WIDTH="268" HEIGHT="268"></P>
+<P>The picture shows wavefronts coming from the edges of the objects and a purple roadmap exactly in the middle between several objects.</P>
+
+<H1>Conclusion</H1>
+<P>This concludes our voyage using potential fields. The techniques described above are an interesting alternative for the A* algorithm that seems to be very popular these days. Though potential fields require some serious calculations to be applied their characteristic of defining a whole grid in numbers can be an asset if you need quickly changing destination goals, because all you need to do is increase or decrease the numbers in a certain region to make it more attractive (or not) for the unit to follow that path.</P>
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1125&forum_id=35&Topic_Title=Motion+Planning+Using+Potential+Fields  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1125&forum_id=35&Topic_Title=Motion+Planning+Using+Potential+Fields'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=1125&forum_id=35&Topic_Title=Motion+Planning+Using+Potential+Fields">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

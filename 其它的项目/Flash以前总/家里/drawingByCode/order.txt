@@ -1,0 +1,10 @@
+pen 2,0x00ff00;
+left 4;up 4;
+right 8
+down 8;
+left 10
+up 10
+
+line 5set 0 0up 10set 0 0draw 10 10;
+
+set 0 0;draw 10 10; draw 10 -10;set 0 0;draw -10 10

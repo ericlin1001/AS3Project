@@ -1,0 +1,51 @@
+﻿package {
+	import flash.display.Sprite;
+	import flash.display.GradientType;
+	import flash.geom.Matrix;
+	public class Ball extends Sprite {
+		private var _radius:Number;
+		private var lineWide:Number;
+		public var vx:Number=0;
+		public var vy:Number=0;
+		public var mass:Number=1;
+		private var _color:uint;
+		public function Ball(radius:Number=30,color:uint=0xff0000,lineWide:Number=0) {
+			this.radius=radius;
+			this._color=color;
+			this.lineWide=lineWide;
+			init();
+		}
+		public function set color(value:uint) {
+			_color=value;
+			draw();
+		}
+		public function get color() {
+			return _color;
+		}
+		public function set radius(value:Number) {
+			_radius=value;
+			draw();
+		}
+		public function get radius() {
+			return _radius;
+		}
+		private function init() {
+			draw();
+		}
+		private function draw() {
+			graphics.clear();
+			if (lineWide == 0) {
+				graphics.lineStyle();
+			} else {
+
+				graphics.lineStyle(lineWide);
+			}
+			var matrix:Matrix=new Matrix  ;
+
+			matrix.createGradientBox(_radius * 2,_radius * 2,0,- _radius + _radius / 3,- _radius - _radius / 2.5);
+			graphics.beginGradientFill(GradientType.RADIAL, [0xffffff, _color*0xdd/0xff,_color*0x88/0xff], [1,1, 1], [0,90, 255], matrix);
+			graphics.drawCircle(0,0,_radius);
+			graphics.endFill();
+		}
+	}
+}

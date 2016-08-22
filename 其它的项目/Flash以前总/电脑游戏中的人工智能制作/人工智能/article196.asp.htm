@@ -1,0 +1,147 @@
+
+
+<!--<TABLE>
+	<TR>
+		<TD>
+			AI In Empire-Based Games
+		</TD>
+		<TD>
+			See Also:
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2>-->
+
+<CENTER><SPAN CLASS="title">AI In Empire-Based Games</SPAN></CENTER>
+<P>Courtesy of Amit Patel
+<BR><A HREF="javascript:if(confirm('http://www-cs-students.stanford.edu/~amitp  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被访问于一个域或在它的起始地址边界外部的路径上.  \n\n你想从服务器打开它吗?'))window.location='http://www-cs-students.stanford.edu/~amitp'" tppabs="http://www-cs-students.stanford.edu/~amitp">http://www-cs-students.stanford.edu/~amitp</A>
+<HR>
+
+<P>From: Free at last! <routley@4gl.enet.dec.com>
+<BR>To: patel@shell.com
+<BR>Subject: RE: Space Empire Games
+<BR>Date: Fri, 23 Jul 93 16:22:48 EDT
+
+<P>Amit -
+<BR>I just wrote up a bit of a description about Second Conflict for another correpondant.  I append it here.  Its certainly what I consider Space Empire.  I'm trying to clone Second Conflict which is what my editorial or side comments on extensions or computer strategies refer to.
+<P>Thoughts and comments are appreciated.  I'm still somewhat overwhelmed by the thought of programming a decent computer opponent.
+<P>Thanks!
+<BR>Kevin
+
+<P>-------------------
+
+<P>Second Conflict appears to be produced by the folks who run the Galactica BBS.  It has multi-player capability [possibly for BBS users?] but I've never tried that, playing purely Human-Computer conflicts.  I can't really remember the premise, so I'll just talk about the mechanics [which is what I'm trying to clone right now, I'll figure out my own premise later].
+<P>You start by selecting the game parameters.  Up to 26 star systems (one per alphabet letter) and up to 10 players.  Each player gets a beginning star system with 10 planets [each planet produces troops], a random number of Warships, Stealthships and Transports, a certain number of Missiles and Factories, and a random number of system defenses.
+<P>Two basic scenarios are available with the shareware version of Second Conflict.  The first is that each player gets one system.  The second is that all systems are divided evenly between all players.
+<P>The winner is the players who conquers the whole universe or who has the largest number of points when the game ends [game length can be selected].
+<P>You can choose to build any of the ships, defenses, or factories.  You can send scouts to check out other systems.   Each turn every player makes orders (produce X, send ships to system Y, etc) and then all movement and combat orders are reconciled at the end of the turn.
+<P>Stealthships are more powerful but cost 3 points to build versus 1 point for Warships.  Fleets can 'Conquer' (fight until win or die), 'Probe' (attack once then retreat), or 'Raid' (seize transports and/or build points from enemy systems).  Items can be wrecked to retrieve 70% of original points.
+<P>Score points are awarded for ships, star systems, planets, troops belonging to a player at the end of the turn.  More points for star systems owned, followed by planets, and then ships/defenses/factories. [So an obvious decision weight factor comes to mind: conquering a system is higher priority then building more ships unless you've got lots of ships].
+<P>In an enemy system, one must first destroy the protecting fleet/defenses. Then you must destroy the enemy troops occupying the planets.  Every turn you have un-conquered planets, the enemy can destroy your ships, possibly reducing the occupation fleet small enough so the system overthrows your rule.
+<P>So a typical game for me starts out scouting nearby systems while building up my fleet.  I try to find the nearest 'neutral' (non-player-occupied) system that has high defenses (usually an indication of a large number of existing factories; since it costs 5 points per *existing* factory to build a new one, the more already in a system, the better).  Or if there are any nearby enemy systems I send raid fleets to get points to build with [the player's home system has no production limit; that is if you have extra points you can build as many of X with those points as you can, whereas other systems can only build as many X as they have factories].
+<P>One of the tricks the computer opponent might do is to wreck factories to build stealthships.  Since production in the home system is not limited by number of factories, 1 factory can build several hundred stealthships from the points recovered by wrecking the other factories.  Then the computer can easily conquer several nearby systems, and use those systems' factories to build.  The computer opponent only seems to do this early in the game if there are lots of nearby neutral systems.  I haven't decided why the opponent decides to wreck factories later in the game.
+<P>A weakness of the computer opponent is to send most of the fleet to attack a new system, leaving an old system relatively unprotected.  If the computer has a small enough fleet, its possible to occupy the old system with little fear of successful return take-over.
+<P>There are some other parts of the game, but thats pretty much it in a nutshell.  The authors have produced a windows version that has different rules for some of the above (eg its harder to raid).  Part of my motivation for making my own version is that I think their Windows interface is a dog, I'd like to learn, and the version I have has some annoying bugs (like with a large game [26 star systems, 5 players] the game will tend to have field overwrite problems, so that all of a sudden one player has got -32000 ships and is completely unconquerable).
+<P>Some potential additions include having systems that are rich in metals versus good crop planets, taking the time to mine planets, colonization versus conquest, spy satellites, more ship types, trade, diplomacy, etc. But I'd like to get my clone working first and then extend it.
+
+<P><HR>
+
+<P>From: Free at last! <routley@4gl.enet.dec.com>
+<BR>To: patel@shell.com, robert@gtx.com
+<BR>Subject: Medieval SimCity
+<BR>Date: Fri, 23 Jul 93 16:46:43 EDT
+
+<P>Amit, someone posted this response, which I think pretty much echos your comments re: realism.
+
+<P>>One tip for the Medieval Sim-City game...  Ditch realism (or at least some of
+<BR>>it) and invent something that will work well from a game balance perspective
+<BR>>and make the game fun to play.  Reality can be a good source of game ideas
+<BR>>sometimes, other times it can be crippling.
+
+<P>Its sort of sinking in for me that I do need to concentrate a little more on playability rather than strict realism, although history provides a number of ideas that can be incorporated into a game.
+<P>You mentioned for example that Civilization has emporers living 4500 years! This just so happens to be something I was having a little trouble figuring out how to handle the transition as the current ruler died, like what happens if the ruler doesn't produce an heir? (or multiple?)  But it could just be ignored if necessary.
+<P>Rob, you wrote:
+
+<P>>I really like the idea of a leader and his group getting dumped in the middle of nowhere.
+
+<P>The basic premise I was working from was the fact that around 600-700 A.D. large numbers of new villages were founded in portions of Northern Europe that had not been extensively settled.  At that time, most of N. Europe was forested.  What I hadn't figured out was how to explain how the potential villagers got there without a path or road, but I shrugged that off for the moment.
+<P>This causes the game to start out to be one of resource management as the village must work to create fields using existing grain resources.  Then, as exploration takes place, they will encounter traders and other villages, heathen and bandits, etc.
+
+<P>The goal, in my mind, is to start with nothing like this, and develop to a successful large city [possibly the political center of a new country or a bishopric].  Obstacles include the barbarian invasions, trade wars, the black death, and the constant war.
+<P>>Have you considered hunting & gathering as a potentially
+<BR>>bountiful resource for small populations, as a springboard until farming
+<BR>>begins to yield its returns?
+
+<P>Yes, as pigs were typically fed on wild acorns as a major staple, and hunting was a significant contributor of food.  I wanted to get the grain plant/yield ratios settled first but maybe I'm trying to take baby steps that are too small.  I may be trying to make things too complicated by assigning different activities different costs in terms of grain eaten.
+<P>I originally thought to require the user to select which activities to use the people on.  For example, with 25 starting people they can plow 5 fields in a season if no one does anything else, but they may end up with no food because they eat all the grain.  On the other hand, 5 people can build houses, 10 people can hunt, and 15 people can plow, resulting in 3 fields but enough food from hunting, _and_ a place to stay.
+<P>>If i recall, farming without basic tools is supposed to be hardly worth
+<BR>>the effort (unless you live on a flood plain as rich as the ancient Nile).
+<BR>>Likewise, great skill in farming, even with relatively primitive tools,
+<BR>>can reap rewards.
+<P>Right.  The original plow (pre-700 A.D) was an ox-drawn edition of the original stick plow.  Ideal for light Mediterranean soils but poor in the heavier soils of N. Europe.  I wanted the village to start out with this plow (and consequently lower grain yields) plus a two-field rotation system.
+<P>Then, after the development of the shoulder-harness for horses, horse shoes and the heavy mouldboard plow circa 750 AD, the village can acquire this knowledge and increase production.  The additional use of a three-field rotation system can also increase production.  With increased production the player can then spend more resources for building a church, grain mills, windmills, trade, and developing more of a city.
+<P>Perhaps I'm trying to be too realistic, making it much less fun?
+<P>Kevin
+
+<P><HR>
+
+<P>From: Free at last! <routley@4gl.enet.dec.com>
+<BR>To: fingon@nullnet.fi
+<BR>Subject: RE: Space Strategy AI
+<BR>Date: Mon, 26 Jul 93 11:12:55 EDT
+
+<P>Markus -
+
+<P>>I, too, am creating space strategy game. Only part working 100% now is computer AI, :).
+
+<P>Care to share details?  I'm rather lost when it comes to the AI part. Both Amit Patel and Robert Eaglestone have expressed interest or ideas wrt the AI.
+<P>At this point I've done nothing on the AI (leave the hard part for last :). I haven't even thought much on the potential computer operations, much less how the computer makes decisions between them [nor even how the computer gathers the data to make the decisions, but that should be easier].
+<P>Is your AI data-driven?  What computer operations/decision-points do you have, and how does the computer decide between them?  Don't feel that you have to give everything away, any input at all would be helpful at this point.
+<P>Thanks!
+<BR>Kevin
+
+<P><HR>
+
+<P>From: Free at last! <routley@4gl.enet.dec.com>
+<BR>To: robert@gtx.com, patel@shell.com
+<BR>Cc: routley@4gl.enet.dec.com
+<BR>Subject: Promised infrom from Markus Stenberg on Computer AI
+<BR>Date: Wed, 28 Jul 93 16:57:34 EDT
+
+<P>From:	US2RMC::"fingon@nullnet.fi" "Markus Stenberg" 27-JUL-1993 15:07:29.00
+<BR>To:	4gl::routley (Free at last!)
+<BR>CC:	
+<BR>Subj:	Re: Space Strategy AI
+
+<P>> >I, too, am creating space strategy game. Only part working 100% now is
+<BR>> >computer AI, :).
+<BR>> Care to share details?  I'm rather lost when it comes to the AI part.
+<BR>> Both Amit Patel and Robert Eaglestone have expressed interest or ideas
+<BR>> wrt the AI.
+
+<P>I'll write something.. :)
+
+<P>> At this point I've done nothing on the AI (leave the hard part for last :).
+<BR>> I haven't even thought much on the potential computer operations, much
+<BR>> less how the computer makes decisions between them [nor even how the
+<BR>> computer gathers the data to make the decisions, but that should be easier].
+
+<P>Data gathering is simple - at least in my model it uses same data as players + some statistical data from preivious turns.. <Damn, error - so what? :) >
+
+<P>> Is your AI data-driven?  What computer operations/decision-points do you
+<BR>> have, and how does the computer decide between them?  Don't feel that you
+<BR>> have to give everything away, any input at all would be helpful at this
+<BR>> point.
+
+<P>AI I have designed uses mostly data to make decisions - some random chance has been thrown in, too. I think that the AI has to be quite game-specific - at least mine wouldn't work even in VGAPlanets, which is _very_ like my game.. 
+<P>For example about planetary conquest: Computer saves all previous attempts, &c. When ship's turn comes (it handles em quite easily), it checks out 20 nearest not-own planets, and what kind of success it has had before trying to conquer em. Then it orders the ship to go to the planet &c. L8er, if some other ship thinks that the same planet is easiest conquest in terms of range/defense, it merges them to fleet before attacking. If planetary defenses were last time better than the fleet, it just flies to the system & waits until there is great enough force to wipe out the planet.
+<P>(Planetary defenses cannot attack, as name implies)
+<BR>-- 
+<BR>Markus Stenberg / fingon@nullnet.fi / Finland / Europe
+<BR>Public PGP key available on request.
+
+
+<P ALIGN="center"><B><A HREF="javascript:if(confirm('http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=196&forum_id=35&Topic_Title=AI+In+Empire%2DBased+Games  \n\n这个文件不能通过 Teleport Pro 取回, 因为 它被链接到离它的起始地址太远的地方. 如果你增大起始地址在其范围内的深度设置, 这个文件将进行列队等待取回.  \n\n你想从服务器打开它吗?'))window.location='http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=196&forum_id=35&Topic_Title=AI+In+Empire%2DBased+Games'" tppabs="http://www.gamedev.net/community/forums/topic.asp?key=featart&uid=196&forum_id=35&Topic_Title=AI+In+Empire%2DBased+Games">Discuss this article in the forums</A></B></P>
+<P>
+<CENTER>
+<!-- --> 

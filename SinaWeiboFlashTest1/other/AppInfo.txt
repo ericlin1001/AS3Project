@@ -1,0 +1,9 @@
+﻿
+DoWhatYouLike
+该名称也用于来源显示，不超过10个汉字或20个字母
+应用类型：
+普通应用 - 客户端
+App Key：
+2326126366
+App Secret：
+b80d8480aae952531fe39fdedce1705e

@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>RNAShower</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="language" content="en" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+
+	<script src="js/swfobject.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		var flashvars = {
+		spaceLen:6.0,//specify the length bwteen the end of line and the letter
+		size:18.0,//specify the length of two letter
+		color1:0xff0000,//just test by youself
+		color2:0x00ff00 //if you need,i can give you more control of swf!
+		};
+		var params = {
+			menu: "true",
+			scale: "noScale",
+			allowFullscreen: "false",
+			allowScriptAccess: "always",
+			bgcolor: "#FFFFFF"
+		};
+		var attributes = {
+			id:"RNAShower"
+		};
+		swfobject.embedSWF("RNAShower.swf", "altContent", "1", "1", "9.0.0", "expressInstall.swf", flashvars, params, attributes);
+	</script>
+
+	<style>
+		html, body { height:100%; }
+		body { margin:0; }
+	</style>
+	
+</head>
+<body bgcolor="#dddddd">
+	<div id="altContent" >
+		<h1>RNAShower</h1>
+		<p>Alternative content</p>
+		<p><a href="http://www.adobe.com/go/getflashplayer"><img 
+			src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" 
+			alt="Get Adobe Flash player" /></a></p>
+	</div>
+	<p>
+		
+		seqs:<input type="text" name="seqs" id="seqs" /><br/>
+		matches:<input type="text" name="matches" id="matches" /><br/>
+		<input type="button" onclick="showRna()" value="showRna" />
+
+	</p>
+	<script>
+		function showRna() {
+			seqs=document.getElementById("seqs").value;
+			matches=document.getElementById("matches").value;
+			//the entry point showRna
+			if(!thisMovie("RNAShower").showRna(seqs,matches)){
+				document.write("args error");
+			}
+		}
+		function setWidthHeight(w,h){
+		//this will be called by swf after swf.showRna
+		//you can also call swf.getRealWidth(),swf.getRealHeight() and set the width,height of swf
+			/**/
+			thisMovie("RNAShower").width=w;
+			thisMovie("RNAShower").height=h;
+		//	thisMovie("RNAShower").width=thisMovie("RNAShower").getRealWidth();
+		//	thisMovie("RNAShower").height=thisMovie("RNAShower").getRealHeight();
+		}
+		function thisMovie(movieName) {
+		/*if (navigator.appName.indexOf("Microsoft") != -1) {
+		return window[movieName]
+		}
+		else {
+		return document[movieName]
+		}*/
+		return document.getElementById("RNAShower");
+		}
+		</script>
+	
+</body>
+</html>

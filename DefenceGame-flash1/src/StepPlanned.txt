@@ -1,0 +1,8 @@
+step0:to load the map;
+step1:to move enemies in map;
+step2:tank.fire();
+step3:enemies are moving while tank.fire();
+step4:finish the whole game(add small garages);
+step5:test the game;
+step6:add welcome and submit functions ;
+step7:test and release the game;

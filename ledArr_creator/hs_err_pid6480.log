@@ -1,0 +1,200 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x6d812983, pid=6480, tid=7516
+#
+# JRE version: 6.0_26-b03
+# Java VM: Java HotSpot(TM) Client VM (20.1-b02 mixed mode, sharing windows-x86 )
+# Problematic frame:
+# V  [jvm.dll+0x22983]
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0018a400):  JavaThread "main" [_thread_in_vm, id=7516, stack(0x001d0000,0x00220000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x01213c84
+
+Registers:
+EAX=0x39173cf8, EBX=0x0000000a, ECX=0x000042ab, EDX=0x8d4c7ceb
+ESP=0x0021ef60, EBP=0x0021ef6c, ESI=0x01213c84, EDI=0x0000000a
+EIP=0x6d812983, EFLAGS=0x00010206
+
+Top of Stack: (sp=0x0021ef60)
+0x0021ef60:   0000000a 8d4c7ceb 01615706 0021ef90
+0x0021ef70:   6d8129fc 000042ab 01615706 0000000a
+0x0021ef80:   8d4c7ceb 0000000a 0000000c 01615706
+0x0021ef90:   0021f06c 6d801dd3 01615706 0000000a
+0x0021efa0:   0021efc0 0018ab1c 0018a400 0021f36c
+0x0021efb0:   1bb6c808 00000001 1bb6000a 01615b30
+0x0021efc0:   8d4c7ceb 00000008 0021efe4 6d853ddc
+0x0021efd0:   00000001 33b74538 6d853de4 0018a400 
+
+Instructions: (pc=0x6d812983)
+0x6d812963:   8b 41 04 8b 4d 08 53 56 8b 34 88 85 f6 8d 04 88
+0x6d812973:   57 74 2c 8b 5d 10 8d a4 24 00 00 00 00 8b 55 14
+0x6d812983:   39 16 75 13 8b 7e 08 8b 45 0c 53 50 8b cf e8 7a
+0x6d812993:   d5 06 00 84 c0 75 11 8b 76 04 83 e6 fe 75 de 5f 
+
+
+Register to memory mapping:
+
+EAX=0x39173cf8 is an unknown value
+EBX=0x0000000a is an unknown value
+ECX=0x000042ab is an unknown value
+EDX=0x8d4c7ceb is an unknown value
+ESP=0x0021ef60 is pointing into the stack for thread: 0x0018a400
+EBP=0x0021ef6c is pointing into the stack for thread: 0x0018a400
+ESI=0x01213c84 is an unknown value
+EDI=0x0000000a is an unknown value
+
+
+Stack: [0x001d0000,0x00220000],  sp=0x0021ef60,  free space=315k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x22983]
+V  [jvm.dll+0x229fc]
+V  [jvm.dll+0x11dd3]
+V  [jvm.dll+0x1477a]
+V  [jvm.dll+0x15553]
+V  [jvm.dll+0x17c1f]
+V  [jvm.dll+0x26cc5]
+V  [jvm.dll+0x27506]
+V  [jvm.dll+0x278b5]
+V  [jvm.dll+0x278fb]
+V  [jvm.dll+0xb2ab2]
+V  [jvm.dll+0xbaadf]
+C  [java.dll+0x13bc]  Java_java_lang_Class_forName0+0xbe
+j  java.lang.Class.forName0(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;+0
+j  java.lang.Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;+32
+j  sun.nio.cs.AbstractCharsetProvider.lookup(Ljava/lang/String;)Ljava/nio/charset/Charset;+86
+j  sun.nio.cs.AbstractCharsetProvider.charsetForName(Ljava/lang/String;)Ljava/nio/charset/Charset;+14
+j  java.nio.charset.Charset.lookupExtendedCharset(Ljava/lang/String;)Ljava/nio/charset/Charset;+41
+j  java.nio.charset.Charset.lookup2(Ljava/lang/String;)Ljava/nio/charset/Charset;+48
+j  java.nio.charset.Charset.lookup(Ljava/lang/String;)Ljava/nio/charset/Charset;+40
+j  java.nio.charset.Charset.isSupported(Ljava/lang/String;)Z+1
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0xfae4b]
+V  [jvm.dll+0x18c531]
+V  [jvm.dll+0xfaecd]
+V  [jvm.dll+0x95846]
+V  [jvm.dll+0x9b408]
+C  [java.dll+0x4f4b]  JNU_CallStaticMethodByName+0x13b
+C  [java.dll+0x56ad]  JNU_NewObjectByName+0x57b
+C  [java.dll+0x619d]  JNU_NewStringPlatform+0xa3
+C  [java.dll+0x3c1f]  Java_java_lang_System_initProperties+0xb84
+j  java.lang.System.initProperties(Ljava/util/Properties;)Ljava/util/Properties;+0
+j  java.lang.System.initializeSystemClass()V+13
+v  ~StubRoutines::call_stub
+V  [jvm.dll+0xfae4b]
+V  [jvm.dll+0x18c531]
+V  [jvm.dll+0xfb32c]
+V  [jvm.dll+0xfb37e]
+V  [jvm.dll+0x1156c6]
+V  [jvm.dll+0x118b83]
+V  [jvm.dll+0x9ec30]
+C  [java.exe+0x1657]
+C  [java.exe+0x1e2c]
+C  [java.exe+0x85d4]
+C  [kernel32.dll+0x4ed6c]  BaseThreadInitThunk+0x12
+C  [ntdll.dll+0x6377b]  RtlInitializeExceptionChain+0xef
+C  [ntdll.dll+0x6374e]  RtlInitializeExceptionChain+0xc2
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  java.lang.Class.forName0(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;+0
+j  java.lang.Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;+32
+j  sun.nio.cs.AbstractCharsetProvider.lookup(Ljava/lang/String;)Ljava/nio/charset/Charset;+86
+j  sun.nio.cs.AbstractCharsetProvider.charsetForName(Ljava/lang/String;)Ljava/nio/charset/Charset;+14
+j  java.nio.charset.Charset.lookupExtendedCharset(Ljava/lang/String;)Ljava/nio/charset/Charset;+41
+j  java.nio.charset.Charset.lookup2(Ljava/lang/String;)Ljava/nio/charset/Charset;+48
+j  java.nio.charset.Charset.lookup(Ljava/lang/String;)Ljava/nio/charset/Charset;+40
+j  java.nio.charset.Charset.isSupported(Ljava/lang/String;)Z+1
+v  ~StubRoutines::call_stub
+j  java.lang.System.initProperties(Ljava/util/Properties;)Ljava/util/Properties;+0
+j  java.lang.System.initializeSystemClass()V+13
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x0165c000 JavaThread "Finalizer" daemon [_thread_blocked, id=4652, stack(0x03970000,0x039c0000)]
+  0x0165ac00 JavaThread "Reference Handler" daemon [_thread_blocked, id=7324, stack(0x03920000,0x03970000)]
+=>0x0018a400 JavaThread "main" [_thread_in_vm, id=7516, stack(0x001d0000,0x00220000)]
+
+Other Threads:
+  0x0161d800 VMThread [stack: 0x003b0000,0x00400000] [id=6080]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 4928K, used 88K [0x1bb60000, 0x1c0b0000, 0x23b60000)
+  eden space 4416K,   2% used [0x1bb60000, 0x1bb76160, 0x1bfb0000)
+  from space 512K,   0% used [0x1bfb0000, 0x1bfb0000, 0x1c030000)
+  to   space 512K,   0% used [0x1c030000, 0x1c030000, 0x1c0b0000)
+ tenured generation   total 10944K, used 0K [0x23b60000, 0x24610000, 0x33b60000)
+   the space 10944K,   0% used [0x23b60000, 0x23b60000, 0x23b60200, 0x24610000)
+ compacting perm gen  total 12288K, used 81K [0x33b60000, 0x34760000, 0x37b60000)
+   the space 12288K,   0% used [0x33b60000, 0x33b74588, 0x33b74600, 0x34760000)
+    ro space 10240K,  51% used [0x37b60000, 0x3808dff8, 0x3808e000, 0x38560000)
+    rw space 12288K,  55% used [0x38560000, 0x38bfc208, 0x38bfc400, 0x39160000)
+
+Code Cache  [0x01720000, 0x01768000, 0x03720000)
+ total_blobs=68 nmethods=0 adapters=45 free_code_cache=33271104 largest_free_block=128
+
+Dynamic libraries:
+0x00400000 - 0x00424000 	C:\Windows\system32\java.exe
+0x77720000 - 0x7785c000 	C:\Windows\SYSTEM32\ntdll.dll
+0x768d0000 - 0x769a4000 	C:\Windows\system32\kernel32.dll
+0x75740000 - 0x7578b000 	C:\Windows\system32\KERNELBASE.dll
+0x76330000 - 0x763d0000 	C:\Windows\system32\ADVAPI32.dll
+0x75cb0000 - 0x75d5c000 	C:\Windows\system32\msvcrt.dll
+0x77870000 - 0x77889000 	C:\Windows\SYSTEM32\sechost.dll
+0x75900000 - 0x759a1000 	C:\Windows\system32\RPCRT4.dll
+0x7c340000 - 0x7c396000 	D:\Program Files\Java\jre6\bin\msvcr71.dll
+0x6d7f0000 - 0x6da9f000 	D:\Program Files\Java\jre6\bin\client\jvm.dll
+0x759b0000 - 0x75a79000 	C:\Windows\system32\USER32.dll
+0x77900000 - 0x7794e000 	C:\Windows\system32\GDI32.dll
+0x77860000 - 0x7786a000 	C:\Windows\system32\LPK.dll
+0x76460000 - 0x764fd000 	C:\Windows\system32\USP10.dll
+0x75620000 - 0x75652000 	C:\Windows\system32\WINMM.dll
+0x77890000 - 0x778af000 	C:\Windows\system32\IMM32.DLL
+0x75a80000 - 0x75b4c000 	C:\Windows\system32\MSCTF.dll
+0x75490000 - 0x754dc000 	C:\Windows\system32\apphelp.dll
+0x6fa00000 - 0x6fa3c000 	C:\PROGRA~1\Sophos\SOPHOS~1\SOPHOS~1.DLL
+0x75b60000 - 0x75b65000 	C:\Windows\system32\PSAPI.DLL
+0x6d7a0000 - 0x6d7ac000 	D:\Program Files\Java\jre6\bin\verify.dll
+0x6d320000 - 0x6d33f000 	D:\Program Files\Java\jre6\bin\java.dll
+0x6d7e0000 - 0x6d7ef000 	D:\Program Files\Java\jre6\bin\zip.dll
+
+VM Arguments:
+jvm_args: -Xmx384m -Dsun.io.useCanonCaches=false -Duser.language=en -Duser.region=US -Dfile.encoding=UTF-8 -Dapplication.home=E:\Flash\FlashSource\Flex4_SDK 
+java_command: E:\Flash\FlashSource\Flex4_SDK\lib\fdb.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=D:\Program Files\Java\jdk1.6.0_26
+CLASSPATH=.;D:\Program Files\Java\jdk1.6.0_26/lib;
+PATH=F:\BigSoftWare\client\product\11.2.0\client_1\bin;F:\BigSoftware\product\11.2.0\dbhome_1\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Common Files\Thunder Network\KanKan\Codecs;D:\Program Files\Java\jdk1.6.0_26\bin;C:\Program Files\Microsoft SQL Server\90\Tools\bin\;C:\Program Files\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\DTS\Binn\;D:\Program Files\CTEX\UserData\miktex\bin;D:\Program Files\CTEX\MiKTeX\miktex\bin;D:\Program Files\CTEX\CTeX\ctex\bin;D:\Program Files\CTEX\CTeX\cct\bin;D:\Program Files\CTEX\CTeX\ty\bin;D:\Program Files\CTEX\Ghostscript\gs9.04\bin;D:\Program Files\CTEX\GSview\gsview;D:\Program Files\CTEX\WinEdt;D:\Program Files\MySQL\MySQL Server 5.5\bin;OGRE_HOME=E:\C ++\C++Projects\orge\OgreSDK_vc10_v1-7-4;D:\Program Files\TortoiseSVN\bin;D:\Program Files\Microsoft Visual Studio\Common\Tools\WinNT;D:\Program Files\Microsoft Visual Studio\Common\MSDev98\Bin;D:\Program Files\Microsoft Visual Studio\Common\Tools;D:\Program Files\Microsoft Visual Studio\VC98\bin;OGRE_HOME=E:\C ++\C++Projects\orge\OgreSDK_vc10_v1-7-4;D:\Program Files\Python27
+USERNAME=lenovo
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=x86 Family 16 Model 5 Stepping 3, AuthenticAMD
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7601 Service Pack 1
+
+CPU:total 4 (4 cores per cpu, 1 threads per core) family 16 model 5 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, popcnt, mmxext, 3dnow, 3dnowext, lzcnt, sse4a
+
+Memory: 4k page, physical 3664792k(2061168k free), swap 8376408k(6441372k free)
+
+vm_info: Java HotSpot(TM) Client VM (20.1-b02) for windows-x86 JRE (1.6.0_26-b03), built on May  4 2011 00:50:59 by "java_re" with MS VC++ 7.1 (VS2003)
+
+time: Tue Nov 20 01:56:50 2012
+elapsed time: 0 seconds
+

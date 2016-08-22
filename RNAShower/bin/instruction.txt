@@ -1,0 +1,4 @@
+This project is developed by Flashdevelop!
+Usage:
+Just open index.html,read the comment and try!!!
+You should run the index.html in web server!(I have test it in my computer server:Apache)

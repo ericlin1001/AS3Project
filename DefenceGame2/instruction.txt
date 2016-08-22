@@ -1,0 +1,1 @@
+map.data 为程序所用的地图。 tempMap.txt中有其它地图。

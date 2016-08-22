@@ -1,0 +1,7 @@
+﻿origin:
+Map:39*29
+
+
+
+myConfig:
+Map:40*30

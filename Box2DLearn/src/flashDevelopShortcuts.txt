@@ -1,0 +1,69 @@
+﻿Development shortcuts
+Ctrl+SPACE = Autofill.
+Ctrl+Alt+SPACE = Autofill with class name.
+Ctrl+Shift+SPACE = Shows method parameters hint if cursor is inside method call.
+Ctrl+Shift+1 = Template generation. You can generate:
+
+Getters and setters if you are on field definition. 
+Class field if you are on undeclared variable. 
+Function if you are on undeclared function. 
+Event handler if you are on undeclared event handler. 
+All public methods and properties inherited by current class from the interface under cursor 
+Ctrl+B = Snippet insertion. Snippet is unparameterized code template. In instance, condition or loop. You can add/edit snippets by Tools->General Tools->Snippet Editor…
+Ctrl+J = Activating TypeExplorer window. It helps to find the class by the first letters of class name. You can open the class at once.
+F5, Ctrl+Enter = Compile project
+Ctrl+Shift+K = Insert color
+Ctrl+Shift+I = Insert GUID.
+
+Code navigation
+F4 = Goto method/class/property declaration.
+Shift+F4 = Come back from there
+F12 = Goto Next error.
+Shift+F12 = Goto Previous error.
+Ctrl+[ = Goto next statement (declaration of variables or function, condition statements, new operator etc.)
+Ctrl+] = Goto previous statement
+Ctrl+Shift+F = Expand/collapse current line
+Ctrl+Shift+A = Collapse all
+Ctrl+Shift+E = Expand all
+Ctrl+G = Goto line number...
+
+Edit
+Double click on word = word selection
+Ctrl+U = converts selected word to uppercase
+Ctrl+L = converts selected word to lowercase
+Ctrl+right arrow = Goto next word
+Ctrl+left arrow = Goto previous word
+Ctrl+up arrow = Scroll up the window
+Ctrl+down arrow = Scroll down the window
+Ctrl+/ = Goto previous subword (separate word or subword starting with capital letter. For example, the subword "Count" in word "filesCount")
+Ctrl+\ = Goto next subword
+Alt+Home = Goto real line start but not the first not-null symbol of the line like Home key.
+Ctrl+Home= Goto file begin.
+Ctrl+End = Goto file end.
+Ctrl+D = Duplicate the line
+Ctrl+T = switches the current an the previous lines
+Ctrl+Shift+D = Deleted the current line
+Ctrl+Q = comment line
+Ctrl+Shift+Q = uncomment line
+
+Search
+Ctrl+F = Search window
+Ctrl+H = Replace window
+Ctrl+I = Replace in Files window
+F3 = Goto next word usage
+Shift+F3 = Goto previous word usage
+
+Windows managements
+Ctrl+S = Saves the Tab
+Ctrl+Shift+S = Save as…
+Ctrl+W = Close the current tab
+Alt+F4 = close FlashDevelop
+Ctrl+N = Opens new blank tab
+Hold CTRL and pressing TAB several times = switching tabs in forward direction
+Hold Ctrl+Shift and pressing TAB = switching tabs in backward direction
+Ctrl+TAB = Goto last active tab
+Ctrl+PgUP = Goto between tabs from right to left
+Ctrl+PgDown = Goto between tabs from left to right
+Alt+Shift+Enter = Go to fullscreen
+
+We make our fortune and call it fate
